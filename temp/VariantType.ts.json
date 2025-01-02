@@ -1,0 +1,34 @@
+{
+  "data": {
+    "_id": 4000,
+    "properties": {
+      "name": {
+        "name": "name",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "string",
+        "array": false,
+        "runtimeType": "string"
+      }
+    },
+    "primaryKeys": [],
+    "filters": {},
+    "hooks": {},
+    "indexes": [],
+    "uniques": [{ "properties": "name" }],
+    "className": "VariantType",
+    "path": "./src/infra/postgresql/entities/variant-type.entity.ts",
+    "collection": "variant_type",
+    "name": "VariantType",
+    "abstract": false,
+    "internal": true,
+    "constructorParams": [],
+    "toJsonParams": [],
+    "extends": "BaseEntity",
+    "useCache": true
+  },
+  "origin": "./src/infra/postgresql/entities/variant-type.entity.ts",
+  "hash": "e6e1abe41feddc2c9725a7465bc0b5ed",
+  "version": "6.4.1"
+}

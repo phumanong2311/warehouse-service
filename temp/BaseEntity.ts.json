@@ -1,0 +1,78 @@
+{
+  "data": {
+    "_id": 0,
+    "properties": {
+      "id": {
+        "name": "id",
+        "kind": "scalar",
+        "primary": true,
+        "type": "string",
+        "runtimeType": "string",
+        "array": false
+      },
+      "createdAt": {
+        "name": "createdAt",
+        "kind": "scalar",
+        "type": "date",
+        "defaultRaw": "CURRENT_TIMESTAMP",
+        "nullable": true,
+        "getter": false,
+        "setter": false,
+        "array": false,
+        "runtimeType": "Date",
+        "optional": true
+      },
+      "updatedAt": {
+        "name": "updatedAt",
+        "kind": "scalar",
+        "type": "date",
+        "defaultRaw": "CURRENT_TIMESTAMP",
+        "nullable": true,
+        "getter": false,
+        "setter": false,
+        "array": false,
+        "runtimeType": "Date",
+        "optional": true
+      },
+      "createdBy": {
+        "name": "createdBy",
+        "kind": "scalar",
+        "type": "string",
+        "nullable": true,
+        "getter": false,
+        "setter": false,
+        "array": false,
+        "runtimeType": "string",
+        "optional": true
+      },
+      "updatedBy": {
+        "name": "updatedBy",
+        "kind": "scalar",
+        "type": "string",
+        "nullable": true,
+        "getter": false,
+        "setter": false,
+        "array": false,
+        "runtimeType": "string",
+        "optional": true
+      }
+    },
+    "primaryKeys": ["id"],
+    "filters": {},
+    "hooks": {},
+    "indexes": [],
+    "uniques": [],
+    "className": "BaseEntity",
+    "path": "./src/infra/postgresql/entities/base.entity.ts",
+    "abstract": true,
+    "internal": true,
+    "constructorParams": [],
+    "toJsonParams": [],
+    "useCache": true,
+    "compositePK": false,
+    "simplePK": true
+  },
+  "origin": "./src/infra/postgresql/entities/base.entity.ts",
+  "hash": "c0ce2bb176810a4a489c23d667bfd2f7",
+  "version": "6.4.1"
+}

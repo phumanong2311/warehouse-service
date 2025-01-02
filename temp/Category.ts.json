@@ -1,0 +1,44 @@
+{
+  "data": {
+    "_id": 1000,
+    "properties": {
+      "name": {
+        "name": "name",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "string",
+        "array": false,
+        "runtimeType": "string"
+      },
+      "description": {
+        "name": "description",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "string",
+        "array": false,
+        "runtimeType": "string",
+        "optional": true
+      }
+    },
+    "primaryKeys": [],
+    "filters": {},
+    "hooks": {},
+    "indexes": [],
+    "uniques": [],
+    "className": "Category",
+    "path": "./src/infra/postgresql/entities/category.entity.ts",
+    "collection": "category",
+    "name": "Category",
+    "abstract": false,
+    "internal": true,
+    "constructorParams": [],
+    "toJsonParams": [],
+    "extends": "BaseEntity",
+    "useCache": true
+  },
+  "origin": "./src/infra/postgresql/entities/category.entity.ts",
+  "hash": "d5defea6e443431edfbd04cfca910ba8",
+  "version": "6.4.1"
+}

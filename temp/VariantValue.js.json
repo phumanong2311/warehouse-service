@@ -1,0 +1,43 @@
+{
+  "data": {
+    "_id": 5000,
+    "properties": {
+      "name": {
+        "name": "name",
+        "kind": "scalar",
+        "getter": false,
+        "setter": false,
+        "type": "string",
+        "array": false,
+        "runtimeType": "string"
+      },
+      "variantType": {
+        "name": "variantType",
+        "kind": "m:1",
+        "cascade": ["persist"],
+        "owner": true,
+        "type": "VariantType",
+        "array": false,
+        "runtimeType": "VariantType"
+      }
+    },
+    "primaryKeys": [],
+    "filters": {},
+    "hooks": {},
+    "indexes": [],
+    "uniques": [{ "properties": "name" }],
+    "className": "VariantValue",
+    "path": "./dist/src/infra/postgresql/entities/variant-value.entity.js",
+    "collection": "variant_value",
+    "name": "VariantValue",
+    "abstract": false,
+    "internal": true,
+    "constructorParams": [],
+    "toJsonParams": [],
+    "extends": "InfraBaseEntity",
+    "useCache": true
+  },
+  "origin": "./dist/src/infra/postgresql/entities/variant-value.entity.js",
+  "hash": "ff32fa3e2795dc5b774478171f6b7501",
+  "version": "6.4.1"
+}
