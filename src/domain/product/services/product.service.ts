@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IProductRepository } from '../interface-repositories/product.interface.repository';
 import { ProductRepository } from '../../../infra/postgresql/repositories/product.repository';
-import { Product } from '../entities';
-import { ProductMapper } from '../mapper';
+import { DomainProductEntity } from '../entities';
+import { IProductRepository } from '../interface-repositories/product.interface.repository';
 
 @Injectable()
 export class ProductService {
@@ -10,11 +9,9 @@ export class ProductService {
     @Inject(ProductRepository)
     private readonly productRepository: IProductRepository,
   ) {}
-  async findById(productId: string): Promise<Product> {
+  async getById(productId: string): Promise<DomainProductEntity> {
     try {
-      const infraProduct = await this.productRepository.findById(productId);
-      const domainProduct = ProductMapper.entityInfraToDomain(infraProduct);
-      return domainProduct;
+      return await this.productRepository.findById(productId);
     } catch (error) {
       throw new Error(error);
     }

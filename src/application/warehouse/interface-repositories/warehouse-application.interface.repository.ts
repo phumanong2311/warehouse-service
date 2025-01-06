@@ -1,23 +1,23 @@
 export interface WarehouseApplication {
   checkInProduct(
+    warehouseId: string,
     productId: string,
     quantity: number,
-    warehouseId: string,
   ): void;
   checkOutProduct(
-    productId: number,
+    warehouseId: string,
+    productId: string,
     quantity: number,
-    warehouseId: number,
   ): void;
   adjustStock(
+    warehouseId: number,
     productId: number,
     newQuantity: number,
-    warehouseId: number,
   ): void;
   transferProduct(
-    productId: number,
-    quantity: number,
     fromWarehouseId: number,
     toWarehouseId: number,
+    productId: number,
+    quantity: number,
   ): void;
 }

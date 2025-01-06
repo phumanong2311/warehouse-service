@@ -33,9 +33,9 @@ export class WarehouseApplicationService {
   }
 
   async checkOutProduct(
-    productId: number,
+    productId: string,
     quantity: number,
-    warehouseId: number,
+    warehouseId: string,
   ) {
     const warehouse = await this.warehouseService.findById(warehouseId);
     const product = await this.productService.findById(productId);
@@ -54,9 +54,9 @@ export class WarehouseApplicationService {
   }
 
   async adjustStock(
-    productId: number,
+    productId: string,
     newQuantity: number,
-    warehouseId: number,
+    warehouseId: string,
   ) {
     const warehouse = await this.warehouseService.findById(warehouseId);
     const product = await this.productService.findById(productId);
@@ -75,10 +75,10 @@ export class WarehouseApplicationService {
   }
 
   async transferProduct(
-    productId: number,
+    productId: string,
     quantity: number,
-    fromWarehouseId: number,
-    toWarehouseId: number,
+    fromWarehouseId: string,
+    toWarehouseId: string,
   ) {
     const fromWarehouse = await this.warehouseService.findById(fromWarehouseId);
     const toWarehouse = await this.warehouseService.findById(toWarehouseId);

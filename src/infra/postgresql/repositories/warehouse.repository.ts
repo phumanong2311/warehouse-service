@@ -9,6 +9,12 @@ export class WarehouseRepository extends BaseRepository<Warehouse> {
     return WarehouseMapper.entityInfraToDomain(data);
   }
 
+  async findByCodeWithMapper(code: string): Promise<DomainWarehouseEntity> {
+    const data = await this.findOne({ code });
+    return WarehouseMapper.entityInfraToDomain(data);
+  }
+
+
   async findPaginationWithMapper(query: {
     limit?: number;
     page?: number;

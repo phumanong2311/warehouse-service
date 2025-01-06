@@ -8,7 +8,8 @@ export interface IWarehouseRepository {
     filter?: Record<string, any>;
   }): Promise<{ data: DomainWarehouseEntity[]; total: number }>;
   findAllWithMapper(): Promise<DomainWarehouseEntity[]>;
+  findByCodeWithMapper(code: string): Promise<DomainWarehouseEntity>;
   saveAndReturnDomain(warehouse: DomainWarehouseEntity): Promise<DomainWarehouseEntity>;
-  updateAndReturnDomain(id: string, warehouse: DomainWarehouseEntity): Promise<DomainWarehouseEntity>;
-  deleteWarehouse(warehouse: DomainWarehouseEntity): Promise<void>;
+  updateAndReturnDomain(id: string, warehouse: Partial<DomainWarehouseEntity>): Promise<DomainWarehouseEntity>;
+  deleteWarehouse(id: string): Promise<void>;
 }

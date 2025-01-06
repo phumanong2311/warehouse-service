@@ -1,5 +1,7 @@
 {
-  "namespaces": ["public"],
+  "namespaces": [
+    "public"
+  ],
   "name": "public",
   "tables": [
     {
@@ -82,7 +84,9 @@
       "indexes": [
         {
           "keyName": "category_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "primary": true,
@@ -162,7 +166,9 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": ["name"],
+          "columnNames": [
+            "name"
+          ],
           "composite": false,
           "keyName": "variant_type_name_unique",
           "constraint": true,
@@ -171,7 +177,9 @@
         },
         {
           "keyName": "variant_type_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "primary": true,
@@ -261,7 +269,9 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": ["name"],
+          "columnNames": [
+            "name"
+          ],
           "composite": false,
           "keyName": "variant_value_name_unique",
           "constraint": true,
@@ -270,7 +280,9 @@
         },
         {
           "keyName": "variant_value_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "primary": true,
@@ -281,9 +293,13 @@
       "foreignKeys": {
         "variant_value_variant_type_id_foreign": {
           "constraintName": "variant_value_variant_type_id_foreign",
-          "columnNames": ["variant_type_id"],
+          "columnNames": [
+            "variant_type_id"
+          ],
           "localTableName": "public.variant_value",
-          "referencedColumnNames": ["id"],
+          "referencedColumnNames": [
+            "id"
+          ],
           "referencedTableName": "public.variant_type",
           "updateRule": "cascade"
         }
@@ -344,6 +360,16 @@
           "length": 255,
           "mappedType": "string"
         },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
         "code": {
           "name": "code",
           "type": "varchar(255)",
@@ -356,16 +382,6 @@
         },
         "phone": {
           "name": "phone",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "name": {
-          "name": "name",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -409,7 +425,9 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": ["code"],
+          "columnNames": [
+            "code"
+          ],
           "composite": false,
           "keyName": "warehouse_code_unique",
           "constraint": true,
@@ -418,7 +436,9 @@
         },
         {
           "keyName": "warehouse_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "primary": true,
@@ -509,7 +529,9 @@
       "indexes": [
         {
           "keyName": "rack_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "primary": true,
@@ -520,9 +542,13 @@
       "foreignKeys": {
         "rack_warehouse_id_foreign": {
           "constraintName": "rack_warehouse_id_foreign",
-          "columnNames": ["warehouse_id"],
+          "columnNames": [
+            "warehouse_id"
+          ],
           "localTableName": "public.rack",
-          "referencedColumnNames": ["id"],
+          "referencedColumnNames": [
+            "id"
+          ],
           "referencedTableName": "public.warehouse",
           "updateRule": "cascade"
         }
@@ -649,7 +675,9 @@
       "indexes": [
         {
           "keyName": "product_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "primary": true,
@@ -660,25 +688,37 @@
       "foreignKeys": {
         "product_category_id_foreign": {
           "constraintName": "product_category_id_foreign",
-          "columnNames": ["category_id"],
+          "columnNames": [
+            "category_id"
+          ],
           "localTableName": "public.product",
-          "referencedColumnNames": ["id"],
+          "referencedColumnNames": [
+            "id"
+          ],
           "referencedTableName": "public.category",
           "updateRule": "cascade"
         },
         "product_warehouse_id_foreign": {
           "constraintName": "product_warehouse_id_foreign",
-          "columnNames": ["warehouse_id"],
+          "columnNames": [
+            "warehouse_id"
+          ],
           "localTableName": "public.product",
-          "referencedColumnNames": ["id"],
+          "referencedColumnNames": [
+            "id"
+          ],
           "referencedTableName": "public.warehouse",
           "updateRule": "cascade"
         },
         "product_rack_id_foreign": {
           "constraintName": "product_rack_id_foreign",
-          "columnNames": ["rack_id"],
+          "columnNames": [
+            "rack_id"
+          ],
           "localTableName": "public.product",
-          "referencedColumnNames": ["id"],
+          "referencedColumnNames": [
+            "id"
+          ],
           "referencedTableName": "public.rack",
           "updateRule": "cascade"
         }
@@ -765,7 +805,9 @@
       "indexes": [
         {
           "keyName": "variant_pkey",
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "primary": true,
@@ -776,18 +818,280 @@
       "foreignKeys": {
         "variant_product_id_foreign": {
           "constraintName": "variant_product_id_foreign",
-          "columnNames": ["product_id"],
+          "columnNames": [
+            "product_id"
+          ],
           "localTableName": "public.variant",
-          "referencedColumnNames": ["id"],
+          "referencedColumnNames": [
+            "id"
+          ],
           "referencedTableName": "public.product",
           "updateRule": "cascade"
         },
         "variant_variant_value_id_foreign": {
           "constraintName": "variant_variant_value_id_foreign",
-          "columnNames": ["variant_value_id"],
+          "columnNames": [
+            "variant_value_id"
+          ],
           "localTableName": "public.variant",
-          "referencedColumnNames": ["id"],
+          "referencedColumnNames": [
+            "id"
+          ],
           "referencedTableName": "public.variant_value",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "date"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "date"
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "variant_id": {
+          "name": "variant_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        }
+      },
+      "name": "size",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "size_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "size_variant_id_foreign": {
+          "constraintName": "size_variant_id_foreign",
+          "columnNames": [
+            "variant_id"
+          ],
+          "localTableName": "public.size",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.variant",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "date"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "date"
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "warehouse_id": {
+          "name": "warehouse_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "batch": {
+          "name": "batch",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "expiration_date": {
+          "name": "expiration_date",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "inventory",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "inventory_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "inventory_warehouse_id_foreign": {
+          "constraintName": "inventory_warehouse_id_foreign",
+          "columnNames": [
+            "warehouse_id"
+          ],
+          "localTableName": "public.inventory",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.warehouse",
+          "updateRule": "cascade"
+        },
+        "inventory_product_id_foreign": {
+          "constraintName": "inventory_product_id_foreign",
+          "columnNames": [
+            "product_id"
+          ],
+          "localTableName": "public.inventory",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.product",
           "updateRule": "cascade"
         }
       },
