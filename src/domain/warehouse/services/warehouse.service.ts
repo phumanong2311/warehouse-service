@@ -14,6 +14,8 @@ export class WarehouseService {
     private productService: ProductService,
     private inventoryService: InventoryService
   ) { }
+  //dung find khi du lieu co the tra ve null hoac undefined
+  // dung get khi muốn đảm bảo lúc nào cũng trả về 1 giá trị, nếu không tìm thấy thì ném error
   async findById(warehouseId: string): Promise<DomainWarehouseEntity> {
     return await this.warehouseRepository.findByIdWithMapper(warehouseId);
   }
@@ -65,7 +67,7 @@ export class WarehouseService {
     if (!existingWarehouse) {
       throw new Error(`Warehouse with id ${warehouse.getCode()} not found`);
     }
-    const existingProduct = await this.productRepository.findById(
+    const existingProduct = await this.productService.findById(
       product.getId()
     );
     if (!existingProduct) {

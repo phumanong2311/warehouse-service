@@ -9,11 +9,10 @@ export class ProductService {
     @Inject(ProductRepository)
     private readonly productRepository: IProductRepository,
   ) {}
-  async getById(productId: string): Promise<DomainProductEntity> {
-    try {
-      return await this.productRepository.findById(productId);
-    } catch (error) {
-      throw new Error(error);
-    }
+  async findById(productId: string): Promise<DomainProductEntity> {
+    return await this.productRepository.findByIdWithMapper(productId);
+  }
+  async findAll(): Promise<DomainProductEntity[]> {
+    return await this.productRepository.findAllWithMapper()
   }
 }

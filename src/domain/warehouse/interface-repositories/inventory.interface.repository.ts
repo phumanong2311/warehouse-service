@@ -1,12 +1,20 @@
 import { DomainInventoryEntity } from '../entities';
 
 export interface IInventoryRepository {
-  getTotalQuantity(productId: string): Promise<number>;
-  getQuantityByWarehouse(
+  findByIdWithMapper(id: string): Promise<DomainInventoryEntity>;
+  findByWarehouseAndProductWithMapper(warehouseId?: string,
+    productId?: string
+  ): Promise<DomainInventoryEntity[]>;
+  findPaginationWithMapper(query: {
+    limit?: number;
+    page?: number;
+    filter?: Record<string, any>;
+  }): Promise<{ data: DomainInventoryEntity[]; total: number }>;
+  findAllWithMapper(): Promise<DomainInventoryEntity[]>;
+  saveAndReturnDomain(product: DomainInventoryEntity): Promise<DomainInventoryEntity>;
+  updateAndReturnDomain(
     productId: string,
-    warehouseId: string,
-  ): Promise<number>;
-  getInventoryWithMapper(warehouseId: string, productId: string): Promise<DomainInventoryEntity>;
-  addQuantity(inventoryId: string): Promise<DomainInventoryEntity>;
-  minusQuantity(inventoryId: string): Promise<DomainInventoryEntity>;
+    product: Partial<DomainInventoryEntity>,
+  ): Promise<DomainInventoryEntity>;
+  deleteProduct(productId: string): Promise<void>;
 }
