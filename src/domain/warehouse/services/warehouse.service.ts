@@ -22,6 +22,13 @@ export class WarehouseService {
   async findAll(): Promise<DomainWarehouseEntity[]> {
     return await this.warehouseRepository.findAllWithMapper()
   }
+  async findWithPagination(query: {
+    limit?: number;
+    page?: number;
+    filter?: Record<string, any>;
+  }): Promise<{ data: DomainWarehouseEntity[]; total: number; }> {
+    return await this.warehouseRepository.findPaginationWithMapper(query);
+  }
   async create(warehouse: DomainWarehouseEntity): Promise<DomainWarehouseEntity> {
     if (!warehouse.getCode()) {
       throw new Error('Warehouse code is required');
@@ -33,22 +40,21 @@ export class WarehouseService {
       throw new Error('Warehouse phone number is required');
     }
 
-    const existingWarehouse = await this.warehouseRepository.findByCodeWithMapper(
+    const isExit = await this.warehouseRepository.findByCodeWithMapper(
       warehouse.getCode()
     );
-    if (existingWarehouse) {
+    if (isExit) {
       throw new Error(`Warehouse with code ${warehouse.getCode()} already exists`);
     }
     return await this.warehouseRepository.saveAndReturnDomain(warehouse)
   }
   async update(id: string, warehouse: Partial<DomainWarehouseEntity>): Promise<DomainWarehouseEntity> {
-    const existingWarehouse = await this.warehouseRepository.findByCodeWithMapper(
+    const isExit = await this.warehouseRepository.findByCodeWithMapper(
       warehouse.getCode()
     );
-    if (!existingWarehouse) {
+    if (!isExit) {
       throw new Error(`Warehouse with id ${id} not found`);
     }
-
     // 2. Kiểm tra nếu mã code đã tồn tại (nếu `code` được gửi để cập nhật)
     if (warehouse.getCode()) {
       throw new Error(`Warehouse with code ${warehouse.getCode()} already exists`);
@@ -73,7 +79,14 @@ export class WarehouseService {
     if (!existingProduct) {
       throw new Error(`Warehouse with id ${product.getId()} not found`);
     }
-    const existingInventory = await this.inv
+    if (!quantity) {
+      throw new Error(`Please enter quantity !`);
+    }
+    const existingInventory = await this.inventoryService.adjustQuantity(
+      existingWarehouse.getId(),
+      existingProduct.getId(),
+      quantity
+    )
   }
 
   async removeProductFromWarehouse(warehouse: DomainWarehouseEntity,

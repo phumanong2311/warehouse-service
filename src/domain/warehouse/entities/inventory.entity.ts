@@ -34,6 +34,10 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     this.batch = params.batch;
     this.expirationDate = params.expirationDate;
   }
+  setQuantity(newQuantity: number): void {
+    this.quantity = newQuantity;
+  }
+
   getWarehouse(): DomainWarehouseEntity {
     return this.warehouse;
   }
