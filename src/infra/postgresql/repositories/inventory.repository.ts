@@ -6,11 +6,16 @@ import { BaseRepository } from 'src/infra/postgresql/repositories/base.repositor
 
 export class InventoryRepository extends BaseRepository<Inventory> {
   async findByIdWithMapper(id: string): Promise<DomainInventoryEntity> {
-    const data = await this.findById(id)
-    return InventoryMapper.entityInfraToDomain(data)
-  };
+    const data = await this.findById(id);
+    return InventoryMapper.entityInfraToDomain(data);
+  }
 
-  async findInventoryWithQuery(warehouseId?: string, productId?: string, expirationDate?: Date, batch?: string): Promise<DomainInventoryEntity> {
+  async findInventoryWithQuery(
+    warehouseId?: string,
+    productId?: string,
+    expirationDate?: Date,
+    batch?: string,
+  ): Promise<DomainInventoryEntity> {
     const where: FilterQuery<Inventory> = {};
     if (warehouseId) {
       where.warehouse = warehouseId;
@@ -25,8 +30,8 @@ export class InventoryRepository extends BaseRepository<Inventory> {
       where.batch = batch;
     }
     const data = await this.findOne(where);
-    return InventoryMapper.entityInfraToDomain(data)
-  };
+    return InventoryMapper.entityInfraToDomain(data);
+  }
 
   async findPaginationWithMapper(query: {
     limit?: number;
@@ -34,23 +39,27 @@ export class InventoryRepository extends BaseRepository<Inventory> {
     filter?: Record<string, any>;
   }): Promise<{ data: DomainInventoryEntity[]; total: number }> {
     const { data, total } = await this.findPagination(query);
-    const mappedData = data.map((item) => InventoryMapper.entityInfraToDomain(item));
+    const mappedData = data.map((item) =>
+      InventoryMapper.entityInfraToDomain(item),
+    );
     return {
       data: mappedData,
-      total
+      total,
     };
-  };
+  }
 
   async findAllWithMapper(): Promise<DomainInventoryEntity[]> {
     const data = await this.findAll();
-    return data.map((item) => InventoryMapper.entityInfraToDomain(item))
-  };
+    return data.map((item) => InventoryMapper.entityInfraToDomain(item));
+  }
 
-  async saveAndReturnDomain(inventory: DomainInventoryEntity): Promise<DomainInventoryEntity> {
+  async saveAndReturnDomain(
+    inventory: DomainInventoryEntity,
+  ): Promise<DomainInventoryEntity> {
     const entity = InventoryMapper.entityDomainToInfra(inventory);
     const savedEntity = await this.save(entity);
     return InventoryMapper.entityInfraToDomain(savedEntity);
-  };
+  }
 
   async updateAndReturnDomain(
     id: string,
@@ -59,10 +68,10 @@ export class InventoryRepository extends BaseRepository<Inventory> {
     const entity = InventoryMapper.entityDomainToInfra(inventory);
     const updatedEntity = await this.update(id, entity);
     return InventoryMapper.entityInfraToDomain(updatedEntity);
-  };
+  }
 
   async deleteInventory(id: string): Promise<void> {
     const entity = await this.findById(id);
-    return this.delete(entity)
+    return this.delete(entity);
   }
 }

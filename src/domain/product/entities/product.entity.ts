@@ -1,4 +1,7 @@
-import { DomainRackEntity, DomainWarehouseEntity } from '@domain/warehouse/entities';
+import {
+  DomainRackEntity,
+  DomainWarehouseEntity,
+} from '@domain/warehouse/entities';
 import { DomainBaseEntity } from '@share/domain/entities';
 import { v4 as uuidv4 } from 'uuid';
 import { DomainCategoryEntity } from './category.entity';

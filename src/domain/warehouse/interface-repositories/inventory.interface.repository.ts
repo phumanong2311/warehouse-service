@@ -2,10 +2,11 @@ import { DomainInventoryEntity } from '../entities';
 
 export interface IInventoryRepository {
   findByIdWithMapper(id: string): Promise<DomainInventoryEntity>;
-  findInventoryWithQuery(warehouseId?: string,
+  findInventoryWithQuery(
+    warehouseId?: string,
     productId?: string,
     expirationDate?: Date,
-    batch?: string
+    batch?: string,
   ): Promise<DomainInventoryEntity>;
   findPaginationWithMapper(query: {
     limit?: number;
@@ -13,7 +14,9 @@ export interface IInventoryRepository {
     filter?: Record<string, any>;
   }): Promise<{ data: DomainInventoryEntity[]; total: number }>;
   findAllWithMapper(): Promise<DomainInventoryEntity[]>;
-  saveAndReturnDomain(inventory: DomainInventoryEntity): Promise<DomainInventoryEntity>;
+  saveAndReturnDomain(
+    inventory: DomainInventoryEntity,
+  ): Promise<DomainInventoryEntity>;
   updateAndReturnDomain(
     id: string,
     inventory: Partial<DomainInventoryEntity>,

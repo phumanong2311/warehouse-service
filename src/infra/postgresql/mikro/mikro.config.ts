@@ -2,7 +2,17 @@ import { defineConfig, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { resolve } from 'path';
 import configuration from '../../config';
-import { Category, Inventory, Product, Rack, Size, Variant, VariantType, VariantValue, Warehouse } from '../entities';
+import {
+  Category,
+  Inventory,
+  Product,
+  Rack,
+  Size,
+  Variant,
+  VariantType,
+  VariantValue,
+  Warehouse,
+} from '../entities';
 
 export default defineConfig({
   driver: PostgreSqlDriver,
@@ -13,7 +23,17 @@ export default defineConfig({
   port: configuration.postgresql.port,
   debug: true,
   pool: { min: 5, max: 10 },
-  entities: [Warehouse, Category, Inventory, Product, Rack, Size, VariantType, VariantValue, Variant],
+  entities: [
+    Warehouse,
+    Category,
+    Inventory,
+    Product,
+    Rack,
+    Size,
+    VariantType,
+    VariantValue,
+    Variant,
+  ],
   logger: async function (message: string) {
     console.log(message);
   },

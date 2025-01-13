@@ -9,6 +9,9 @@ export interface ICategoryRepository {
     filter?: Record<string, any>;
   }): Promise<{ data: DomainCategoryEntity[]; total: number }>;
   save(warehouse: DomainCategoryEntity): Promise<DomainCategoryEntity>;
-  update(id: string, entity: DomainCategoryEntity): Promise<DomainCategoryEntity>;
+  update(
+    id: string,
+    entity: DomainCategoryEntity,
+  ): Promise<DomainCategoryEntity>;
   delete(entity: DomainCategoryEntity): Promise<void>;
 }

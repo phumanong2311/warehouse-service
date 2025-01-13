@@ -19,13 +19,16 @@ export class ProductService {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
-  }): Promise<{ data: DomainProductEntity[]; total: number; }> {
+  }): Promise<{ data: DomainProductEntity[]; total: number }> {
     return this.productRepository.findPaginationWithMapper(query);
   }
   async create(product: DomainProductEntity) {
     return this.productRepository.saveAndReturnDomain(product);
   }
-  async update(id: string, product: Partial<DomainProductEntity>): Promise<DomainProductEntity> {
+  async update(
+    id: string,
+    product: Partial<DomainProductEntity>,
+  ): Promise<DomainProductEntity> {
     const isExit = await this.productRepository.findByIdWithMapper(id);
     if (!isExit) {
       throw new Error(`Product with id ${id} not found`);
@@ -33,11 +36,11 @@ export class ProductService {
     const warehouse = product.getWarehouse();
     const rack = product.getRack();
     if (warehouse || rack) {
-      throw new Error(`Can't update this attribute`)
+      throw new Error(`Can't update this attribute`);
     }
-    return this.productRepository.updateAndReturnDomain(id, product)
+    return this.productRepository.updateAndReturnDomain(id, product);
   }
   async delete(id: string): Promise<void> {
-    return this.productRepository.deleteProduct(id)
+    return this.productRepository.deleteProduct(id);
   }
 }

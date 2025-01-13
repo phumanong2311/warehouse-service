@@ -9,7 +9,9 @@ export interface IProductRepository {
     filter?: Record<string, any>;
   }): Promise<{ data: DomainProductEntity[]; total: number }>;
   findAllWithMapper(): Promise<DomainProductEntity[]>;
-  saveAndReturnDomain(product: DomainProductEntity): Promise<DomainProductEntity>;
+  saveAndReturnDomain(
+    product: DomainProductEntity,
+  ): Promise<DomainProductEntity>;
   updateAndReturnDomain(
     productId: string,
     product: Partial<DomainProductEntity>,

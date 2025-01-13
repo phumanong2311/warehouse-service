@@ -3,7 +3,9 @@ import { DomainVariantValueEntity } from '../entities';
 import { VariantTypeMapper } from './variant-type.mapper';
 
 export class VariantValueMapper {
-  static entityInfraToDomain(infra: InfraVariantValue): DomainVariantValueEntity {
+  static entityInfraToDomain(
+    infra: InfraVariantValue,
+  ): DomainVariantValueEntity {
     return new DomainVariantValueEntity({
       id: infra.id,
       name: infra.name,
@@ -14,7 +16,9 @@ export class VariantValueMapper {
       updatedAt: infra.updatedAt,
     });
   }
-  static entityDomainToInfra(domain: DomainVariantValueEntity): InfraVariantValue {
+  static entityDomainToInfra(
+    domain: DomainVariantValueEntity,
+  ): InfraVariantValue {
     const infra = new InfraVariantValue();
     infra.id = domain.getId();
     infra.name = domain.getName();

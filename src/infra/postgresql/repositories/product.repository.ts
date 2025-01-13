@@ -7,12 +7,14 @@ export class ProductRepository extends BaseRepository<Product> {
   async findByIdWithMapper(id: string): Promise<DomainProductEntity> {
     const data = await this.findById(id);
     return ProductMapper.entityInfraToDomain(data);
-  };
+  }
 
-  async findProductsInWarehouse(warehouseId: string): Promise<DomainProductEntity[]> {
+  async findProductsInWarehouse(
+    warehouseId: string,
+  ): Promise<DomainProductEntity[]> {
     const data = await this.find({ warehouse: warehouseId });
     return data.map((item) => ProductMapper.entityInfraToDomain(item));
-  };
+  }
 
   async findPaginationWithMapper(query: {
     limit?: number;
@@ -22,18 +24,20 @@ export class ProductRepository extends BaseRepository<Product> {
     const { data, total } = await this.findPagination(query);
     const mappedData = data.map(ProductMapper.entityInfraToDomain);
     return { data: mappedData, total };
-  };
+  }
 
   async findAllWithMapper(): Promise<DomainProductEntity[]> {
     const data = await this.findAll();
     return data.map(ProductMapper.entityInfraToDomain);
-  };
+  }
 
-  async saveAndReturnDomain(product: DomainProductEntity): Promise<DomainProductEntity> {
+  async saveAndReturnDomain(
+    product: DomainProductEntity,
+  ): Promise<DomainProductEntity> {
     const entity = ProductMapper.entityDomainToInfra(product);
     const savedEntity = await this.save(entity);
     return ProductMapper.entityInfraToDomain(savedEntity);
-  };
+  }
 
   async updateAndReturnDomain(
     id: string,
@@ -42,7 +46,7 @@ export class ProductRepository extends BaseRepository<Product> {
     const entity = ProductMapper.entityDomainToInfra(product);
     const updatedEntity = await this.update(id, entity);
     return ProductMapper.entityInfraToDomain(updatedEntity);
-  };
+  }
 
   async deleteWarehouse(id: string): Promise<void> {
     const entity = await this.findById(id);

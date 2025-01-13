@@ -9,6 +9,9 @@ export interface IVariantTypeRepository {
     filter?: Record<string, any>;
   }): Promise<{ data: DomainVariantTypeEntity[]; total: number }>;
   save(warehouse: DomainVariantTypeEntity): Promise<DomainVariantTypeEntity>;
-  update(id: string, entity: DomainVariantTypeEntity): Promise<DomainVariantTypeEntity>;
+  update(
+    id: string,
+    entity: DomainVariantTypeEntity,
+  ): Promise<DomainVariantTypeEntity>;
   delete(entity: DomainVariantTypeEntity): Promise<void>;
 }

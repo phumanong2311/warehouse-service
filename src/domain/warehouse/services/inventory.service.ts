@@ -1,10 +1,9 @@
-import { InventoryRepository } from "@infra/postgresql/repositories";
-import { Inject, Injectable } from "@nestjs/common";
-import { IInventoryRepository } from "../interface-repositories";
-import { DomainInventoryEntity } from "../entities";
-import { WarehouseService } from "./warehouse.service";
-import { ProductService } from "@domain/product/services";
-import { InventoryMapper } from "../mapper";
+import { ProductService } from '@domain/product/services';
+import { InventoryRepository } from '@infra/postgresql/repositories';
+import { Inject, Injectable } from '@nestjs/common';
+import { DomainInventoryEntity } from '../entities';
+import { IInventoryRepository } from '../interface-repositories';
+import { WarehouseService } from './warehouse.service';
 
 @Injectable()
 export class InventoryService {
@@ -14,17 +13,39 @@ export class InventoryService {
     private warehouseService: WarehouseService,
     private productService: ProductService,
   ) { }
-  async findInventoryWithQuery(warehouseId?: string, productId?: string, expirationDate?: Date, batch?: string): Promise<DomainInventoryEntity> {
-    return await this.inventoryRepository.findInventoryWithQuery(warehouseId, productId, expirationDate, batch);
+  async findInventoryWithQuery(
+    warehouseId?: string,
+    productId?: string,
+    expirationDate?: Date,
+    batch?: string,
+  ): Promise<DomainInventoryEntity> {
+    return await this.inventoryRepository.findInventoryWithQuery(
+      warehouseId,
+      productId,
+      expirationDate,
+      batch,
+    );
   }
 
   async findById(id): Promise<DomainInventoryEntity> {
-    return await this.inventoryRepository.findByIdWithMapper(id)
+    return await this.inventoryRepository.findByIdWithMapper(id);
   }
 
-  async getTotalQuantity(warehouseId?: string, productId?: string, expirationDate?: Date, batch?: string): Promise<number> {
-    return (await this.findInventoryWithQuery(warehouseId, productId, expirationDate, batch)).getQuantity();
-  };
+  async getTotalQuantity(
+    warehouseId?: string,
+    productId?: string,
+    expirationDate?: Date,
+    batch?: string,
+  ): Promise<number> {
+    return (
+      await this.findInventoryWithQuery(
+        warehouseId,
+        productId,
+        expirationDate,
+        batch,
+      )
+    ).getQuantity();
+  }
 
   async findAll(): Promise<DomainInventoryEntity[]> {
     return await this.inventoryRepository.findAllWithMapper();
@@ -34,7 +55,7 @@ export class InventoryService {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
-  }): Promise<{ data: DomainInventoryEntity[]; total: number; }> {
+  }): Promise<{ data: DomainInventoryEntity[]; total: number }> {
     return await this.inventoryRepository.findPaginationWithMapper(query);
   }
 
@@ -43,7 +64,7 @@ export class InventoryService {
     productId: string,
     quantity: number,
     batch?: string,
-    expirationDate?: Date
+    expirationDate?: Date,
   ): Promise<DomainInventoryEntity> {
     const warehouse = await this.warehouseService.findById(warehouseId);
     if (!warehouse) {
@@ -56,19 +77,24 @@ export class InventoryService {
     if (quantity < 0) {
       throw new Error('Quantity must be non-negative');
     }
-    const isExit = await this.findInventoryWithQuery(warehouseId, productId, expirationDate, batch);
+    const isExit = await this.findInventoryWithQuery(
+      warehouseId,
+      productId,
+      expirationDate,
+      batch,
+    );
     if (isExit) {
-      throw new Error('Inventory is exit!!')
+      throw new Error('Inventory is exit!!');
     }
     const inventory: DomainInventoryEntity = new DomainInventoryEntity({
       warehouse,
       product,
       quantity,
       batch,
-      expirationDate
+      expirationDate,
     });
 
-    const data = await this.inventoryRepository.saveAndReturnDomain(inventory)
+    const data = await this.inventoryRepository.saveAndReturnDomain(inventory);
 
     return data;
   }
@@ -76,19 +102,34 @@ export class InventoryService {
   async transferQuantityProduct(
     productId: string,
     fromWarehouseId: string,
-    toWarehouseId: string
+    toWarehouseId: string,
   ): Promise<void> {
-    const fromInventory = await this.findInventoryWithQuery(fromWarehouseId, productId);
+    const fromInventory = await this.findInventoryWithQuery(
+      fromWarehouseId,
+      productId,
+    );
     if (!fromInventory) {
       throw new Error('No inventory found in the source warehouse');
     }
 
-    const toInventory = await this.findInventoryWithQuery(toWarehouseId, productId);
+    const toInventory = await this.findInventoryWithQuery(
+      toWarehouseId,
+      productId,
+    );
     if (!toInventory) {
-      await this.adjustQuantity(toWarehouseId, productId, fromInventory.getQuantity());
+      await this.adjustQuantity(
+        toWarehouseId,
+        productId,
+        fromInventory.getQuantity(),
+      );
     } else {
-      toInventory.setQuantity(toInventory.getQuantity() + fromInventory.getQuantity());
-      await this.inventoryRepository.updateAndReturnDomain(toInventory.getId(), toInventory);
+      toInventory.setQuantity(
+        toInventory.getQuantity() + fromInventory.getQuantity(),
+      );
+      await this.inventoryRepository.updateAndReturnDomain(
+        toInventory.getId(),
+        toInventory,
+      );
     }
 
     // Xóa Inventory tại Warehouse nguồn

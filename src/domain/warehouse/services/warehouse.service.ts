@@ -12,24 +12,26 @@ export class WarehouseService {
     @Inject(WarehouseRepository)
     private warehouseRepository: IWarehouseRepository,
     private productService: ProductService,
-    private inventoryService: InventoryService
-  ) { }
+    private inventoryService: InventoryService,
+  ) {}
   //dung find khi du lieu co the tra ve null hoac undefined
   // dung get khi muốn đảm bảo lúc nào cũng trả về 1 giá trị, nếu không tìm thấy thì ném error
   async findById(warehouseId: string): Promise<DomainWarehouseEntity> {
     return await this.warehouseRepository.findByIdWithMapper(warehouseId);
   }
   async findAll(): Promise<DomainWarehouseEntity[]> {
-    return await this.warehouseRepository.findAllWithMapper()
+    return await this.warehouseRepository.findAllWithMapper();
   }
   async findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
-  }): Promise<{ data: DomainWarehouseEntity[]; total: number; }> {
+  }): Promise<{ data: DomainWarehouseEntity[]; total: number }> {
     return await this.warehouseRepository.findPaginationWithMapper(query);
   }
-  async create(warehouse: DomainWarehouseEntity): Promise<DomainWarehouseEntity> {
+  async create(
+    warehouse: DomainWarehouseEntity,
+  ): Promise<DomainWarehouseEntity> {
     if (!warehouse.getCode()) {
       throw new Error('Warehouse code is required');
     }
@@ -41,41 +43,47 @@ export class WarehouseService {
     }
 
     const isExit = await this.warehouseRepository.findByCodeWithMapper(
-      warehouse.getCode()
+      warehouse.getCode(),
     );
     if (isExit) {
-      throw new Error(`Warehouse with code ${warehouse.getCode()} already exists`);
+      throw new Error(
+        `Warehouse with code ${warehouse.getCode()} already exists`,
+      );
     }
-    return await this.warehouseRepository.saveAndReturnDomain(warehouse)
+    return await this.warehouseRepository.saveAndReturnDomain(warehouse);
   }
-  async update(id: string, warehouse: Partial<DomainWarehouseEntity>): Promise<DomainWarehouseEntity> {
+  async update(
+    id: string,
+    warehouse: Partial<DomainWarehouseEntity>,
+  ): Promise<DomainWarehouseEntity> {
     const isExit = await this.warehouseRepository.findByCodeWithMapper(
-      warehouse.getCode()
+      warehouse.getCode(),
     );
     if (!isExit) {
       throw new Error(`Warehouse with id ${id} not found`);
     }
     // 2. Kiểm tra nếu mã code đã tồn tại (nếu `code` được gửi để cập nhật)
     if (warehouse.getCode()) {
-      throw new Error(`Warehouse with code ${warehouse.getCode()} already exists`);
+      throw new Error(
+        `Warehouse with code ${warehouse.getCode()} already exists`,
+      );
     }
-    return await this.warehouseRepository.updateAndReturnDomain(id, warehouse)
-  };
-  async delete(id: string): Promise<void> {
-    return await this.warehouseRepository.deleteWarehouse(id)
+    return await this.warehouseRepository.updateAndReturnDomain(id, warehouse);
   }
-  async addProductToWarehouse(warehouse: DomainWarehouseEntity,
+  async delete(id: string): Promise<void> {
+    return await this.warehouseRepository.deleteWarehouse(id);
+  }
+  async addProductToWarehouse(
+    warehouse: DomainWarehouseEntity,
     product: DomainProductEntity,
-    quantity: number) {
-    const existingWarehouse = await this.warehouseRepository.findByCodeWithMapper(
-      warehouse.getCode()
-    );
+    quantity: number,
+  ) {
+    const existingWarehouse =
+      await this.warehouseRepository.findByCodeWithMapper(warehouse.getCode());
     if (!existingWarehouse) {
       throw new Error(`Warehouse with id ${warehouse.getCode()} not found`);
     }
-    const existingProduct = await this.productService.findById(
-      product.getId()
-    );
+    const existingProduct = await this.productService.findById(product.getId());
     if (!existingProduct) {
       throw new Error(`Warehouse with id ${product.getId()} not found`);
     }
@@ -85,20 +93,26 @@ export class WarehouseService {
     const existingInventory = await this.inventoryService.adjustQuantity(
       existingWarehouse.getId(),
       existingProduct.getId(),
-      quantity
-    )
+      quantity,
+    );
   }
 
-  async removeProductFromWarehouse(warehouse: DomainWarehouseEntity,
+  async removeProductFromWarehouse(
+    warehouse: DomainWarehouseEntity,
     product: DomainProductEntity,
-    quantity: number) { }
+    quantity: number,
+  ) {}
 
-  async updateProductQuantity(warehouse: DomainWarehouseEntity,
+  async updateProductQuantity(
+    warehouse: DomainWarehouseEntity,
     product: DomainProductEntity,
-    quantity: number) { }
+    quantity: number,
+  ) {}
 
-  async transferProductBetweenWarehouses(fromWarehouse: DomainWarehouseEntity,
+  async transferProductBetweenWarehouses(
+    fromWarehouse: DomainWarehouseEntity,
     toWarehouse: DomainWarehouseEntity,
     product: DomainProductEntity,
-    quantity: number) { }
+    quantity: number,
+  ) {}
 }

@@ -1,6 +1,16 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
-import { Category, Inventory, Product, Rack, Size, Variant, VariantType, VariantValue, Warehouse } from '../entities';
+import {
+  Category,
+  Inventory,
+  Product,
+  Rack,
+  Size,
+  Variant,
+  VariantType,
+  VariantValue,
+  Warehouse,
+} from '../entities';
 import mikroConfig from './mikro.config';
 
 @Module({
@@ -12,11 +22,21 @@ import mikroConfig from './mikro.config';
         return {
           ...mikroConfig,
           dbName: mikroConfig.dbName,
-          entities: [Warehouse, Category, Inventory, Product, Rack, Size, VariantType, VariantValue, Variant],
+          entities: [
+            Warehouse,
+            Category,
+            Inventory,
+            Product,
+            Rack,
+            Size,
+            VariantType,
+            VariantValue,
+            Variant,
+          ],
         };
       },
     }),
   ],
   exports: [MikroOrmModule],
 })
-export class MikroConfigModule { }
+export class MikroConfigModule {}

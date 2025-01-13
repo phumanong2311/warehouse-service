@@ -14,7 +14,6 @@ export class WarehouseRepository extends BaseRepository<Warehouse> {
     return WarehouseMapper.entityInfraToDomain(data);
   }
 
-
   async findPaginationWithMapper(query: {
     limit?: number;
     page?: number;
@@ -32,7 +31,9 @@ export class WarehouseRepository extends BaseRepository<Warehouse> {
     return data.map(WarehouseMapper.entityInfraToDomain);
   }
 
-  async saveAndReturnDomain(warehouse: DomainWarehouseEntity): Promise<DomainWarehouseEntity> {
+  async saveAndReturnDomain(
+    warehouse: DomainWarehouseEntity,
+  ): Promise<DomainWarehouseEntity> {
     const entity = WarehouseMapper.entityDomainToInfra(warehouse);
     const savedEntity = await this.save(entity);
     return WarehouseMapper.entityInfraToDomain(savedEntity);

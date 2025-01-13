@@ -12,7 +12,9 @@ export class VariantTypeMapper {
       updatedAt: infra.updatedAt,
     });
   }
-  static entityDomainToInfra(domain: DomainVariantTypeEntity): InfraVariantType {
+  static entityDomainToInfra(
+    domain: DomainVariantTypeEntity,
+  ): InfraVariantType {
     const infra = new InfraVariantType();
     infra.id = domain.getId();
     infra.name = domain.getName();
