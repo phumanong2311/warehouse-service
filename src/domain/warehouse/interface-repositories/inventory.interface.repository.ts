@@ -1,3 +1,4 @@
+import { InventoryStatus } from '@share/types';
 import { DomainInventoryEntity } from '../entities';
 
 export interface IInventoryRepository {
@@ -7,6 +8,7 @@ export interface IInventoryRepository {
     productId?: string,
     expirationDate?: Date,
     batch?: string,
+    status?: InventoryStatus,
   ): Promise<DomainInventoryEntity>;
   findPaginationWithMapper(query: {
     limit?: number;
@@ -14,6 +16,9 @@ export interface IInventoryRepository {
     filter?: Record<string, any>;
   }): Promise<{ data: DomainInventoryEntity[]; total: number }>;
   findAllWithMapper(): Promise<DomainInventoryEntity[]>;
+  createWithMapper(
+    domainEntity: DomainInventoryEntity,
+  ): Promise<DomainInventoryEntity>;
   saveAndReturnDomain(
     inventory: DomainInventoryEntity,
   ): Promise<DomainInventoryEntity>;

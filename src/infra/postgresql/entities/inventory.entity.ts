@@ -2,6 +2,7 @@ import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { InfraBaseEntity } from '@share/infra/entities';
 import { Product } from './product.entity';
 import { Warehouse } from './warehouse.entity';
+import { InventoryStatus } from '@share/types';
 
 @Entity({ tableName: 'inventory' })
 export class Inventory extends InfraBaseEntity {
@@ -19,4 +20,7 @@ export class Inventory extends InfraBaseEntity {
 
   @Property({ nullable: true })
   expirationDate?: Date;
+
+  @Property({ nullable: true })
+  status?: InventoryStatus = InventoryStatus.AVAILABLE;
 }

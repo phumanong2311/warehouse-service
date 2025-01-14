@@ -2,6 +2,7 @@ import { DomainProductEntity } from '@domain/product/entities';
 import { ProductService } from '@domain/product/services';
 import { WarehouseRepository } from '@infra/postgresql/repositories/warehouse.repository';
 import { Inject, Injectable } from '@nestjs/common';
+import { InventoryStatus } from '@share/types';
 import { DomainWarehouseEntity } from '../entities';
 import { IWarehouseRepository } from '../interface-repositories/warehouse.interface.repository';
 import { InventoryService } from './inventory.service';
@@ -77,6 +78,7 @@ export class WarehouseService {
     warehouse: DomainWarehouseEntity,
     product: DomainProductEntity,
     quantity: number,
+    status: InventoryStatus,
   ) {
     const existingWarehouse =
       await this.warehouseRepository.findByCodeWithMapper(warehouse.getCode());
@@ -91,9 +93,10 @@ export class WarehouseService {
       throw new Error(`Please enter quantity !`);
     }
     const existingInventory = await this.inventoryService.adjustQuantity(
-      existingWarehouse.getId(),
-      existingProduct.getId(),
+      existingWarehouse,
+      existingProduct,
       quantity,
+      status,
     );
   }
 

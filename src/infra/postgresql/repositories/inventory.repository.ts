@@ -53,6 +53,14 @@ export class InventoryRepository extends BaseRepository<Inventory> {
     return data.map((item) => InventoryMapper.entityInfraToDomain(item));
   }
 
+  async createWithMapper(
+    domainEntity: DomainInventoryEntity,
+  ): Promise<DomainInventoryEntity> {
+    const infraEntity = InventoryMapper.entityDomainToInfra(domainEntity);
+    const data = await this.save(infraEntity);
+    return InventoryMapper.entityInfraToDomain(data);
+  }
+
   async saveAndReturnDomain(
     inventory: DomainInventoryEntity,
   ): Promise<DomainInventoryEntity> {

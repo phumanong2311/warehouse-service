@@ -1,5 +1,6 @@
-import { DomainProductEntity } from 'src/domain/product/entities';
 import { DomainBaseEntity } from '@share/domain/entities';
+import { InventoryStatus } from '@share/types';
+import { DomainProductEntity } from 'src/domain/product/entities';
 import { v4 as uuidv4 } from 'uuid';
 import { DomainWarehouseEntity } from './warehouse.entity';
 
@@ -9,6 +10,7 @@ export class DomainInventoryEntity extends DomainBaseEntity {
   private quantity!: number;
   private batch?: string; // Số lô hàng
   private expirationDate?: Date; // Ngày hết hạn
+  private status: InventoryStatus;
   constructor(params: {
     id?: string;
     createdBy?: string;
@@ -20,6 +22,7 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     expirationDate?: Date;
     createdAt?: Date;
     updatedAt?: Date;
+    status?: InventoryStatus;
   }) {
     super({
       id: params.id ?? uuidv4(),
@@ -33,9 +36,22 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     this.quantity = params.quantity;
     this.batch = params.batch;
     this.expirationDate = params.expirationDate;
+    this.status = params.status;
   }
   setQuantity(newQuantity: number): void {
     this.quantity = newQuantity;
+  }
+
+  setStatus(newStatus: InventoryStatus): void {
+    this.status = newStatus;
+  }
+
+  setBatch(newBatch: string): void {
+    this.batch = newBatch;
+  }
+
+  setExpirationDate(newDate: Date): void {
+    this.expirationDate = newDate;
   }
 
   getWarehouse(): DomainWarehouseEntity {
