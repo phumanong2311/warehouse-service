@@ -1,16 +1,20 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { InfraBaseEntity } from '@share/infra/entities';
-import { Product } from './product.entity';
-import { Warehouse } from './warehouse.entity';
 import { InventoryStatus } from '@share/types';
+import { Unit } from './unit.entity';
+import { Variant } from './variant.entity';
+import { Warehouse } from './warehouse.entity';
 
 @Entity({ tableName: 'inventory' })
 export class Inventory extends InfraBaseEntity {
   @ManyToOne(() => Warehouse)
   warehouse!: Warehouse;
 
-  @ManyToOne(() => Product)
-  product!: Product;
+  @ManyToOne(() => Variant)
+  variant!: Variant;
+
+  @ManyToOne(() => Unit)
+  unit?: Unit;
 
   @Property()
   quantity!: number;
@@ -21,6 +25,8 @@ export class Inventory extends InfraBaseEntity {
   @Property({ nullable: true })
   expirationDate?: Date;
 
-  @Property({ nullable: true })
-  status?: InventoryStatus = InventoryStatus.AVAILABLE;
+  @Property({
+    default: InventoryStatus.AVAILABLE,
+  })
+  status: InventoryStatus = InventoryStatus.AVAILABLE;
 }

@@ -1,15 +1,20 @@
+import { Entity } from '@mikro-orm/core';
 import { DomainBaseEntity } from '@share/domain/entities';
 import { v4 as uuidv4 } from 'uuid';
 
-export class DomainCategoryEntity extends DomainBaseEntity {
-  private name: string;
+@Entity({ tableName: 'unit' })
+export class DomainUnitEntity extends DomainBaseEntity {
+  private name!: string;
   private description?: string;
+  private conversionRate?: number; // Hệ số quy đổi (nếu có, ví dụ: 1 thùng = 10 kg)
+
   constructor(params: {
     id?: string;
-    name?: string;
-    description?: string;
+    name: string;
     createdBy?: string;
     updatedBy?: string;
+    description?: string;
+    conversionRate?: number;
     createdAt?: Date;
     updatedAt?: Date;
   }) {
@@ -22,20 +27,25 @@ export class DomainCategoryEntity extends DomainBaseEntity {
     });
     this.name = params.name;
     this.description = params.description;
+    this.conversionRate = params.conversionRate;
   }
-  setName(name: string): void {
-    this.name = name;
-  }
-
   setDescription(description: string): void {
     this.description = description;
+  }
+
+  setConversionRate(conversionRate: number): void {
+    this.conversionRate = conversionRate;
   }
 
   getName(): string {
     return this.name;
   }
 
-  getDescription(): string {
+  getDescription(): string | undefined {
     return this.description;
+  }
+
+  getConversionRate(): number | undefined {
+    return this.conversionRate;
   }
 }

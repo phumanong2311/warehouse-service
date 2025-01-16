@@ -1,12 +1,14 @@
+import { DomainVariantEntity } from '@domain/product/entities';
 import { DomainBaseEntity } from '@share/domain/entities';
 import { InventoryStatus } from '@share/types';
-import { DomainProductEntity } from 'src/domain/product/entities';
 import { v4 as uuidv4 } from 'uuid';
 import { DomainWarehouseEntity } from './warehouse.entity';
+import { DomainUnitEntity } from './unit.entity';
 
 export class DomainInventoryEntity extends DomainBaseEntity {
   private warehouse: DomainWarehouseEntity;
-  private product: DomainProductEntity;
+  private variant: DomainVariantEntity;
+  private unit: DomainUnitEntity;
   private quantity!: number;
   private batch?: string; // Số lô hàng
   private expirationDate?: Date; // Ngày hết hạn
@@ -16,7 +18,8 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     createdBy?: string;
     updatedBy?: string;
     warehouse?: DomainWarehouseEntity;
-    product?: DomainProductEntity;
+    variant?: DomainVariantEntity;
+    unit?: DomainUnitEntity;
     quantity?: number;
     batch?: string;
     expirationDate?: Date;
@@ -32,7 +35,8 @@ export class DomainInventoryEntity extends DomainBaseEntity {
       updatedAt: params.updatedAt,
     });
     this.warehouse = params.warehouse;
-    this.product = params.product;
+    this.variant = params.variant;
+    this.unit = params.unit;
     this.quantity = params.quantity;
     this.batch = params.batch;
     this.expirationDate = params.expirationDate;
@@ -58,8 +62,12 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     return this.warehouse;
   }
 
-  getProduct(): DomainProductEntity {
-    return this.product;
+  getVariant(): DomainVariantEntity {
+    return this.variant;
+  }
+
+  getUnit(): DomainUnitEntity {
+    return this.unit;
   }
 
   getQuantity(): number {
@@ -72,5 +80,9 @@ export class DomainInventoryEntity extends DomainBaseEntity {
 
   getExpirationDate(): Date {
     return this.expirationDate;
+  }
+
+  getStatus(): InventoryStatus {
+    return this.status;
   }
 }

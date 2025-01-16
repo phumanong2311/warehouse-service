@@ -45,6 +45,12 @@ export class DomainProductEntity extends DomainBaseEntity {
     this.variants = params.variants ?? [];
     this.rack = params.rack;
   }
+  setName(name: string): void {
+    this.name = name;
+  }
+  setDescription(description: string) {
+    this.description = description;
+  }
   getName(): string {
     return this.name;
   }

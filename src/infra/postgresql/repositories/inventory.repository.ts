@@ -1,6 +1,7 @@
 import { DomainInventoryEntity } from '@domain/warehouse/entities';
 import { InventoryMapper } from '@domain/warehouse/mapper';
 import { FilterQuery } from '@mikro-orm/core';
+import { InventoryStatus } from '@share/types';
 import { Inventory } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
 
@@ -12,7 +13,10 @@ export class InventoryRepository extends BaseRepository<Inventory> {
 
   async findInventoryWithQuery(
     warehouseId?: string,
-    productId?: string,
+    variantId?: string,
+    unitId?: string,
+    quantity?: number,
+    status?: InventoryStatus,
     expirationDate?: Date,
     batch?: string,
   ): Promise<DomainInventoryEntity> {
@@ -20,8 +24,17 @@ export class InventoryRepository extends BaseRepository<Inventory> {
     if (warehouseId) {
       where.warehouse = warehouseId;
     }
-    if (productId) {
-      where.product = productId;
+    if (variantId) {
+      where.variant = variantId;
+    }
+    if (unitId) {
+      where.unit = unitId;
+    }
+    if (quantity) {
+      where.quantity = quantity;
+    }
+    if (status) {
+      where.status = status;
     }
     if (expirationDate) {
       where.expirationDate = expirationDate;

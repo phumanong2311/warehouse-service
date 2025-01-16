@@ -5,10 +5,12 @@ export interface IInventoryRepository {
   findByIdWithMapper(id: string): Promise<DomainInventoryEntity>;
   findInventoryWithQuery(
     warehouseId?: string,
-    productId?: string,
+    variantId?: string,
+    unitId?: string,
+    quantity?: number,
+    status?: InventoryStatus,
     expirationDate?: Date,
     batch?: string,
-    status?: InventoryStatus,
   ): Promise<DomainInventoryEntity>;
   findPaginationWithMapper(query: {
     limit?: number;

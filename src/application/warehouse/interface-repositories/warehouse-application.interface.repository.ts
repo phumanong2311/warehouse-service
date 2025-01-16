@@ -1,23 +1,37 @@
+import { InventoryStatus } from '@share/types';
+
 export interface WarehouseApplication {
   checkInProduct(
     warehouseId: string,
-    productId: string,
+    variantId: string,
+    unitId: string,
     quantity: number,
+    status: InventoryStatus,
+    expirationDate?: Date,
   ): void;
   checkOutProduct(
     warehouseId: string,
-    productId: string,
+    variantId: string,
+    unitId: string,
     quantity: number,
+    status: InventoryStatus,
+    expirationDate?: Date,
   ): void;
   adjustStock(
-    warehouseId: number,
-    productId: number,
-    newQuantity: number,
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
+    quantity: number,
+    status: InventoryStatus,
+    expirationDate?: Date,
   ): void;
   transferProduct(
     fromWarehouseId: number,
     toWarehouseId: number,
-    productId: number,
+    variantId: string,
+    unitId: string,
     quantity: number,
+    status: InventoryStatus,
+    expirationDate?: Date,
   ): void;
 }

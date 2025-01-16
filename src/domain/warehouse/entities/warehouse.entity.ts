@@ -10,6 +10,7 @@ export class DomainWarehouseEntity extends DomainBaseEntity {
   private logo!: string;
   private address!: string;
   private racks: DomainRackEntity[];
+  private registrationExpirationDate: Date;
   constructor(params: {
     id?: string;
     createdBy?: string;
@@ -23,6 +24,7 @@ export class DomainWarehouseEntity extends DomainBaseEntity {
     racks: DomainRackEntity[];
     createdAt?: Date;
     updatedAt?: Date;
+    registrationExpirationDate?: Date;
   }) {
     super({
       id: params.id ?? uuidv4(),
@@ -38,7 +40,40 @@ export class DomainWarehouseEntity extends DomainBaseEntity {
     this.logo = params.logo;
     this.address = params.address;
     this.racks = params.racks;
+    this.registrationExpirationDate = params.registrationExpirationDate;
   }
+  setCode(code: string): void {
+    this.code = code;
+  }
+
+  setPhone(phone: string): void {
+    this.phone = phone;
+  }
+
+  setName(name: string): void {
+    this.name = name;
+  }
+
+  setEmail(email: string): void {
+    this.email = email;
+  }
+
+  setLogo(logo: string): void {
+    this.logo = logo;
+  }
+
+  setAddress(address: string): void {
+    this.address = address;
+  }
+
+  setRacks(racks: DomainRackEntity[]): void {
+    this.racks = racks;
+  }
+
+  setRegistrationExpirationDate(registrationExpirationDate: Date): void {
+    this.registrationExpirationDate = registrationExpirationDate;
+  }
+
   getCode(): string {
     return this.code;
   }
@@ -65,5 +100,9 @@ export class DomainWarehouseEntity extends DomainBaseEntity {
 
   getRacks(): DomainRackEntity[] {
     return this.racks;
+  }
+
+  getRegistrationExpirationDate(): Date {
+    return this.registrationExpirationDate;
   }
 }
