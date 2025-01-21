@@ -19,18 +19,26 @@ export class WarehouseMapper {
       updatedAt: infra.updatedAt,
     });
   }
-  static entityDomainToInfra(domain: DomainWarehouseEntity): InfraWarehouse {
+  static entityDomainToInfra(
+    domain: Partial<DomainWarehouseEntity>,
+  ): InfraWarehouse {
     const infra = new InfraWarehouse();
-    infra.id = domain.getId();
-    infra.name = domain.getName();
-    infra.code = domain.getCode();
-    infra.phone = domain.getPhone();
-    infra.email = domain.getEmail();
-    infra.logo = domain.getLogo();
-    infra.address = domain.getAddress();
-    infra.racks = domain
-      .getRacks()
-      .map((item) => RackMapper.entityDomainToInfra(item));
+    if (domain.getId) infra.id = domain.getId();
+    if (domain.getName) infra.name = domain.getName();
+    if (domain.getCode) infra.code = domain.getCode();
+    if (domain.getPhone) infra.phone = domain.getPhone();
+    if (domain.getEmail) infra.email = domain.getEmail();
+    if (domain.getLogo) infra.logo = domain.getLogo();
+    if (domain.getAddress) infra.address = domain.getAddress();
+    if (domain.getRacks) {
+      infra.racks = domain
+        .getRacks()
+        .map((item) => RackMapper.entityDomainToInfra(item));
+    }
+    if (domain.getCreatedAt) infra.createdAt = domain.getCreatedAt();
+    if (domain.getUpdatedAt) infra.updatedAt = domain.getUpdatedAt();
+    if (domain.getCreatedBy) infra.createdBy = domain.getCreatedBy();
+    if (domain.getUpdatedBy) infra.updatedBy = domain.getUpdatedBy();
     return infra;
   }
 }

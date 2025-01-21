@@ -1,33 +1,40 @@
+import { VariantService } from '@domain/product/services/variant.service';
+import { InventoryService } from '@domain/warehouse/services';
 import { Injectable } from '@nestjs/common';
-import { ProductService } from 'src/domain/product/services/product.service';
+import { InventoryStatus } from '@share/types';
 import { WarehouseService } from 'src/domain/warehouse/services/warehouse.service';
 
 @Injectable()
 export class WarehouseApplicationService {
   constructor(
     private readonly warehouseService: WarehouseService,
-    private readonly productService: ProductService,
+    private readonly variantService: VariantService,
+    private readonly inventoryService: InventoryService,
+    private readonly unitService: UnitS
   ) {}
 
-  async checkInProduct(
-    productId: string,
+  async checkIn(
+    variantId: string,
     quantity: number,
     warehouseId: string,
+    unitId: string,
+    status: InventoryStatus,
   ) {
     // 1. Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    const warehouse = await this.warehouseService.findById(warehouseId);
-    const product = await this.productService.findById(productId);
+    const existingWarehouse = await this.warehouseService.findById(warehouseId);
+    const existingVariant = await this.variantService.findById(variantId);
+    const existingUnit = await this.
 
-    if (!warehouse || !product) {
-      throw new Error('Warehouse or Product not found');
+    if (!existingWarehouse || !existingVariant) {
+      throw new Error('Warehouse or Variant not found');
     }
 
     // 2. Thực hiện nghiệp vụ check-in
-    await this.warehouseService.addProductToWarehouse(
-      warehouse,
-      product,
-      quantity,
-    );
+    const data = await this.inventoryService.checkInInventory(
+      existingWarehouse,
+      existingVariant,
+
+    )
 
     return { success: true };
   }

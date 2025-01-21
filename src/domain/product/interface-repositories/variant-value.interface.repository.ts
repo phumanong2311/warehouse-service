@@ -1,17 +1,20 @@
 import { DomainVariantValueEntity } from '../entities';
 
 export interface IVariantValueRepository {
-  findById(id: string): Promise<DomainVariantValueEntity>;
-  findAll(): Promise<DomainVariantValueEntity[]>;
-  findPagination(query: {
+  findByIdVariantValue(id: string): Promise<DomainVariantValueEntity>;
+  findByVariantType(variantTypeId: string): Promise<DomainVariantValueEntity[]>;
+  findAllVariantValues(): Promise<DomainVariantValueEntity[]>;
+  findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainVariantValueEntity[]; total: number }>;
-  save(warehouse: DomainVariantValueEntity): Promise<DomainVariantValueEntity>;
-  update(
-    id: string,
-    entity: DomainVariantValueEntity,
+  saveAndReturnDomain(
+    variant: DomainVariantValueEntity,
   ): Promise<DomainVariantValueEntity>;
-  delete(entity: DomainVariantValueEntity): Promise<void>;
+  updateAndReturnDomain(
+    id: string,
+    entity: Partial<DomainVariantValueEntity>,
+  ): Promise<DomainVariantValueEntity>;
+  deleteVariantValue(id: string): Promise<void>;
 }

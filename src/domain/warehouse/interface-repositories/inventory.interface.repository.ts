@@ -2,23 +2,20 @@ import { InventoryStatus } from '@share/types';
 import { DomainInventoryEntity } from '../entities';
 
 export interface IInventoryRepository {
-  findByIdWithMapper(id: string): Promise<DomainInventoryEntity>;
-  findInventoryWithQuery(
-    warehouseId?: string,
-    variantId?: string,
-    unitId?: string,
-    quantity?: number,
-    status?: InventoryStatus,
-    expirationDate?: Date,
-    batch?: string,
-  ): Promise<DomainInventoryEntity>;
-  findPaginationWithMapper(query: {
+  findByIdInventory(id: string): Promise<DomainInventoryEntity>;
+  findWithPagination(query: {
+    warehouseId?: string;
+    variantId?: string;
+    unitId?: string;
+    quantity?: number;
+    status?: InventoryStatus;
+    expirationDate?: Date;
+    batch?: string;
     limit?: number;
     page?: number;
-    filter?: Record<string, any>;
   }): Promise<{ data: DomainInventoryEntity[]; total: number }>;
-  findAllWithMapper(): Promise<DomainInventoryEntity[]>;
-  createWithMapper(
+  findAllInventories(): Promise<DomainInventoryEntity[]>;
+  createInventory(
     domainEntity: DomainInventoryEntity,
   ): Promise<DomainInventoryEntity>;
   saveAndReturnDomain(
@@ -28,5 +25,5 @@ export interface IInventoryRepository {
     id: string,
     inventory: Partial<DomainInventoryEntity>,
   ): Promise<DomainInventoryEntity>;
-  deleteInventory(productId: string): Promise<void>;
+  deleteInventory(id: string): Promise<void>;
 }

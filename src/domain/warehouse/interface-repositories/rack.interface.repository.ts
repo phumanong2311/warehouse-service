@@ -12,5 +12,5 @@ export interface IRackRepository {
   findRackByProduct(productId: string): Promise<DomainRackEntity>;
   save(rack: DomainRackEntity): Promise<DomainRackEntity>;
   update(id: string, entity: DomainRackEntity): Promise<DomainRackEntity>;
-  delete(entity: DomainRackEntity): Promise<void>;
+  delete(id: string): Promise<void>;
 }

@@ -13,15 +13,17 @@ export class CategoryMapper {
       updatedAt: infra.updatedAt,
     });
   }
-  static entityDomainToInfra(domain: DomainCategoryEntity): InfraCategory {
+  static entityDomainToInfra(
+    domain: Partial<DomainCategoryEntity>,
+  ): InfraCategory {
     const infra = new InfraCategory();
-    infra.id = domain.getId();
-    infra.name = domain.getName();
-    infra.description = domain.getDescription();
-    infra.createdAt = domain.getCreatedAt();
-    infra.updatedAt = domain.getUpdatedAt();
-    infra.createdBy = domain.getCreatedBy();
-    infra.updatedBy = domain.getUpdatedBy();
+    if (domain.getId()) infra.id = domain.getId();
+    if (domain.getName()) infra.name = domain.getName();
+    if (domain.getDescription()) infra.description = domain.getDescription();
+    if (domain.getCreatedAt()) infra.createdAt = domain.getCreatedAt();
+    if (domain.getUpdatedAt()) infra.updatedAt = domain.getUpdatedAt();
+    if (domain.getCreatedBy()) infra.createdBy = domain.getCreatedBy();
+    if (domain.getUpdatedBy()) infra.updatedBy = domain.getUpdatedBy();
     return infra;
   }
 }

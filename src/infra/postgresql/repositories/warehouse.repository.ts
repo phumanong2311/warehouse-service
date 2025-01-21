@@ -4,17 +4,17 @@ import { Warehouse } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
 
 export class WarehouseRepository extends BaseRepository<Warehouse> {
-  async findByIdWithMapper(id: string): Promise<DomainWarehouseEntity> {
+  async findByIdWarehouse(id: string): Promise<DomainWarehouseEntity> {
     const data = await this.findById(id);
     return WarehouseMapper.entityInfraToDomain(data);
   }
 
-  async findByCodeWithMapper(code: string): Promise<DomainWarehouseEntity> {
+  async findByCode(code: string): Promise<DomainWarehouseEntity> {
     const data = await this.findOne({ code });
     return WarehouseMapper.entityInfraToDomain(data);
   }
 
-  async findPaginationWithMapper(query: {
+  async findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
@@ -26,7 +26,7 @@ export class WarehouseRepository extends BaseRepository<Warehouse> {
     return { data: mappedData, total };
   }
 
-  async findAllWithMapper(): Promise<DomainWarehouseEntity[]> {
+  async findAllWarehouses(): Promise<DomainWarehouseEntity[]> {
     const data = await this.findAll();
     return data.map(WarehouseMapper.entityInfraToDomain);
   }
@@ -41,10 +41,18 @@ export class WarehouseRepository extends BaseRepository<Warehouse> {
 
   async updateAndReturnDomain(
     id: string,
-    warehouse: DomainWarehouseEntity,
+    warehouse: Partial<DomainWarehouseEntity>,
   ): Promise<DomainWarehouseEntity> {
-    const entity = WarehouseMapper.entityDomainToInfra(warehouse);
-    const updatedEntity = await this.update(id, entity);
+    if (!id) {
+      throw new Error('ID is required to update the warehouse.');
+    }
+    const existingEntity = await this.findById(id);
+    if (!existingEntity) {
+      throw new Error(`Warehouse with ID ${id} not found.`);
+    }
+    const updatedData = { ...existingEntity, ...warehouse };
+    const entityToUpdate = WarehouseMapper.entityDomainToInfra(updatedData);
+    const updatedEntity = await this.update(id, entityToUpdate);
     return WarehouseMapper.entityInfraToDomain(updatedEntity);
   }
 

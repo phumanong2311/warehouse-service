@@ -1,17 +1,18 @@
 import { DomainCategoryEntity } from '../entities';
-
 export interface ICategoryRepository {
-  findById(id: string): Promise<DomainCategoryEntity>;
-  findAll(): Promise<DomainCategoryEntity[]>;
-  findPagination(query: {
+  findByIdCategory(id: string): Promise<DomainCategoryEntity>;
+  findAllCategories(): Promise<DomainCategoryEntity[]>;
+  findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainCategoryEntity[]; total: number }>;
-  save(warehouse: DomainCategoryEntity): Promise<DomainCategoryEntity>;
-  update(
-    id: string,
-    entity: DomainCategoryEntity,
+  saveAndReturnDomain(
+    category: DomainCategoryEntity,
   ): Promise<DomainCategoryEntity>;
-  delete(entity: DomainCategoryEntity): Promise<void>;
+  updateAndReturnDomain(
+    id: string,
+    entity: Partial<DomainCategoryEntity>,
+  ): Promise<DomainCategoryEntity>;
+  deleteCategory(id: string): Promise<void>;
 }

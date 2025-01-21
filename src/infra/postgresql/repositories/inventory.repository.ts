@@ -6,51 +6,45 @@ import { Inventory } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
 
 export class InventoryRepository extends BaseRepository<Inventory> {
-  async findByIdWithMapper(id: string): Promise<DomainInventoryEntity> {
+  async findByIdInventory(id: string): Promise<DomainInventoryEntity> {
     const data = await this.findById(id);
     return InventoryMapper.entityInfraToDomain(data);
   }
 
-  async findInventoryWithQuery(
-    warehouseId?: string,
-    variantId?: string,
-    unitId?: string,
-    quantity?: number,
-    status?: InventoryStatus,
-    expirationDate?: Date,
-    batch?: string,
-  ): Promise<DomainInventoryEntity> {
-    const where: FilterQuery<Inventory> = {};
-    if (warehouseId) {
-      where.warehouse = warehouseId;
-    }
-    if (variantId) {
-      where.variant = variantId;
-    }
-    if (unitId) {
-      where.unit = unitId;
-    }
-    if (quantity) {
-      where.quantity = quantity;
-    }
-    if (status) {
-      where.status = status;
-    }
-    if (expirationDate) {
-      where.expirationDate = expirationDate;
-    }
-    if (batch) {
-      where.batch = batch;
-    }
-    const data = await this.findOne(where);
-    return InventoryMapper.entityInfraToDomain(data);
-  }
-
-  async findPaginationWithMapper(query: {
+  async findWithPagination(query: {
+    warehouseId?: string;
+    variantId?: string;
+    unitId?: string;
+    quantity?: number;
+    status?: InventoryStatus;
+    expirationDate?: Date;
+    batch?: string;
     limit?: number;
     page?: number;
-    filter?: Record<string, any>;
   }): Promise<{ data: DomainInventoryEntity[]; total: number }> {
+    const { limit, page, ...filters } = query;
+    const where: FilterQuery<Inventory> = {};
+    if (filters.warehouseId) {
+      where.warehouse = filters.warehouseId;
+    }
+    if (filters.variantId) {
+      where.variant = filters.variantId;
+    }
+    if (filters.unitId) {
+      where.unit = filters.unitId;
+    }
+    if (filters.quantity) {
+      where.quantity = filters.quantity;
+    }
+    if (filters.status) {
+      where.status = filters.status;
+    }
+    if (filters.expirationDate) {
+      where.expirationDate = filters.expirationDate;
+    }
+    if (filters.batch) {
+      where.batch = filters.batch;
+    }
     const { data, total } = await this.findPagination(query);
     const mappedData = data.map((item) =>
       InventoryMapper.entityInfraToDomain(item),
@@ -61,12 +55,12 @@ export class InventoryRepository extends BaseRepository<Inventory> {
     };
   }
 
-  async findAllWithMapper(): Promise<DomainInventoryEntity[]> {
+  async findAllInventory(): Promise<DomainInventoryEntity[]> {
     const data = await this.findAll();
     return data.map((item) => InventoryMapper.entityInfraToDomain(item));
   }
 
-  async createWithMapper(
+  async createInventory(
     domainEntity: DomainInventoryEntity,
   ): Promise<DomainInventoryEntity> {
     const infraEntity = InventoryMapper.entityDomainToInfra(domainEntity);

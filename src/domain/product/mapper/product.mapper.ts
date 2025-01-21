@@ -24,24 +24,30 @@ export class ProductMapper {
     });
   }
 
-  static entityDomainToInfra(domain: DomainProductEntity): InfraProduct {
+  static entityDomainToInfra(
+    domain: Partial<DomainProductEntity>,
+  ): InfraProduct {
     const infra = new InfraProduct();
-    infra.id = domain.getId();
-    infra.name = domain.getName();
-    infra.sku = domain.getSku();
-    infra.description = domain.getDescription();
-    infra.category = CategoryMapper.entityDomainToInfra(domain.getCategory());
-    infra.warehouse = WarehouseMapper.entityDomainToInfra(
-      domain.getWarehouse(),
-    );
-    infra.variants = domain
-      .getVariant()
-      .map((item) => VariantMapper.entityDomainToInfra(item));
-    infra.rack = RackMapper.entityDomainToInfra(domain.getRack());
-    infra.createdAt = domain.getCreatedAt();
-    infra.updatedAt = domain.getUpdatedAt();
-    infra.createdBy = domain.getCreatedBy();
-    infra.updatedBy = domain.getUpdatedBy();
+    if (domain.getId) infra.id = domain.getId();
+    if (domain.getName) infra.name = domain.getName();
+    if (domain.getSku) infra.sku = domain.getSku();
+    if (domain.getDescription) infra.description = domain.getDescription();
+    if (domain.getCategory)
+      infra.category = CategoryMapper.entityDomainToInfra(domain.getCategory());
+    if (domain.getWarehouse)
+      infra.warehouse = WarehouseMapper.entityDomainToInfra(
+        domain.getWarehouse(),
+      );
+    if (domain.getVariant)
+      infra.variants = domain
+        .getVariant()
+        .map((item) => VariantMapper.entityDomainToInfra(item));
+    if (domain.getRack)
+      infra.rack = RackMapper.entityDomainToInfra(domain.getRack());
+    if (domain.getCreatedAt) infra.createdAt = domain.getCreatedAt();
+    if (domain.getUpdatedAt) infra.updatedAt = domain.getUpdatedAt();
+    if (domain.getCreatedBy) infra.createdBy = domain.getCreatedBy();
+    if (domain.getUpdatedBy) infra.updatedBy = domain.getUpdatedBy();
     return infra;
   }
 }

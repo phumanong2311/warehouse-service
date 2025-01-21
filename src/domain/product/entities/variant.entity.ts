@@ -25,14 +25,15 @@ export class DomainVariantEntity extends DomainBaseEntity {
     this.product = params.product;
     this.variantValue = params.variantValue;
   }
-  getProduct(): DomainProductEntity {
-    return this.product;
+  setProduct(product: DomainProductEntity): void {
+    this.product = product;
   }
-
   setVariantValue(variantValue: DomainVariantValueEntity): void {
     this.variantValue = variantValue;
   }
-
+  getProduct(): DomainProductEntity {
+    return this.product;
+  }
   getVariantValue(): DomainVariantValueEntity {
     return this.variantValue;
   }

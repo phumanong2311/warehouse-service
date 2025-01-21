@@ -15,17 +15,21 @@ export class VariantMapper {
       updatedAt: infra.updatedAt,
     });
   }
-  static entityDomainToInfra(domain: DomainVariantEntity): InfraVariant {
+  static entityDomainToInfra(
+    domain: Partial<DomainVariantEntity>,
+  ): InfraVariant {
     const infra = new InfraVariant();
-    infra.id = domain.getId();
-    infra.product = ProductMapper.entityDomainToInfra(domain.getProduct());
-    infra.variantValue = VariantValueMapper.entityDomainToInfra(
-      domain.getVariantValue(),
-    );
-    infra.createdAt = domain.getCreatedAt();
-    infra.updatedAt = domain.getUpdatedAt();
-    infra.createdBy = domain.getCreatedBy();
-    infra.updatedBy = domain.getUpdatedBy();
+    if (domain.getId()) infra.id = domain.getId();
+    if (domain.getProduct())
+      infra.product = ProductMapper.entityDomainToInfra(domain.getProduct());
+    if (domain.getVariantValue())
+      infra.variantValue = VariantValueMapper.entityDomainToInfra(
+        domain.getVariantValue(),
+      );
+    if (domain.getCreatedAt()) infra.createdAt = domain.getCreatedAt();
+    if (domain.getUpdatedAt()) infra.updatedAt = domain.getUpdatedAt();
+    if (domain.getCreatedBy()) infra.createdBy = domain.getCreatedBy();
+    if (domain.getUpdatedBy()) infra.updatedBy = domain.getUpdatedBy();
     return infra;
   }
 }

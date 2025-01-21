@@ -1,9 +1,12 @@
-import { DomainProductEntity } from '@domain/product/entities';
-import { ProductService } from '@domain/product/services';
+import {
+  DomainProductEntity,
+  DomainVariantEntity,
+} from '@domain/product/entities';
+import { VariantService } from '@domain/product/services/variant.service';
 import { WarehouseRepository } from '@infra/postgresql/repositories/warehouse.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { InventoryStatus } from '@share/types';
-import { DomainWarehouseEntity } from '../entities';
+import { DomainUnitEntity, DomainWarehouseEntity } from '../entities';
 import { IWarehouseRepository } from '../interface-repositories/warehouse.interface.repository';
 import { InventoryService } from './inventory.service';
 
@@ -12,23 +15,23 @@ export class WarehouseService {
   constructor(
     @Inject(WarehouseRepository)
     private warehouseRepository: IWarehouseRepository,
-    private productService: ProductService,
+    private variantService: VariantService,
     private inventoryService: InventoryService,
   ) {}
   //dung find khi du lieu co the tra ve null hoac undefined
   // dung get khi muốn đảm bảo lúc nào cũng trả về 1 giá trị, nếu không tìm thấy thì ném error
   async findById(warehouseId: string): Promise<DomainWarehouseEntity> {
-    return await this.warehouseRepository.findByIdWithMapper(warehouseId);
+    return await this.warehouseRepository.findById(warehouseId);
   }
   async findAll(): Promise<DomainWarehouseEntity[]> {
-    return await this.warehouseRepository.findAllWithMapper();
+    return await this.warehouseRepository.findAll();
   }
   async findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainWarehouseEntity[]; total: number }> {
-    return await this.warehouseRepository.findPaginationWithMapper(query);
+    return await this.warehouseRepository.findPagination(query);
   }
   async create(
     warehouse: DomainWarehouseEntity,
@@ -43,7 +46,7 @@ export class WarehouseService {
       throw new Error('Warehouse phone number is required');
     }
 
-    const isExit = await this.warehouseRepository.findByCodeWithMapper(
+    const isExit = await this.warehouseRepository.findByCode(
       warehouse.getCode(),
     );
     if (isExit) {
@@ -57,7 +60,7 @@ export class WarehouseService {
     id: string,
     warehouse: Partial<DomainWarehouseEntity>,
   ): Promise<DomainWarehouseEntity> {
-    const isExit = await this.warehouseRepository.findByCodeWithMapper(
+    const isExit = await this.warehouseRepository.findByCode(
       warehouse.getCode(),
     );
     if (!isExit) {
@@ -74,45 +77,49 @@ export class WarehouseService {
   async delete(id: string): Promise<void> {
     return await this.warehouseRepository.deleteWarehouse(id);
   }
-  async addProductToWarehouse(
+  async addVariantToWarehouse(
     warehouse: DomainWarehouseEntity,
-    product: DomainProductEntity,
+    variant: DomainVariantEntity,
     quantity: number,
     status: InventoryStatus,
+    unit: DomainUnitEntity,
   ) {
-    const existingWarehouse =
-      await this.warehouseRepository.findByCodeWithMapper(warehouse.getCode());
+    const existingWarehouse = await this.warehouseRepository.findByCode(
+      warehouse.getCode(),
+    );
     if (!existingWarehouse) {
       throw new Error(`Warehouse with id ${warehouse.getCode()} not found`);
     }
-    const existingProduct = await this.productService.findById(product.getId());
-    if (!existingProduct) {
-      throw new Error(`Warehouse with id ${product.getId()} not found`);
+    const existingVariant = await this.variantService.findById(variant.getId());
+    if (!existingVariant) {
+      throw new Error(`Variant with id ${variant.getId()} not found`);
     }
     if (!quantity) {
       throw new Error(`Please enter quantity !`);
     }
     const existingInventory = await this.inventoryService.adjustQuantity(
       existingWarehouse,
-      existingProduct,
+      existingVariant,
+      unit,
       quantity,
       status,
     );
+    return existingInventory;
   }
 
-  async removeProductFromWarehouse(
+  async removeVariantFromWarehouse(
     warehouse: DomainWarehouseEntity,
     product: DomainProductEntity,
     quantity: number,
   ) {}
 
-  async updateProductQuantity(
+  async updateVariantQuantity(
     warehouse: DomainWarehouseEntity,
     product: DomainProductEntity,
     quantity: number,
   ) {}
 
-  async transferProductBetweenWarehouses(
+  async transferVariantBetweenWarehouses(
     fromWarehouse: DomainWarehouseEntity,
     toWarehouse: DomainWarehouseEntity,
     product: DomainProductEntity,

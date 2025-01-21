@@ -17,18 +17,19 @@ export class VariantValueMapper {
     });
   }
   static entityDomainToInfra(
-    domain: DomainVariantValueEntity,
+    domain: Partial<DomainVariantValueEntity>,
   ): InfraVariantValue {
     const infra = new InfraVariantValue();
-    infra.id = domain.getId();
-    infra.name = domain.getName();
-    infra.variantType = VariantTypeMapper.entityDomainToInfra(
-      domain.getVariantType(),
-    );
-    infra.createdAt = domain.getCreatedAt();
-    infra.updatedAt = domain.getUpdatedAt();
-    infra.createdBy = domain.getCreatedBy();
-    infra.updatedBy = domain.getUpdatedBy();
+    if (domain.getId()) infra.id = domain.getId();
+    if (domain.getName()) infra.name = domain.getName();
+    if (domain.getVariantType())
+      infra.variantType = VariantTypeMapper.entityDomainToInfra(
+        domain.getVariantType(),
+      );
+    if (domain.getCreatedAt()) infra.createdAt = domain.getCreatedAt();
+    if (domain.getUpdatedAt()) infra.updatedAt = domain.getUpdatedAt();
+    if (domain.getCreatedBy()) infra.createdBy = domain.getCreatedBy();
+    if (domain.getUpdatedBy()) infra.updatedBy = domain.getUpdatedBy();
     return infra;
   }
 }

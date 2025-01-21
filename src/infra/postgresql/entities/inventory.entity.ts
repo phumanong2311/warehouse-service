@@ -4,6 +4,7 @@ import { InventoryStatus } from '@share/types';
 import { Unit } from './unit.entity';
 import { Variant } from './variant.entity';
 import { Warehouse } from './warehouse.entity';
+import { Rack } from './rack.entity';
 
 @Entity({ tableName: 'inventory' })
 export class Inventory extends InfraBaseEntity {
@@ -12,6 +13,9 @@ export class Inventory extends InfraBaseEntity {
 
   @ManyToOne(() => Variant)
   variant!: Variant;
+
+  @ManyToOne(() => Rack)
+  rack!: Rack;
 
   @ManyToOne(() => Unit)
   unit?: Unit;

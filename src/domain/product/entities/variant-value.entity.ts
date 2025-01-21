@@ -24,10 +24,15 @@ export class DomainVariantValueEntity extends DomainBaseEntity {
     this.name = params.name;
     this.variantType = params.variantType;
   }
+  setName(name: string): void {
+    this.name = name;
+  }
+  setVariantType(variantType: DomainVariantTypeEntity): void {
+    this.variantType = variantType;
+  }
   getName(): string {
     return this.name;
   }
-
   getVariantType(): DomainVariantTypeEntity {
     return this.variantType;
   }

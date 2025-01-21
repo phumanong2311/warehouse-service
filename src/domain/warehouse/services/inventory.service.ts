@@ -1,7 +1,4 @@
-import {
-  DomainProductEntity,
-  DomainVariantEntity,
-} from '@domain/product/entities';
+import { DomainVariantEntity } from '@domain/product/entities';
 import { InventoryRepository } from '@infra/postgresql/repositories';
 import { Inject, Injectable } from '@nestjs/common';
 import { InventoryStatus } from '@share/types';
@@ -39,11 +36,11 @@ export class InventoryService {
   }
 
   async findById(id: string): Promise<DomainInventoryEntity> {
-    return await this.inventoryRepository.findByIdWithMapper(id);
+    return await this.inventoryRepository.findById(id);
   }
 
   async findAll(): Promise<DomainInventoryEntity[]> {
-    return await this.inventoryRepository.findAllWithMapper();
+    return await this.inventoryRepository.findAll();
   }
 
   async findWithPagination(query: {
@@ -51,7 +48,7 @@ export class InventoryService {
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainInventoryEntity[]; total: number }> {
-    return await this.inventoryRepository.findPaginationWithMapper(query);
+    return await this.inventoryRepository.findPagination(query);
   }
 
   async checkInInventory(
@@ -97,7 +94,7 @@ export class InventoryService {
         status,
         expirationDate: effectiveExpirationDate,
       });
-      inventory = await this.inventoryRepository.createWithMapper(domainEntity);
+      inventory = await this.inventoryRepository.create(domainEntity);
     }
     return inventory;
   }

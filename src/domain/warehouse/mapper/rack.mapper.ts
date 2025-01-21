@@ -1,4 +1,4 @@
-import { ProductMapper } from '@domain/product/mapper';
+import { VariantMapper } from '@domain/product/mapper';
 import { Rack as InfraRack } from '@infra/postgresql/entities';
 import { DomainRackEntity } from '../entities';
 import { WarehouseMapper } from './warehouse.mapper';
@@ -9,8 +9,8 @@ export class RackMapper {
       id: infra.id,
       name: infra.name,
       warehouse: WarehouseMapper.entityInfraToDomain(infra.warehouse),
-      products: infra.products.map((item) =>
-        ProductMapper.entityInfraToDomain(item),
+      variants: infra.variants.map((item) =>
+        VariantMapper.entityInfraToDomain(item),
       ),
       createdBy: infra.createdBy,
       updatedBy: infra.updatedBy,
@@ -25,9 +25,9 @@ export class RackMapper {
     infra.warehouse = WarehouseMapper.entityDomainToInfra(
       domain.getWarehouse(),
     );
-    infra.products = domain
-      .getProducts()
-      .map((item) => ProductMapper.entityDomainToInfra(item));
+    infra.variants = domain
+      .getVariants()
+      .map((item) => VariantMapper.entityDomainToInfra(item));
     return infra;
   }
 }

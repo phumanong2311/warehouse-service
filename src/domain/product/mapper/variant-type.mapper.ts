@@ -13,15 +13,15 @@ export class VariantTypeMapper {
     });
   }
   static entityDomainToInfra(
-    domain: DomainVariantTypeEntity,
+    domain: Partial<DomainVariantTypeEntity>,
   ): InfraVariantType {
     const infra = new InfraVariantType();
-    infra.id = domain.getId();
-    infra.name = domain.getName();
-    infra.createdAt = domain.getCreatedAt();
-    infra.updatedAt = domain.getUpdatedAt();
-    infra.createdBy = domain.getCreatedBy();
-    infra.updatedBy = domain.getUpdatedBy();
+    if (domain.getId()) infra.id = domain.getId();
+    if (domain.getName()) infra.name = domain.getName();
+    if (domain.getCreatedAt()) infra.createdAt = domain.getCreatedAt();
+    if (domain.getUpdatedAt()) infra.updatedAt = domain.getUpdatedAt();
+    if (domain.getCreatedBy()) infra.createdBy = domain.getCreatedBy();
+    if (domain.getUpdatedBy()) infra.updatedBy = domain.getUpdatedBy();
     return infra;
   }
 }

@@ -1,10 +1,11 @@
 import { DomainProductEntity } from '@domain/product/entities';
 import { ProductMapper } from '@domain/product/mapper';
+import { FilterQuery } from '@mikro-orm/core';
 import { Product } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
 
 export class ProductRepository extends BaseRepository<Product> {
-  async findByIdWithMapper(id: string): Promise<DomainProductEntity> {
+  async findByProductId(id: string): Promise<DomainProductEntity> {
     const data = await this.findById(id);
     return ProductMapper.entityInfraToDomain(data);
   }
@@ -16,17 +17,56 @@ export class ProductRepository extends BaseRepository<Product> {
     return data.map((item) => ProductMapper.entityInfraToDomain(item));
   }
 
-  async findPaginationWithMapper(query: {
-    limit?: number;
-    page?: number;
-    filter?: Record<string, any>;
-  }): Promise<{ data: DomainProductEntity[]; total: number }> {
-    const { data, total } = await this.findPagination(query);
-    const mappedData = data.map(ProductMapper.entityInfraToDomain);
-    return { data: mappedData, total };
+  async findProductsInCategory(
+    categoryId: string,
+  ): Promise<DomainProductEntity[]> {
+    const data = await this.find({ category: categoryId });
+    return data.map((item) => ProductMapper.entityInfraToDomain(item));
   }
 
-  async findAllWithMapper(): Promise<DomainProductEntity[]> {
+  async findWithPagination(query: {
+    warehouseId?: string;
+    categoryId?: string;
+    rackId?: string;
+    sku?: string;
+    name?: string;
+    limit?: number;
+    page?: number;
+  }): Promise<{ data: DomainProductEntity[]; total: number }> {
+    const { limit, page, ...filters } = query;
+
+    const where: FilterQuery<Product> = {};
+    if (filters.warehouseId) {
+      where.warehouse = filters.warehouseId;
+    }
+    if (filters.categoryId) {
+      where.category = filters.categoryId;
+    }
+    if (filters.rackId) {
+      where.rack = filters.rackId;
+    }
+    if (filters.sku) {
+      where.sku = { $like: `%${filters.sku}%` };
+    }
+    if (filters.name) {
+      where.name = { $like: `%${filters.name}%` };
+    }
+
+    const { data, total } = await this.findPagination({
+      filter: where,
+      limit,
+      page,
+    });
+
+    const mappedData = data.map(ProductMapper.entityInfraToDomain);
+
+    return {
+      data: mappedData,
+      total,
+    };
+  }
+
+  async findAllProducts(): Promise<DomainProductEntity[]> {
     const data = await this.findAll();
     return data.map(ProductMapper.entityInfraToDomain);
   }
@@ -41,14 +81,22 @@ export class ProductRepository extends BaseRepository<Product> {
 
   async updateAndReturnDomain(
     id: string,
-    product: DomainProductEntity,
+    product: Partial<DomainProductEntity>,
   ): Promise<DomainProductEntity> {
-    const entity = ProductMapper.entityDomainToInfra(product);
-    const updatedEntity = await this.update(id, entity);
+    if (!id) {
+      throw new Error('ID is required to update the warehouse.');
+    }
+    const existingEntity = await this.findById(id);
+    if (!existingEntity) {
+      throw new Error(`Product with ID ${id} not found.`);
+    }
+    const updatedDate = { ...existingEntity, ...product };
+    const entityToUpdate = ProductMapper.entityDomainToInfra(updatedDate);
+    const updatedEntity = await this.update(id, entityToUpdate);
     return ProductMapper.entityInfraToDomain(updatedEntity);
   }
 
-  async deleteWarehouse(id: string): Promise<void> {
+  async deleteProduct(id: string): Promise<void> {
     const entity = await this.findById(id);
     await this.delete(entity);
   }
