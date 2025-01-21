@@ -19,7 +19,7 @@ export class VariantTypeRepository extends BaseRepository<VariantType> {
     return { data: mappedData, total };
   }
 
-  async findAllVariantType(): Promise<DomainVariantTypeEntity[]> {
+  async findAllVariantTypes(): Promise<DomainVariantTypeEntity[]> {
     const data = await this.findAll();
     return data.map(VariantTypeMapper.entityInfraToDomain);
   }

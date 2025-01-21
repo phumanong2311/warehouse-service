@@ -55,7 +55,7 @@ export class InventoryRepository extends BaseRepository<Inventory> {
     };
   }
 
-  async findAllInventory(): Promise<DomainInventoryEntity[]> {
+  async findAllInventories(): Promise<DomainInventoryEntity[]> {
     const data = await this.findAll();
     return data.map((item) => InventoryMapper.entityInfraToDomain(item));
   }
