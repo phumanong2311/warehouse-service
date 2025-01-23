@@ -11,6 +11,17 @@ export class InventoryRepository extends BaseRepository<Inventory> {
     return InventoryMapper.entityInfraToDomain(data);
   }
 
+  async findByWarehouseAndVariant(
+    warehouseId: string,
+    variantId: string,
+  ): Promise<DomainInventoryEntity> {
+    const data = await this.findOne({
+      warehouse: warehouseId,
+      variant: variantId,
+    });
+    return InventoryMapper.entityInfraToDomain(data);
+  }
+
   async findWithPagination(query: {
     warehouseId?: string;
     variantId?: string;

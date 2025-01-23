@@ -1,6 +1,6 @@
 import { DomainUnitEntity } from '../entities';
 
-export interface IVariantRepository {
+export interface IUnitRepository {
   findByIdUnit(id: string): Promise<DomainUnitEntity>;
   findAllUnits(): Promise<DomainUnitEntity[]>;
   findWithPagination(query: {

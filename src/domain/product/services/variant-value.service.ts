@@ -10,17 +10,19 @@ export class VariantValueService {
     private readonly variantValueRepository: IVariantValueRepository,
   ) {}
   async findById(variantValueId: string): Promise<DomainVariantValueEntity> {
-    return await this.variantValueRepository.findById(variantValueId);
+    return await this.variantValueRepository.findByIdVariantValue(
+      variantValueId,
+    );
   }
   async findAll(): Promise<DomainVariantValueEntity[]> {
-    return await this.variantValueRepository.findAll();
+    return await this.variantValueRepository.findAllVariantValues();
   }
   async findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainVariantValueEntity[]; total: number }> {
-    return this.variantValueRepository.findPagination(query);
+    return this.variantValueRepository.findWithPagination(query);
   }
   async create(product: DomainVariantValueEntity) {
     return this.variantValueRepository.saveAndReturnDomain(product);
@@ -29,7 +31,7 @@ export class VariantValueService {
     id: string,
     variantValue: Partial<DomainVariantValueEntity>,
   ): Promise<DomainVariantValueEntity> {
-    const isExit = await this.variantValueRepository.findById(id);
+    const isExit = await this.variantValueRepository.findByIdVariantValue(id);
     if (!isExit) {
       throw new Error(`Variant Value with id ${id} not found`);
     }

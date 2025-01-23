@@ -1,41 +1,41 @@
 import { UnitRepository } from '@infra/postgresql/repositories';
 import { Inject, Injectable } from '@nestjs/common';
-import { DomainVariantEntity } from '../entities';
+import { DomainUnitEntity } from '../entities';
 import { IUnitRepository } from '../interface-repositories';
 
 @Injectable()
 export class UnitService {
   constructor(
     @Inject(UnitRepository)
-    private readonly UnitRepository: IUnitRepository,
+    private readonly unitRepository: IUnitRepository,
   ) {}
-  async findById(variantValueId: string): Promise<DomainVariantEntity> {
-    return await this.UnitRepository.findById(variantValueId);
+  async findById(variantValueId: string): Promise<DomainUnitEntity> {
+    return await this.unitRepository.findByIdUnit(variantValueId);
   }
-  async findAll(): Promise<DomainVariantEntity[]> {
-    return await this.UnitRepository.findAll();
+  async findAll(): Promise<DomainUnitEntity[]> {
+    return await this.unitRepository.findAllUnits();
   }
   async findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
-  }): Promise<{ data: DomainVariantEntity[]; total: number }> {
-    return this.UnitRepository.findPagination(query);
+  }): Promise<{ data: DomainUnitEntity[]; total: number }> {
+    return this.unitRepository.findWithPagination(query);
   }
-  async create(product: DomainVariantEntity) {
-    return this.UnitRepository.saveAndReturnDomain(product);
+  async create(product: DomainUnitEntity) {
+    return this.unitRepository.saveAndReturnDomain(product);
   }
   async update(
     id: string,
-    variantValue: Partial<DomainVariantEntity>,
-  ): Promise<DomainVariantEntity> {
-    const isExit = await this.UnitRepository.findById(id);
+    variantValue: Partial<DomainUnitEntity>,
+  ): Promise<DomainUnitEntity> {
+    const isExit = await this.unitRepository.findByIdUnit(id);
     if (!isExit) {
-      throw new Error(`Variant Value with id ${id} not found`);
+      throw new Error(`Unit with id ${id} not found`);
     }
-    return this.UnitRepository.updateAndReturnDomain(id, variantValue);
+    return this.unitRepository.updateAndReturnDomain(id, variantValue);
   }
   async delete(id: string): Promise<void> {
-    return this.UnitRepository.deleteVariant(id);
+    return this.unitRepository.deleteUnit(id);
   }
 }

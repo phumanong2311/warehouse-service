@@ -23,8 +23,8 @@ export class InventoryService {
     status?: InventoryStatus,
     expirationDate?: Date,
     batch?: string,
-  ): Promise<DomainInventoryEntity> {
-    return await this.inventoryRepository.findInventoryWithQuery(
+  ): Promise<{ data: DomainInventoryEntity[]; total: number }> {
+    const query = {
       warehouseId,
       variantId,
       unitId,
@@ -32,15 +32,16 @@ export class InventoryService {
       status,
       expirationDate,
       batch,
-    );
+    };
+    return await this.inventoryRepository.findWithPagination(query);
   }
 
   async findById(id: string): Promise<DomainInventoryEntity> {
-    return await this.inventoryRepository.findById(id);
+    return await this.inventoryRepository.findByIdInventory(id);
   }
 
   async findAll(): Promise<DomainInventoryEntity[]> {
-    return await this.inventoryRepository.findAll();
+    return await this.inventoryRepository.findAllInventories();
   }
 
   async findWithPagination(query: {
@@ -48,7 +49,7 @@ export class InventoryService {
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainInventoryEntity[]; total: number }> {
-    return await this.inventoryRepository.findPagination(query);
+    return await this.inventoryRepository.findWithPagination(query);
   }
 
   async checkInInventory(
@@ -70,7 +71,7 @@ export class InventoryService {
       throw new Error('Quantity must be greater than zero.');
     }
     const existingInventory =
-      await this.inventoryRepository.findInventoryWithQuery(
+      await this.inventoryRepository.findByWarehouseAndVariant(
         warehouse.getId(),
         variant.getId(),
       );
@@ -94,7 +95,7 @@ export class InventoryService {
         status,
         expirationDate: effectiveExpirationDate,
       });
-      inventory = await this.inventoryRepository.create(domainEntity);
+      inventory = await this.inventoryRepository.createInventory(domainEntity);
     }
     return inventory;
   }
@@ -107,15 +108,16 @@ export class InventoryService {
     status: InventoryStatus = InventoryStatus.AVAILABLE,
     expirationDate?: Date,
   ): Promise<DomainInventoryEntity> {
-    const existingInventory =
-      await this.inventoryRepository.findInventoryWithQuery(
-        warehouse.getId(),
-        variant.getId(),
-        unit.getId(),
+    const existingInventory = await this.inventoryRepository.findWithPagination(
+      {
+        warehouseId: warehouse.getId(),
+        variantId: variant.getId(),
+        unitId: unit.getId(),
         quantity,
         status,
         expirationDate,
-      );
+      },
+    );
     if (!existingInventory) {
       throw new Error('Inventory does not exist!');
     }

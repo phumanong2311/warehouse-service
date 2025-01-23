@@ -1,5 +1,5 @@
 import { VariantService } from '@domain/product/services/variant.service';
-import { InventoryService } from '@domain/warehouse/services';
+import { InventoryService, UnitService } from '@domain/warehouse/services';
 import { Injectable } from '@nestjs/common';
 import { InventoryStatus } from '@share/types';
 import { WarehouseService } from 'src/domain/warehouse/services/warehouse.service';
@@ -10,7 +10,7 @@ export class WarehouseApplicationService {
     private readonly warehouseService: WarehouseService,
     private readonly variantService: VariantService,
     private readonly inventoryService: InventoryService,
-    private readonly unitService: UnitS
+    private readonly unitService: UnitService,
   ) {}
 
   async checkIn(
@@ -23,7 +23,7 @@ export class WarehouseApplicationService {
     // 1. Kiểm tra tính hợp lệ của dữ liệu đầu vào
     const existingWarehouse = await this.warehouseService.findById(warehouseId);
     const existingVariant = await this.variantService.findById(variantId);
-    const existingUnit = await this.
+    const existingUnit = await this.unitService.findById(unitId);
 
     if (!existingWarehouse || !existingVariant) {
       throw new Error('Warehouse or Variant not found');
@@ -33,8 +33,10 @@ export class WarehouseApplicationService {
     const data = await this.inventoryService.checkInInventory(
       existingWarehouse,
       existingVariant,
-
-    )
+      existingUnit,
+      quantity,
+      status,
+    );
 
     return { success: true };
   }
@@ -45,7 +47,7 @@ export class WarehouseApplicationService {
     warehouseId: string,
   ) {
     const warehouse = await this.warehouseService.findById(warehouseId);
-    const product = await this.productService.findById(productId);
+    const variant = await this.variantService.findById(productId);
 
     if (!warehouse || !product) {
       throw new Error('Warehouse or Product not found');

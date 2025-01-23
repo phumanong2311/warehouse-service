@@ -3,6 +3,10 @@ import { DomainInventoryEntity } from '../entities';
 
 export interface IInventoryRepository {
   findByIdInventory(id: string): Promise<DomainInventoryEntity>;
+  findByWarehouseAndVariant(
+    warehouseId: string,
+    variantId: string,
+  ): DomainInventoryEntity;
   findWithPagination(query: {
     warehouseId?: string;
     variantId?: string;

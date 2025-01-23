@@ -10,17 +10,17 @@ export class ProductService {
     private readonly productRepository: IProductRepository,
   ) {}
   async findById(productId: string): Promise<DomainProductEntity> {
-    return await this.productRepository.findById(productId);
+    return await this.productRepository.findByProductId(productId);
   }
   async findAll(): Promise<DomainProductEntity[]> {
-    return await this.productRepository.findAll();
+    return await this.productRepository.findAllProducts();
   }
   async findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainProductEntity[]; total: number }> {
-    return this.productRepository.findPagination(query);
+    return this.productRepository.findWithPagination(query);
   }
   async create(product: DomainProductEntity) {
     return this.productRepository.saveAndReturnDomain(product);
@@ -29,7 +29,7 @@ export class ProductService {
     id: string,
     product: Partial<DomainProductEntity>,
   ): Promise<DomainProductEntity> {
-    const isExit = await this.productRepository.findById(id);
+    const isExit = await this.productRepository.findByProductId(id);
     if (!isExit) {
       throw new Error(`Product with id ${id} not found`);
     }
