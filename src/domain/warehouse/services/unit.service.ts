@@ -9,8 +9,8 @@ export class UnitService {
     @Inject(UnitRepository)
     private readonly unitRepository: IUnitRepository,
   ) {}
-  async findById(variantValueId: string): Promise<DomainUnitEntity> {
-    return await this.unitRepository.findByIdUnit(variantValueId);
+  async findById(id: string): Promise<DomainUnitEntity> {
+    return await this.unitRepository.findByIdUnit(id);
   }
   async findAll(): Promise<DomainUnitEntity[]> {
     return await this.unitRepository.findAllUnits();
@@ -22,18 +22,18 @@ export class UnitService {
   }): Promise<{ data: DomainUnitEntity[]; total: number }> {
     return this.unitRepository.findWithPagination(query);
   }
-  async create(product: DomainUnitEntity) {
-    return this.unitRepository.saveAndReturnDomain(product);
+  async create(unit: DomainUnitEntity) {
+    return this.unitRepository.saveAndReturnDomain(unit);
   }
   async update(
     id: string,
-    variantValue: Partial<DomainUnitEntity>,
+    unit: Partial<DomainUnitEntity>,
   ): Promise<DomainUnitEntity> {
     const isExit = await this.unitRepository.findByIdUnit(id);
     if (!isExit) {
       throw new Error(`Unit with id ${id} not found`);
     }
-    return this.unitRepository.updateAndReturnDomain(id, variantValue);
+    return this.unitRepository.updateAndReturnDomain(id, unit);
   }
   async delete(id: string): Promise<void> {
     return this.unitRepository.deleteUnit(id);

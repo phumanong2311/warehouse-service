@@ -58,6 +58,10 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     this.expirationDate = newDate;
   }
 
+  setUnit(unit: DomainUnitEntity): void {
+    this.unit = unit;
+  }
+
   getWarehouse(): DomainWarehouseEntity {
     return this.warehouse;
   }
