@@ -1,4 +1,5 @@
-import { Warehouse as InfraWarehouse } from '@infra/postgresql/entities';
+import { Warehouse as InfraWarehouse, Rack } from '@infra/postgresql/entities';
+import { Collection } from '@mikro-orm/core';
 import { DomainWarehouseEntity } from '../entities';
 import { RackMapper } from './rack.mapper';
 
@@ -12,7 +13,13 @@ export class WarehouseMapper {
       email: infra.email,
       logo: infra.logo,
       address: infra.address,
-      racks: infra.racks.map((item) => RackMapper.entityInfraToDomain(item)),
+      racks:
+        infra.racks instanceof Collection
+          ? infra.racks.isInitialized()
+            ? infra.racks.getItems().map(RackMapper.entityInfraToDomain)
+            : []
+          : [],
+      registrationExpirationDate: infra.registrationExpirationDate,
       createdBy: infra.createdBy,
       updatedBy: infra.updatedBy,
       createdAt: infra.createdAt,
@@ -31,9 +38,10 @@ export class WarehouseMapper {
     if (domain.getLogo) infra.logo = domain.getLogo();
     if (domain.getAddress) infra.address = domain.getAddress();
     if (domain.getRacks) {
-      infra.racks = domain
+      const rackEntities = domain
         .getRacks()
         .map((item) => RackMapper.entityDomainToInfra(item));
+      infra.racks = new Collection<Rack>(infra, rackEntities, true);
     }
     if (domain.getCreatedAt) infra.createdAt = domain.getCreatedAt();
     if (domain.getUpdatedAt) infra.updatedAt = domain.getUpdatedAt();

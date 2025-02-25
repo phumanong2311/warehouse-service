@@ -1,9 +1,13 @@
 import { DomainCategoryEntity } from '@domain/product/entities';
 import { CategoryMapper } from '@domain/product/mapper';
+import { SqlEntityManager } from '@mikro-orm/postgresql';
 import { Category } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
 
 export class CategoryRepository extends BaseRepository<Category> {
+  constructor(em: SqlEntityManager) {
+    super(em, Category);
+  }
   async findByIdCategory(id: string): Promise<DomainCategoryEntity> {
     const data = await this.findById(id);
     return CategoryMapper.entityInfraToDomain(data);

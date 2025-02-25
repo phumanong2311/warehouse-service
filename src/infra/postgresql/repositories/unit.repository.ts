@@ -1,9 +1,13 @@
 import { DomainUnitEntity } from '@domain/warehouse/entities';
 import { UnitMapper } from '@domain/warehouse/mapper';
+import { SqlEntityManager } from '@mikro-orm/postgresql';
 import { Unit } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
 
 export class UnitRepository extends BaseRepository<Unit> {
+  constructor(em: SqlEntityManager) {
+    super(em, Unit);
+  }
   async findByIdUnit(id: string): Promise<DomainUnitEntity> {
     const data = await this.findById(id);
     return UnitMapper.entityInfraToDomain(data);

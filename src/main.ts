@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AllExceptionsFilter } from '@share/exceptions/all-exceptions.filter';
-import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
-dotenv.config();
+import { appConfig } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT);
+  console.log('process.env.PORT', appConfig.app.port);
+  await app.listen(appConfig.app.port);
   // Áp dụng Global Exception Filter
   app.useGlobalFilters(new AllExceptionsFilter());
 }

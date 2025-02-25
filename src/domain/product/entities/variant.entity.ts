@@ -1,15 +1,16 @@
 import { DomainBaseEntity } from '@share/domain/entities';
 import { v4 as uuidv4 } from 'uuid';
 import { DomainProductEntity } from './product.entity';
-import { DomainVariantValueEntity } from './variant-value.entity';
 
 export class DomainVariantEntity extends DomainBaseEntity {
   private product!: DomainProductEntity; // Gắn với Product
-  private variantValue!: DomainVariantValueEntity; // Gắn với giá trị variant cụ thể (ví dụ: white, blue)
+  private variantValueId!: string; // Gắn với giá trị variant cụ thể (ví dụ: white, blue)
+  private rackId: string;
   constructor(params: {
     id?: string;
     product?: DomainProductEntity;
-    variantValue?: DomainVariantValueEntity;
+    variantValueId?: string;
+    rackId?: string;
     createdBy?: string;
     updatedBy?: string;
     createdAt?: Date;
@@ -22,19 +23,26 @@ export class DomainVariantEntity extends DomainBaseEntity {
       createdAt: params.createdAt,
       updatedAt: params.updatedAt,
     });
-    this.product = params.product;
-    this.variantValue = params.variantValue;
+    if (params.product) this.product = params.product;
+    if (params.variantValueId) this.variantValueId = params.variantValueId;
+    if (params.rackId) this.rackId = params.rackId;
   }
   setProduct(product: DomainProductEntity): void {
     this.product = product;
   }
-  setVariantValue(variantValue: DomainVariantValueEntity): void {
-    this.variantValue = variantValue;
+  setVariantValue(variantValueId: string): void {
+    this.variantValueId = variantValueId;
+  }
+  setRack(rackId: string): void {
+    this.rackId = rackId;
   }
   getProduct(): DomainProductEntity {
     return this.product;
   }
-  getVariantValue(): DomainVariantValueEntity {
-    return this.variantValue;
+  getVariantValue(): string {
+    return this.variantValueId;
+  }
+  getRack(): string {
+    return this.rackId;
   }
 }

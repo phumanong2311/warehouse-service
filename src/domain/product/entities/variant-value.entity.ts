@@ -4,11 +4,11 @@ import { DomainVariantTypeEntity } from './variant-type.entity';
 
 export class DomainVariantValueEntity extends DomainBaseEntity {
   private name!: string; // Ví dụ: white, blue, small, medium
-  private variantType!: DomainVariantTypeEntity;
+  private variantTypeId!: string;
   constructor(params: {
     id?: string;
     name?: string;
-    variantType?: DomainVariantTypeEntity;
+    variantTypeId?: string;
     createdBy?: string;
     updatedBy?: string;
     createdAt?: Date;
@@ -21,19 +21,19 @@ export class DomainVariantValueEntity extends DomainBaseEntity {
       createdAt: params.createdAt,
       updatedAt: params.updatedAt,
     });
-    this.name = params.name;
-    this.variantType = params.variantType;
+    if (params.name) this.name = params.name;
+    if (params.variantTypeId) this.variantTypeId = params.variantTypeId;
   }
   setName(name: string): void {
     this.name = name;
   }
-  setVariantType(variantType: DomainVariantTypeEntity): void {
-    this.variantType = variantType;
+  setVariantType(variantTypeId: string): void {
+    this.variantTypeId = variantTypeId;
   }
   getName(): string {
     return this.name;
   }
-  getVariantType(): DomainVariantTypeEntity {
-    return this.variantType;
+  getVariantType(): string {
+    return this.variantTypeId;
   }
 }

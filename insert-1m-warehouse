@@ -1,0 +1,12 @@
+INSERT INTO warehouse (id, created_at, updated_at, created_by, updated_by, name, code, phone, email, logo, address, registration_expiration_date)
+SELECT
+    gen_random_uuid()::TEXT,  -- Tạo UUID làm id
+    NOW(), NOW(), '', '',
+    CONCAT('warehouse ', FLOOR(random() * 1000000)),
+    CONCAT('WH-', gen_random_uuid()),
+    CONCAT('+84', FLOOR(random() * 1000000000)::BIGINT),
+    CONCAT('warehouse', FLOOR(random() * 1000000), '@example.com'),
+    'https://fakeimg.pl/300/?text=Warehouse',
+    CONCAT('Address ', gen_random_uuid()),
+    NOW()
+FROM generate_series(1, 1000000);

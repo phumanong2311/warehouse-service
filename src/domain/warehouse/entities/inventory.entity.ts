@@ -6,9 +6,9 @@ import { DomainWarehouseEntity } from './warehouse.entity';
 import { DomainUnitEntity } from './unit.entity';
 
 export class DomainInventoryEntity extends DomainBaseEntity {
-  private warehouse: DomainWarehouseEntity;
-  private variant: DomainVariantEntity;
-  private unit: DomainUnitEntity;
+  private warehouseId: string;
+  private variantId: string;
+  private unitId: string;
   private quantity!: number;
   private batch?: string; // Số lô hàng
   private expirationDate?: Date; // Ngày hết hạn
@@ -17,9 +17,9 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     id?: string;
     createdBy?: string;
     updatedBy?: string;
-    warehouse?: DomainWarehouseEntity;
-    variant?: DomainVariantEntity;
-    unit?: DomainUnitEntity;
+    warehouseId?: string;
+    variantId?: string;
+    unitId?: string;
     quantity?: number;
     batch?: string;
     expirationDate?: Date;
@@ -34,14 +34,22 @@ export class DomainInventoryEntity extends DomainBaseEntity {
       createdAt: params.createdAt,
       updatedAt: params.updatedAt,
     });
-    this.warehouse = params.warehouse;
-    this.variant = params.variant;
-    this.unit = params.unit;
-    this.quantity = params.quantity;
-    this.batch = params.batch;
-    this.expirationDate = params.expirationDate;
-    this.status = params.status;
+    if (params.warehouseId) this.warehouseId = params.warehouseId;
+    if (params.variantId) this.variantId = params.variantId;
+    if (params.unitId) this.unitId = params.unitId;
+    if (params.quantity) this.quantity = params.quantity;
+    if (params.batch) this.batch = params.batch;
+    if (params.expirationDate) this.expirationDate = params.expirationDate;
+    if (params.status) this.status = params.status;
   }
+  setWarehouse(warehouseId: string): void {
+    this.warehouseId = warehouseId;
+  }
+
+  setVariant(variantId: string): void {
+    this.variantId = variantId;
+  }
+
   setQuantity(newQuantity: number): void {
     this.quantity = newQuantity;
   }
@@ -58,20 +66,20 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     this.expirationDate = newDate;
   }
 
-  setUnit(unit: DomainUnitEntity): void {
-    this.unit = unit;
+  setUnit(unitId: string): void {
+    this.unitId = unitId;
   }
 
-  getWarehouse(): DomainWarehouseEntity {
-    return this.warehouse;
+  getWarehouse(): string {
+    return this.warehouseId;
   }
 
-  getVariant(): DomainVariantEntity {
-    return this.variant;
+  getVariant(): string {
+    return this.variantId;
   }
 
-  getUnit(): DomainUnitEntity {
-    return this.unit;
+  getUnit(): string {
+    return this.unitId;
   }
 
   getQuantity(): number {

@@ -1,4 +1,5 @@
 import { VariantService } from '@domain/product/services/variant.service';
+import { DomainInventoryEntity } from '@domain/warehouse/entities';
 import { InventoryService, UnitService } from '@domain/warehouse/services';
 import { Injectable } from '@nestjs/common';
 import { InventoryStatus } from '@share/types';
@@ -14,96 +15,189 @@ export class WarehouseApplicationService {
   ) {}
 
   async checkIn(
-    variantId: string,
-    quantity: number,
     warehouseId: string,
+    variantId: string,
     unitId: string,
+    quantity: number,
     status: InventoryStatus,
-  ) {
-    // 1. Kiểm tra tính hợp lệ của dữ liệu đầu vào
-    const existingWarehouse = await this.warehouseService.findById(warehouseId);
-    const existingVariant = await this.variantService.findById(variantId);
-    const existingUnit = await this.unitService.findById(unitId);
+    expirationDate?: Date,
+    batch?: string,
+  ): Promise<
+    | { status: string; data: DomainInventoryEntity }
+    | { status: string; error: any }
+  > {
+    try {
+      // 1.Check if entities exist
+      const [existingWarehouse, existingVariant, existingUnit] =
+        await Promise.all([
+          this.warehouseService.findByIdWarehouse(warehouseId),
+          this.variantService.findById(variantId),
+          this.unitService.findById(unitId),
+        ]);
 
-    if (!existingWarehouse || !existingVariant) {
-      throw new Error('Warehouse or Variant not found');
+      if (!existingWarehouse || !existingVariant || !existingUnit) {
+        throw new Error('Warehouse, Variant, or Unit not found');
+      }
+
+      // 2.Perform check-in
+      const data = await this.inventoryService.checkInInventory(
+        warehouseId,
+        variantId,
+        unitId,
+        quantity,
+        status,
+        expirationDate,
+        batch,
+      );
+
+      return { status: 'success', data };
+    } catch (error) {
+      console.error('Error during check-in:', error);
+      return {
+        status: 'fail',
+        error: error.message || 'An unexpected error occurred',
+      };
     }
-
-    // 2. Thực hiện nghiệp vụ check-in
-    const data = await this.inventoryService.checkInInventory(
-      existingWarehouse,
-      existingVariant,
-      existingUnit,
-      quantity,
-      status,
-    );
-
-    return { success: true };
   }
 
-  async checkOutProduct(
-    productId: string,
-    quantity: number,
+  async checkOut(
     warehouseId: string,
-  ) {
-    const warehouse = await this.warehouseService.findById(warehouseId);
-    const variant = await this.variantService.findById(productId);
+    variantId: string,
+    unitId: string,
+    quantity: number,
+    status: InventoryStatus,
+  ): Promise<
+    | { status: string; data: DomainInventoryEntity }
+    | { status: string; error: any }
+  > {
+    try {
+      // 1.Check if entities exist
+      const [existingWarehouse, existingVariant, existingUnit] =
+        await Promise.all([
+          this.warehouseService.findByIdWarehouse(warehouseId),
+          this.variantService.findById(variantId),
+          this.unitService.findById(unitId),
+        ]);
 
-    if (!warehouse || !product) {
-      throw new Error('Warehouse or Product not found');
+      if (!existingWarehouse || !existingVariant || !existingUnit) {
+        throw new Error('Warehouse, Variant, or Unit not found');
+      }
+
+      // 2.Perform check-in
+      const data = await this.inventoryService.checkOutInventory(
+        warehouseId,
+        variantId,
+        unitId,
+        quantity,
+        status,
+      );
+
+      return { status: 'success', data };
+    } catch (error) {
+      console.error('Error during check-in:', error);
+      return {
+        status: 'fail',
+        error: error.message || 'An unexpected error occurred',
+      };
     }
-
-    await this.warehouseService.removeProductFromWarehouse(
-      warehouse,
-      product,
-      quantity,
-    );
-
-    return { success: true };
   }
 
   async adjustStock(
-    productId: string,
-    newQuantity: number,
     warehouseId: string,
-  ) {
-    const warehouse = await this.warehouseService.findById(warehouseId);
-    const product = await this.productService.findById(productId);
+    variantId: string,
+    unitId: string,
+    quantity: number,
+    status: InventoryStatus,
+    batch?: string,
+    expirationDate?: Date,
+  ): Promise<
+    | { status: string; data: DomainInventoryEntity }
+    | { status: string; error: any }
+  > {
+    try {
+      // 1.Check if entities exist
+      const [existingWarehouse, existingVariant, existingUnit] =
+        await Promise.all([
+          this.warehouseService.findByIdWarehouse(warehouseId),
+          this.variantService.findById(variantId),
+          this.unitService.findById(unitId),
+        ]);
 
-    if (!warehouse || !product) {
-      throw new Error('Warehouse or Product not found');
+      if (!existingWarehouse || !existingVariant || !existingUnit) {
+        throw new Error('Warehouse, Variant, or Unit not found');
+      }
+
+      // 2.Perform check-in
+      const data = await this.inventoryService.adjustQuantity(
+        warehouseId,
+        variantId,
+        unitId,
+        quantity,
+        status,
+        batch,
+        expirationDate,
+      );
+
+      return { status: 'success', data };
+    } catch (error) {
+      console.error('Error during check-in:', error);
+      return {
+        status: 'fail',
+        error: error.message || 'An unexpected error occurred',
+      };
     }
-
-    await this.warehouseService.updateProductQuantity(
-      warehouse,
-      product,
-      newQuantity,
-    );
-
-    return { success: true };
   }
 
   async transferProduct(
-    productId: string,
+    sourceWarehouseId: string,
+    targetWarehouseId: string,
+    variantId: string,
+    unitId: string,
+    status: InventoryStatus,
     quantity: number,
-    fromWarehouseId: string,
-    toWarehouseId: string,
+    expirationDate?: Date,
   ) {
-    const fromWarehouse = await this.warehouseService.findById(fromWarehouseId);
-    const toWarehouse = await this.warehouseService.findById(toWarehouseId);
-    const product = await this.productService.findById(productId);
+    try {
+      // 1.Check if entities exist
+      const [
+        existingSourceWarehouse,
+        existingTargetWarehouse,
+        existingVariant,
+        existingUnit,
+      ] = await Promise.all([
+        this.warehouseService.findByIdWarehouse(sourceWarehouseId),
+        this.warehouseService.findByIdWarehouse(targetWarehouseId),
+        this.variantService.findById(variantId),
+        this.unitService.findById(unitId),
+      ]);
 
-    if (!fromWarehouse || !toWarehouse || !product) {
-      throw new Error('Warehouse or Product not found');
+      if (
+        !existingSourceWarehouse ||
+        !existingTargetWarehouse ||
+        !existingVariant ||
+        !existingUnit
+      ) {
+        throw new Error('Warehouse, Variant, or Unit not found');
+      }
+
+      // 2.Perform check-in
+      const data = await this.inventoryService.transferInventory(
+        sourceWarehouseId,
+        targetWarehouseId,
+        variantId,
+        unitId,
+        status,
+        quantity,
+        expirationDate,
+      );
+
+      return { status: 'success', data };
+    } catch (error) {
+      console.error('Error during check-in:', error);
+      return {
+        status: 'fail',
+        error: error.message || 'An unexpected error occurred',
+      };
     }
-
-    await this.warehouseService.transferProductBetweenWarehouses(
-      fromWarehouse,
-      toWarehouse,
-      product,
-      quantity,
-    );
-
-    return { success: true };
   }
 }

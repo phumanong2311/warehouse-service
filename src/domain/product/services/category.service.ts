@@ -10,17 +10,17 @@ export class CategoryService {
     private readonly categoryRepository: ICategoryRepository,
   ) {}
   async findById(productId: string): Promise<DomainCategoryEntity> {
-    return await this.categoryRepository.findById(productId);
+    return await this.categoryRepository.findByIdCategory(productId);
   }
   async findAll(): Promise<DomainCategoryEntity[]> {
-    return await this.categoryRepository.findAll();
+    return await this.categoryRepository.findAllCategories();
   }
   async findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainCategoryEntity[]; total: number }> {
-    return this.categoryRepository.findPagination(query);
+    return this.categoryRepository.findWithPagination(query);
   }
   async create(category: DomainCategoryEntity) {
     return this.categoryRepository.saveAndReturnDomain(category);
@@ -29,13 +29,13 @@ export class CategoryService {
     id: string,
     category: Partial<DomainCategoryEntity>,
   ): Promise<DomainCategoryEntity> {
-    const isExit = await this.categoryRepository.findById(id);
+    const isExit = await this.categoryRepository.findByIdCategory(id);
     if (!isExit) {
       throw new Error(`Category with id ${id} not found`);
     }
     return this.categoryRepository.updateAndReturnDomain(id, category);
   }
   async delete(id: string): Promise<void> {
-    return this.categoryRepository.deleteProduct(id);
+    return this.categoryRepository.deleteCategory(id);
   }
 }

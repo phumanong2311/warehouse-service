@@ -20,8 +20,8 @@ export class DomainCategoryEntity extends DomainBaseEntity {
       createdAt: params.createdAt,
       updatedAt: params.updatedAt,
     });
-    this.name = params.name;
-    this.description = params.description;
+    if (params.name) this.name = params.name;
+    if (params.description) this.description = params.description;
   }
   setName(name: string): void {
     this.name = name;

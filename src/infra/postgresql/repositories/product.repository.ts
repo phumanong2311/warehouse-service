@@ -1,10 +1,14 @@
 import { DomainProductEntity } from '@domain/product/entities';
 import { ProductMapper } from '@domain/product/mapper';
 import { FilterQuery } from '@mikro-orm/core';
+import { SqlEntityManager } from '@mikro-orm/postgresql';
 import { Product } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
 
 export class ProductRepository extends BaseRepository<Product> {
+  constructor(em: SqlEntityManager) {
+    super(em, Product);
+  }
   async findByProductId(id: string): Promise<DomainProductEntity> {
     const data = await this.findById(id);
     return ProductMapper.entityInfraToDomain(data);

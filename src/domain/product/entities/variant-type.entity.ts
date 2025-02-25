@@ -18,7 +18,7 @@ export class DomainVariantTypeEntity extends DomainBaseEntity {
       createdAt: params.createdAt,
       updatedAt: params.updatedAt,
     });
-    this.name = params.name;
+    if (params.name) this.name = params.name;
   }
   setName(name: string): void {
     this.name = name;

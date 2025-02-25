@@ -1,14 +1,14 @@
 import { DomainWarehouseEntity } from '../entities';
 
 export interface IWarehouseRepository {
-  findById(id: string): Promise<DomainWarehouseEntity>;
-  findPagination(query: {
+  findByIdWarehouse(id: string): Promise<DomainWarehouseEntity>;
+  findByCode(code: string): Promise<DomainWarehouseEntity>;
+  findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainWarehouseEntity[]; total: number }>;
-  findAll(): Promise<DomainWarehouseEntity[]>;
-  findByCode(code: string): Promise<DomainWarehouseEntity>;
+  findAllWarehouses(): Promise<DomainWarehouseEntity[]>;
   saveAndReturnDomain(
     warehouse: DomainWarehouseEntity,
   ): Promise<DomainWarehouseEntity>;

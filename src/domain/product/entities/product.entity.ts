@@ -1,30 +1,25 @@
-import {
-  DomainRackEntity,
-  DomainWarehouseEntity,
-} from '@domain/warehouse/entities';
 import { DomainBaseEntity } from '@share/domain/entities';
 import { v4 as uuidv4 } from 'uuid';
-import { DomainCategoryEntity } from './category.entity';
 import { DomainVariantEntity } from './variant.entity';
 
 export class DomainProductEntity extends DomainBaseEntity {
   private name!: string;
   private sku!: string;
   private description?: string;
-  private category!: DomainCategoryEntity;
-  private warehouse!: DomainWarehouseEntity;
+  private categoryId!: string;
+  private warehouseId!: string;
   private variants!: DomainVariantEntity[];
-  private rack?: DomainRackEntity;
+  private rackId?: string;
 
   constructor(params: {
     id?: string;
     name: string;
     sku: string;
     description?: string;
-    category: DomainCategoryEntity;
-    warehouse: DomainWarehouseEntity;
+    categoryId: string;
+    warehouseId: string;
     variants?: DomainVariantEntity[];
-    rack?: DomainRackEntity;
+    rackId?: string;
     createdBy?: string;
     updatedBy?: string;
     createdAt?: Date;
@@ -39,18 +34,40 @@ export class DomainProductEntity extends DomainBaseEntity {
     });
     this.name = params.name;
     this.sku = params.sku;
-    this.description = params.description;
-    this.category = params.category;
-    this.warehouse = params.warehouse;
-    this.variants = params.variants ?? [];
-    this.rack = params.rack;
+    if (params.description) this.description = params.description;
+    this.categoryId = params.categoryId;
+    this.warehouseId = params.warehouseId;
+    if (params.variants) this.variants = params.variants ?? [];
+    if (params.rackId) this.rackId = params.rackId;
   }
   setName(name: string): void {
     this.name = name;
   }
+
   setDescription(description: string) {
     this.description = description;
   }
+
+  setSku(sku: string): void {
+    this.sku = sku;
+  }
+
+  setCategory(categoryId: string): void {
+    this.categoryId = categoryId;
+  }
+
+  setWarehouse(warehouseId: string): void {
+    this.warehouseId = warehouseId;
+  }
+
+  setVariants(variants: DomainVariantEntity[]): void {
+    this.variants = variants;
+  }
+
+  setRack(rackId: string): void {
+    this.rackId = rackId;
+  }
+
   getName(): string {
     return this.name;
   }
@@ -63,19 +80,19 @@ export class DomainProductEntity extends DomainBaseEntity {
     return this.description;
   }
 
-  getCategory(): DomainCategoryEntity {
-    return this.category;
+  getCategory(): string {
+    return this.categoryId;
   }
 
-  getWarehouse(): DomainWarehouseEntity {
-    return this.warehouse;
+  getWarehouse(): string {
+    return this.warehouseId;
   }
 
   getVariant(): DomainVariantEntity[] {
     return this.variants;
   }
 
-  getRack(): DomainRackEntity {
-    return this.rack;
+  getRack(): string {
+    return this.rackId;
   }
 }

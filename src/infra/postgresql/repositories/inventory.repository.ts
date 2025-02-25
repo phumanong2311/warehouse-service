@@ -1,11 +1,15 @@
 import { DomainInventoryEntity } from '@domain/warehouse/entities';
 import { InventoryMapper } from '@domain/warehouse/mapper';
 import { FilterQuery } from '@mikro-orm/core';
+import { SqlEntityManager } from '@mikro-orm/postgresql';
 import { InventoryStatus } from '@share/types';
 import { Inventory } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
 
 export class InventoryRepository extends BaseRepository<Inventory> {
+  constructor(em: SqlEntityManager) {
+    super(em, Inventory);
+  }
   async findByIdInventory(id: string): Promise<DomainInventoryEntity> {
     const data = await this.findById(id);
     return InventoryMapper.entityInfraToDomain(data);
@@ -14,10 +18,16 @@ export class InventoryRepository extends BaseRepository<Inventory> {
   async findByWarehouseAndVariant(
     warehouseId: string,
     variantId: string,
+    unitId: string,
+    status: InventoryStatus,
+    expirationDate?: Date,
   ): Promise<DomainInventoryEntity> {
     const data = await this.findOne({
       warehouse: warehouseId,
       variant: variantId,
+      unit: unitId,
+      status,
+      expirationDate,
     });
     return InventoryMapper.entityInfraToDomain(data);
   }

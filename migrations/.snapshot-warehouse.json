@@ -160,6 +160,108 @@
           "nullable": false,
           "length": 255,
           "mappedType": "string"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "conversion_rate": {
+          "name": "conversion_rate",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        }
+      },
+      "name": "unit",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "unit_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "date"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "date",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "mappedType": "date"
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
         }
       },
       "name": "variant_type",
@@ -419,6 +521,16 @@
           "nullable": false,
           "length": 255,
           "mappedType": "string"
+        },
+        "registration_expiration_date": {
+          "name": "registration_expiration_date",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
         }
       },
       "name": "warehouse",
@@ -798,6 +910,16 @@
           "nullable": false,
           "length": 255,
           "mappedType": "string"
+        },
+        "rack_id": {
+          "name": "rack_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
         }
       },
       "name": "variant",
@@ -839,111 +961,17 @@
           ],
           "referencedTableName": "public.variant_value",
           "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "date",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 0,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "date"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "date",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 0,
-          "default": "CURRENT_TIMESTAMP",
-          "mappedType": "date"
-        },
-        "created_by": {
-          "name": "created_by",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "updated_by": {
-          "name": "updated_by",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 255,
-          "mappedType": "string"
-        },
-        "variant_id": {
-          "name": "variant_id",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "mappedType": "string"
-        }
-      },
-      "name": "size",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "size_pkey",
+        "variant_rack_id_foreign": {
+          "constraintName": "variant_rack_id_foreign",
           "columnNames": [
-            "id"
+            "rack_id"
           ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "size_variant_id_foreign": {
-          "constraintName": "size_variant_id_foreign",
-          "columnNames": [
-            "variant_id"
-          ],
-          "localTableName": "public.size",
+          "localTableName": "public.variant",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.variant",
+          "referencedTableName": "public.rack",
           "deleteRule": "set null",
           "updateRule": "cascade"
         }
@@ -1014,13 +1042,23 @@
           "length": 255,
           "mappedType": "string"
         },
-        "product_id": {
-          "name": "product_id",
+        "variant_id": {
+          "name": "variant_id",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "unit_id": {
+          "name": "unit_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
           "length": 255,
           "mappedType": "string"
         },
@@ -1052,6 +1090,17 @@
           "nullable": true,
           "length": 6,
           "mappedType": "datetime"
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "default": "'available'",
+          "mappedType": "string"
         }
       },
       "name": "inventory",
@@ -1082,16 +1131,29 @@
           "referencedTableName": "public.warehouse",
           "updateRule": "cascade"
         },
-        "inventory_product_id_foreign": {
-          "constraintName": "inventory_product_id_foreign",
+        "inventory_variant_id_foreign": {
+          "constraintName": "inventory_variant_id_foreign",
           "columnNames": [
-            "product_id"
+            "variant_id"
           ],
           "localTableName": "public.inventory",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.product",
+          "referencedTableName": "public.variant",
+          "updateRule": "cascade"
+        },
+        "inventory_unit_id_foreign": {
+          "constraintName": "inventory_unit_id_foreign",
+          "columnNames": [
+            "unit_id"
+          ],
+          "localTableName": "public.inventory",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.unit",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },

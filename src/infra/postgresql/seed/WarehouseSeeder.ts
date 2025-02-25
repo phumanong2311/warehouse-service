@@ -13,6 +13,7 @@ export class WarehouseSeeder extends Seeder<Dictionary> {
       email: `${name.toLowerCase().replace(/\s/g, '')}@example.com`,
       logo: `https://fakeimg.pl/300/?text=${name}`,
       address: `Address ${Math.random().toString(36)}`,
+      registrationExpirationDate: new Date(),
     });
     await em.persistAndFlush([warehouse_1]);
     console.log(`Seeding warehouse completed`);

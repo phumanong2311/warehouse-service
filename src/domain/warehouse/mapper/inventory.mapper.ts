@@ -1,14 +1,16 @@
-import { VariantMapper } from '@domain/product/mapper/variant.mapper';
-import { Inventory as InfraInventory } from '@infra/postgresql/entities';
+import {
+  Inventory as InfraInventory,
+  Variant,
+  Warehouse,
+} from '@infra/postgresql/entities';
 import { DomainInventoryEntity } from '../entities';
-import { WarehouseMapper } from './warehouse.mapper';
 
 export class InventoryMapper {
   static entityInfraToDomain(infra: InfraInventory): DomainInventoryEntity {
     return new DomainInventoryEntity({
       id: infra.id,
-      warehouse: WarehouseMapper.entityInfraToDomain(infra.warehouse),
-      variant: VariantMapper.entityInfraToDomain(infra.variant),
+      warehouseId: infra.warehouse.id,
+      variantId: infra.variant.id,
       quantity: infra.quantity,
       batch: infra.batch,
       expirationDate: infra.expirationDate,
@@ -20,13 +22,13 @@ export class InventoryMapper {
   }
   static entityDomainToInfra(
     domain: Partial<DomainInventoryEntity>,
+    warehouse?: Warehouse,
+    variant?: Variant,
   ): InfraInventory {
     const infra = new InfraInventory();
     infra.id = domain.getId();
-    infra.warehouse = WarehouseMapper.entityDomainToInfra(
-      domain.getWarehouse(),
-    );
-    infra.variant = VariantMapper.entityDomainToInfra(domain.getVariant());
+    if (warehouse) infra.warehouse = warehouse;
+    if (variant) infra.variant = variant;
     infra.quantity = domain.getQuantity();
     infra.batch = domain.getBatch();
     infra.expirationDate = domain.getExpirationDate();

@@ -9,5 +9,5 @@ export class VariantValue extends InfraBaseEntity {
   name!: string; // Ví dụ: white, blue, small, medium
 
   @ManyToOne(() => VariantType)
-  variantType!: VariantType; // Gắn với kiểu variant
+  variantType!: VariantType;
 }

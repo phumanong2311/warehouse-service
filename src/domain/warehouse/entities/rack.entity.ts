@@ -5,7 +5,7 @@ import { DomainWarehouseEntity } from './warehouse.entity';
 
 export class DomainRackEntity extends DomainBaseEntity {
   private name!: string; // Tên của Rack
-  private warehouse!: DomainWarehouseEntity; // Gắn với Warehouse
+  private warehouseId!: string; // Gắn với Warehouse
   private variants: DomainVariantEntity[]; // Danh sách sản phẩm trong Rack
 
   constructor(params: {
@@ -13,7 +13,7 @@ export class DomainRackEntity extends DomainBaseEntity {
     createdBy?: string;
     updatedBy?: string;
     name: string;
-    warehouse: DomainWarehouseEntity;
+    warehouseId: string;
     variants?: DomainVariantEntity[];
     createdAt?: Date;
     updatedAt?: Date;
@@ -27,7 +27,7 @@ export class DomainRackEntity extends DomainBaseEntity {
     });
 
     this.name = params.name;
-    this.warehouse = params.warehouse;
+    this.warehouseId = params.warehouseId;
     this.variants = params.variants ?? [];
   }
   setName(name: string): void {
@@ -42,8 +42,8 @@ export class DomainRackEntity extends DomainBaseEntity {
     return this.name;
   }
 
-  getWarehouse(): DomainWarehouseEntity {
-    return this.warehouse;
+  getWarehouse(): string {
+    return this.warehouseId;
   }
 
   getVariants(): DomainVariantEntity[] {

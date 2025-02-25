@@ -1,11 +1,19 @@
+import { DomainVariantEntity } from '@domain/product/entities';
 import { InventoryStatus } from '@share/types';
-import { DomainInventoryEntity } from '../entities';
+import {
+  DomainInventoryEntity,
+  DomainUnitEntity,
+  DomainWarehouseEntity,
+} from '../entities';
 
 export interface IInventoryRepository {
   findByIdInventory(id: string): Promise<DomainInventoryEntity>;
   findByWarehouseAndVariant(
     warehouseId: string,
     variantId: string,
+    unitId: string,
+    status: string,
+    expirationDate?: Date,
   ): DomainInventoryEntity;
   findWithPagination(query: {
     warehouseId?: string;
@@ -30,4 +38,38 @@ export interface IInventoryRepository {
     inventory: Partial<DomainInventoryEntity>,
   ): Promise<DomainInventoryEntity>;
   deleteInventory(id: string): Promise<void>;
+  checkInInventory(
+    warehouse: DomainWarehouseEntity,
+    variant: DomainVariantEntity,
+    unit: DomainUnitEntity,
+    quantity: number,
+    status: InventoryStatus,
+    expirationDate?: Date,
+    batch?: string,
+  ): Promise<DomainInventoryEntity>;
+  checkOutInventory(
+    warehouse: DomainWarehouseEntity,
+    variant: DomainVariantEntity,
+    unit: DomainUnitEntity,
+    quantity: number,
+    status: InventoryStatus,
+  ): Promise<DomainInventoryEntity>;
+  adjustQuantity(
+    warehouse: DomainWarehouseEntity,
+    variant: DomainVariantEntity,
+    unit: DomainUnitEntity,
+    quantity: number,
+    status: InventoryStatus,
+    batch?: string,
+    expirationDate?: Date,
+  ): Promise<DomainInventoryEntity>;
+  transferInventory(
+    sourceWarehouse: DomainWarehouseEntity,
+    targetWarehouse: DomainWarehouseEntity,
+    variant: DomainVariantEntity,
+    unit: DomainUnitEntity,
+    status: InventoryStatus,
+    quantity: number,
+    expirationDate?: Date,
+  ): Promise<DomainInventoryEntity[]>;
 }

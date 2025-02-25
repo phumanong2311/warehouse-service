@@ -1,20 +1,19 @@
-import { DomainVariantEntity } from '@domain/product/entities';
+import { VariantService } from '@domain/product/services/variant.service';
 import { InventoryRepository } from '@infra/postgresql/repositories';
 import { Inject, Injectable } from '@nestjs/common';
 import { InventoryStatus } from '@share/types';
-import {
-  DomainInventoryEntity,
-  DomainUnitEntity,
-  DomainWarehouseEntity,
-} from '../entities';
+import { DomainInventoryEntity, DomainWarehouseEntity } from '../entities';
 import { IInventoryRepository } from '../interface-repositories';
 import { UnitService } from './unit.service';
+import { WarehouseService } from './warehouse.service';
 
 @Injectable()
 export class InventoryService {
   constructor(
     @Inject(InventoryRepository)
     private inventoryRepository: IInventoryRepository,
+    private warehouseService: WarehouseService,
+    private variantService: VariantService,
     private unitService: UnitService,
   ) {}
   async findInventoryWithQuery(
@@ -63,14 +62,16 @@ export class InventoryService {
   }
 
   async checkInInventory(
-    warehouse: DomainWarehouseEntity,
-    variant: DomainVariantEntity,
-    unit: DomainUnitEntity,
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
     quantity: number,
     status: InventoryStatus = InventoryStatus.AVAILABLE,
     expirationDate?: Date,
     batch?: string,
   ): Promise<DomainInventoryEntity> {
+    const warehouse =
+      await this.warehouseService.findByIdWarehouse(warehouseId);
     // Calculate the effective expiration date
     const effectiveExpirationDate =
       expirationDate ?? warehouse.getRegistrationExpirationDate();
@@ -87,8 +88,11 @@ export class InventoryService {
     // Check for existing inventory
     const existingInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
-        warehouse.getId(),
-        variant.getId(),
+        warehouseId,
+        variantId,
+        unitId,
+        status,
+        expirationDate,
       );
     let inventory: DomainInventoryEntity;
     if (existingInventory) {
@@ -102,7 +106,7 @@ export class InventoryService {
       if (effectiveExpirationDate > existingInventory.getExpirationDate()) {
         existingInventory.setExpirationDate(effectiveExpirationDate);
       }
-      if (existingInventory.getUnit().getId() !== unit.getId()) {
+      if (existingInventory.getUnit() !== unitId) {
         throw new Error(
           'Unit mismatch! The inventory unit does not match the requested unit.',
         );
@@ -117,11 +121,11 @@ export class InventoryService {
     } else {
       // Create new inventory
       const batchId =
-        batch || this.generateBatchId(warehouse.getId(), variant.getId());
+        batch || this.generateBatchId(warehouse.getId(), variantId);
       const domainEntity: DomainInventoryEntity = new DomainInventoryEntity({
-        warehouse,
-        variant,
-        unit,
+        warehouseId,
+        variantId,
+        unitId,
         quantity,
         status,
         expirationDate: effectiveExpirationDate,
@@ -132,18 +136,20 @@ export class InventoryService {
     return inventory;
   }
 
-  async checkoutInventory(
-    warehouse: DomainWarehouseEntity,
-    variant: DomainVariantEntity,
-    unit: DomainUnitEntity,
+  async checkOutInventory(
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
     quantity: number,
     status: InventoryStatus = InventoryStatus.AVAILABLE,
   ): Promise<DomainInventoryEntity> {
     // Step 1: Find the existing inventory for the given warehouse and variant
     const existingInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
-        warehouse.getId(),
-        variant.getId(),
+        warehouseId,
+        variantId,
+        unitId,
+        status,
       );
 
     // Step 2: Check if the inventory exists
@@ -152,7 +158,7 @@ export class InventoryService {
     }
 
     // Step 3: Check if the unit matches the existing inventory's unit
-    if (existingInventory.getUnit().getId() !== unit.getId()) {
+    if (existingInventory.getUnit() !== unitId) {
       throw new Error(
         'Unit mismatch! The inventory unit does not match the requested unit.',
       );
@@ -179,9 +185,9 @@ export class InventoryService {
   }
 
   async adjustQuantity(
-    warehouse: DomainWarehouseEntity,
-    variant: DomainVariantEntity,
-    unit: DomainUnitEntity,
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
     quantity: number,
     status: InventoryStatus,
     batch?: string,
@@ -192,8 +198,11 @@ export class InventoryService {
     }
     const existingInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
-        warehouse.getId(),
-        variant.getId(),
+        warehouseId,
+        variantId,
+        unitId,
+        status,
+        expirationDate,
       );
     if (!existingInventory) {
       throw new Error('Inventory does not exist!');
@@ -202,8 +211,8 @@ export class InventoryService {
     if (batch) existingInventory.setBatch(batch);
     if (expirationDate) existingInventory.setExpirationDate(expirationDate);
     if (status) existingInventory.setStatus(status);
-    if (unit && existingInventory.getUnit().getId() !== unit.getId()) {
-      existingInventory.setUnit(unit);
+    if (unitId && existingInventory.getUnit() !== unitId) {
+      existingInventory.setUnit(unitId);
     }
     return await this.inventoryRepository.saveAndReturnDomain(
       existingInventory,
@@ -211,10 +220,10 @@ export class InventoryService {
   }
 
   async transferInventory(
-    sourceWarehouse: DomainWarehouseEntity,
-    targetWarehouse: DomainWarehouseEntity,
-    variant: DomainVariantEntity,
-    unit: DomainUnitEntity,
+    sourceWarehouseId: string,
+    targetWarehouseId: string,
+    variantId: string,
+    unitId: string,
     status: InventoryStatus,
     quantity: number,
     expirationDate?: Date,
@@ -222,9 +231,15 @@ export class InventoryService {
     // Chuyển inventory từ kho này sang kho khác
     const sourceInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
-        sourceWarehouse.getId(),
-        variant.getId(),
+        sourceWarehouseId,
+        variantId,
+        variantId,
+        status,
+        expirationDate,
       );
+
+    const targetWarehouse: DomainWarehouseEntity =
+      await this.warehouseService.findByIdWarehouse(targetWarehouseId);
 
     if (sourceInventory.getQuantity() < quantity) {
       throw new Error('Insufficient quantity in source warehouse');
@@ -240,8 +255,11 @@ export class InventoryService {
     // Thêm số lượng vào kho đích
     const targetInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
-        targetWarehouse.getId(),
-        variant.getId(),
+        targetWarehouseId,
+        variantId,
+        unitId,
+        status,
+        expirationDate,
       );
 
     if (targetInventory) {
@@ -249,9 +267,9 @@ export class InventoryService {
       await this.inventoryRepository.saveAndReturnDomain(targetInventory);
     } else {
       const newInventory = new DomainInventoryEntity({
-        warehouse: targetWarehouse,
-        variant,
-        unit,
+        warehouseId: targetWarehouseId,
+        variantId,
+        unitId,
         quantity,
         status,
         expirationDate: effectiveExpirationDate,

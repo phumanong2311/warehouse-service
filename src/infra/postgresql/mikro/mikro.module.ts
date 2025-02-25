@@ -1,20 +1,23 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import {
   Category,
   Inventory,
   Product,
   Rack,
-  Size,
   Variant,
   VariantType,
   VariantValue,
   Warehouse,
 } from '../entities';
-import mikroConfig from './mikro.config';
+import mikroConfig from '../../../mikro-orm.config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     MikroOrmModule.forRootAsync({
       useFactory: async () => {
         if (!mikroConfig)
@@ -28,7 +31,6 @@ import mikroConfig from './mikro.config';
             Inventory,
             Product,
             Rack,
-            Size,
             VariantType,
             VariantValue,
             Variant,

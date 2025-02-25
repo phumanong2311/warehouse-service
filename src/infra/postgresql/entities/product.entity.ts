@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, OneToMany, Property } from '@mikro-orm/core';
+import {
+  Collection,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  Property,
+} from '@mikro-orm/core';
 import { InfraBaseEntity } from '@share/infra/entities';
 import { Category } from './category.entity';
 import { Rack } from './rack.entity';
@@ -16,15 +22,15 @@ export class Product extends InfraBaseEntity {
   @Property({ nullable: true })
   description?: string;
 
-  @ManyToOne(() => Category)
+  @ManyToOne(() => Category, { fieldName: 'category_id' })
   category!: Category;
 
-  @ManyToOne(() => Warehouse)
+  @ManyToOne(() => Warehouse, { fieldName: 'warehouse_id' })
   warehouse!: Warehouse;
 
   @OneToMany(() => Variant, (variant) => variant.product)
-  variants!: Variant[];
+  variants = new Collection<Variant>(this);
 
-  @ManyToOne(() => Rack)
+  @ManyToOne(() => Rack, { fieldName: 'rack_id' })
   rack!: Rack;
 }

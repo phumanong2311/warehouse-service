@@ -1,1 +1,1 @@
-// export * from './warehouse-application.service';
+export * from './warehouse-application.service';

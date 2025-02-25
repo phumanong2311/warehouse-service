@@ -8,14 +8,11 @@ import { Rack } from './rack.entity';
 
 @Entity({ tableName: 'inventory' })
 export class Inventory extends InfraBaseEntity {
-  @ManyToOne(() => Warehouse)
+  @ManyToOne(() => Warehouse, { fieldName: 'warehouse_id' })
   warehouse!: Warehouse;
 
   @ManyToOne(() => Variant)
   variant!: Variant;
-
-  @ManyToOne(() => Rack)
-  rack!: Rack;
 
   @ManyToOne(() => Unit)
   unit?: Unit;

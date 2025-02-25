@@ -1,19 +1,19 @@
 import { defineConfig, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { resolve } from 'path';
-import configuration from '../../config';
+import configuration from './infra/config';
 import {
   Category,
   Inventory,
   Product,
   Rack,
-  Size,
   Variant,
   VariantType,
   VariantValue,
   Warehouse,
-} from '../entities';
+} from './infra/postgresql/entities';
 
+console.log('🔍 MikroORM Config Loaded:', configuration.postgresql);
 export default defineConfig({
   driver: PostgreSqlDriver,
   dbName: configuration.postgresql.dbName,
@@ -29,7 +29,6 @@ export default defineConfig({
     Inventory,
     Product,
     Rack,
-    Size,
     VariantType,
     VariantValue,
     Variant,
@@ -38,7 +37,7 @@ export default defineConfig({
     console.log(message);
   },
   seeder: {
-    path: resolve(__dirname, '../seed'),
+    path: resolve(__dirname, './infra/postgresql/seed'),
   },
   migrations: {
     path: './migrations',

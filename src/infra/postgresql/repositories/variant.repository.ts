@@ -1,9 +1,13 @@
 import { DomainVariantEntity } from '@domain/product/entities';
 import { VariantMapper } from '@domain/product/mapper';
+import { SqlEntityManager } from '@mikro-orm/postgresql';
 import { Variant } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
 
 export class VariantRepository extends BaseRepository<Variant> {
+  constructor(em: SqlEntityManager) {
+    super(em, Variant);
+  }
   async findByIdVariant(id: string): Promise<DomainVariantEntity> {
     const data = await this.findById(id);
     return VariantMapper.entityInfraToDomain(data);
