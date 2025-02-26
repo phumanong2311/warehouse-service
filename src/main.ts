@@ -5,7 +5,6 @@ import { appConfig } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  console.log('process.env.PORT', appConfig.app.port);
   await app.listen(appConfig.app.port);
   // Áp dụng Global Exception Filter
   app.useGlobalFilters(new AllExceptionsFilter());
