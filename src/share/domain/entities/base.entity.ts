@@ -18,6 +18,26 @@ export abstract class DomainBaseEntity {
     this.createdBy = params.createdBy;
     this.updatedBy = params.updatedBy;
   }
+  setId(id: string): void {
+    this.id = id;
+  }
+
+  setCreatedAt(date: Date): void {
+    this.createdAt = date;
+  }
+
+  setUpdatedAt(date: Date): void {
+    this.updatedAt = date;
+  }
+
+  setCreatedBy(userId: string): void {
+    this.createdBy = userId;
+  }
+
+  setUpdatedBy(userId: string): void {
+    this.updatedBy = userId;
+  }
+
   getId(): string {
     return this.id;
   }
