@@ -1,9 +1,6 @@
-import { DomainVariantEntity } from '@domain/product/entities';
 import { DomainBaseEntity } from '@share/domain/entities';
 import { InventoryStatus } from '@share/types';
 import { v4 as uuidv4 } from 'uuid';
-import { DomainWarehouseEntity } from './warehouse.entity';
-import { DomainUnitEntity } from './unit.entity';
 
 export class DomainInventoryEntity extends DomainBaseEntity {
   private warehouseId: string;

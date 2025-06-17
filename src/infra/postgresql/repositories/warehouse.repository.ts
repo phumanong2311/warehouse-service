@@ -1,16 +1,8 @@
-import {
-  FilterType,
-  PaginationWarehouseDto,
-  SortType,
-} from '@domain/warehouse/dtos';
+import { PaginationWarehouseDto } from '@domain/warehouse/dtos';
 import { DomainWarehouseEntity } from '@domain/warehouse/entities';
 import { IWarehouseRepository } from '@domain/warehouse/interface-repositories';
 import { WarehouseMapper } from '@domain/warehouse/mapper';
-import {
-  OrderDefinition,
-  Populate,
-  SqlEntityManager,
-} from '@mikro-orm/postgresql';
+import { OrderDefinition, SqlEntityManager } from '@mikro-orm/postgresql';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Warehouse } from 'src/infra/postgresql/entities';
 import { BaseRepository } from 'src/infra/postgresql/repositories/base.repository';
