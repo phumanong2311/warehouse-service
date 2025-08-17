@@ -1,6 +1,6 @@
-import { WarehouseControllerModule } from '@domain/warehouse/controller';
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
+import { WarehouseControllerModule } from '@presentation/warehouse/controllers/warehouse-controller.module';
 import { ProductControllerModule } from 'src/domain/product/controller/product-controller.module';
 
 @Module({

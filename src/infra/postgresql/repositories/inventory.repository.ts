@@ -1,5 +1,5 @@
 import { DomainInventoryEntity } from '@domain/warehouse/entities';
-import { InventoryMapper } from '@domain/warehouse/mapper';
+import { InventoryMapper } from '../mappers/inventory.mapper';
 import { FilterQuery } from '@mikro-orm/core';
 import { SqlEntityManager } from '@mikro-orm/postgresql';
 import { InventoryStatus } from '@share/types';

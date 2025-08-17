@@ -1,46 +1,46 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ProductRepository } from '../../../infra/postgresql/repositories/product.repository';
+import { Injectable } from '@nestjs/common';
 import { DomainProductEntity } from '../entities';
-import { IProductRepository } from '../interface-repositories/product.interface.repository';
+import { ProductNotFoundException, ProductCannotBeUpdatedException } from '../exceptions';
 
+/**
+ * @deprecated Use ProductApplicationService instead
+ * This service is kept for backward compatibility but should be replaced
+ * with the new application service layer
+ */
 @Injectable()
 export class ProductService {
-  constructor(
-    @Inject(ProductRepository)
-    private readonly productRepository: IProductRepository,
-  ) {}
+  constructor() {
+    console.warn('ProductService is deprecated. Use ProductApplicationService instead.');
+  }
+
   async findById(productId: string): Promise<DomainProductEntity> {
-    return await this.productRepository.findByProductId(productId);
+    throw new Error('Method deprecated. Use ProductApplicationService.getProductById instead.');
   }
+
   async findAll(): Promise<DomainProductEntity[]> {
-    return await this.productRepository.findAllProducts();
+    throw new Error('Method deprecated. Use ProductApplicationService.getProducts instead.');
   }
+
   async findWithPagination(query: {
     limit?: number;
     page?: number;
     filter?: Record<string, any>;
   }): Promise<{ data: DomainProductEntity[]; total: number }> {
-    return this.productRepository.findWithPagination(query);
+    throw new Error('Method deprecated. Use ProductApplicationService.getProducts instead.');
   }
-  async create(product: DomainProductEntity) {
-    return this.productRepository.saveAndReturnDomain(product);
+
+  async create(product: DomainProductEntity): Promise<DomainProductEntity> {
+    throw new Error('Method deprecated. Use ProductApplicationService.createProduct instead.');
   }
+
   async update(
     id: string,
     product: Partial<DomainProductEntity>,
   ): Promise<DomainProductEntity> {
-    const isExit = await this.productRepository.findByProductId(id);
-    if (!isExit) {
-      throw new Error(`Product with id ${id} not found`);
-    }
-    const warehouse = product.getWarehouse();
-    const rack = product.getRack();
-    if (warehouse || rack) {
-      throw new Error(`Can't update this attribute`);
-    }
-    return this.productRepository.updateAndReturnDomain(id, product);
+    throw new Error('Method deprecated. Use ProductApplicationService.updateProduct instead.');
   }
+
   async delete(id: string): Promise<void> {
-    return this.productRepository.deleteProduct(id);
+    throw new Error('Method deprecated. Use ProductApplicationService.deleteProduct instead.');
   }
 }

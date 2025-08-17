@@ -102,7 +102,7 @@ export class PaginationWarehouseDto {
   updated_at?: Date;
 
   @IsOptional()
-  @ValidateNested() // Áp dụng validate cho các đối tượng lồng
+  @ValidateNested()
   @Type(() => SortType)
   sort?: SortType;
 }

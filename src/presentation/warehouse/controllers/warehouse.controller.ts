@@ -1,19 +1,17 @@
-import {
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  Query,
-} from '@nestjs/common';
-import { PaginationWarehouseDto } from '../dtos';
-import { WarehouseService } from '../services/warehouse.service';
+import { Controller, Get, Inject, NotFoundException, Param, Query } from '@nestjs/common';
+import { PaginationWarehouseDto } from '@application/warehouse/dtos/pagination-warehouse.dto';
+import { IWarehouseService } from '@application/warehouse/interfaces/warehouse.service';
 
 @Controller()
 export class WarehouseController {
-  constructor(private readonly warehouseService: WarehouseService) {}
+  constructor(
+    @Inject('IWarehouseService')
+    private readonly warehouseService: IWarehouseService,
+  ) {}
 
   @Get('')
   async findWarehousesWithPagination(@Query() query: PaginationWarehouseDto) {
+    console.log('query', query);
     return await this.warehouseService.findWithPagination(query);
   }
 

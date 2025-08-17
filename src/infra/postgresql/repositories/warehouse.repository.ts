@@ -1,7 +1,7 @@
-import { PaginationWarehouseDto } from '@domain/warehouse/dtos';
+import { PaginationWarehouseDto } from '@application/warehouse/dtos/pagination-warehouse.dto';
 import { DomainWarehouseEntity } from '@domain/warehouse/entities';
 import { IWarehouseRepository } from '@domain/warehouse/interface-repositories';
-import { WarehouseMapper } from '@domain/warehouse/mapper';
+import { WarehouseMapper } from '../mappers/warehouse.mapper';
 import { OrderDefinition, SqlEntityManager } from '@mikro-orm/postgresql';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Warehouse } from 'src/infra/postgresql/entities';
@@ -151,9 +151,18 @@ export class WarehouseRepository
     if (!existingEntity) {
       throw new Error(`Warehouse with ID ${id} not found.`);
     }
-    const updatedData = { ...existingEntity, ...warehouse };
-    const entityToUpdate = WarehouseMapper.entityDomainToInfra(updatedData);
-    const updatedEntity = await this.update(id, entityToUpdate);
+    
+    // Update only the fields that are provided
+    if (warehouse.getCode) existingEntity.code = warehouse.getCode();
+    if (warehouse.getPhone) existingEntity.phone = warehouse.getPhone();
+    if (warehouse.getName) existingEntity.name = warehouse.getName();
+    if (warehouse.getEmail) existingEntity.email = warehouse.getEmail();
+    if (warehouse.getLogo) existingEntity.logo = warehouse.getLogo();
+    if (warehouse.getAddress) existingEntity.address = warehouse.getAddress();
+    if (warehouse.getUpdatedBy) existingEntity.updatedBy = warehouse.getUpdatedBy();
+    if (warehouse.getRegistrationExpirationDate) existingEntity.registrationExpirationDate = warehouse.getRegistrationExpirationDate();
+    
+    const updatedEntity = await this.update(id, existingEntity);
     return WarehouseMapper.entityInfraToDomain(updatedEntity);
   }
 

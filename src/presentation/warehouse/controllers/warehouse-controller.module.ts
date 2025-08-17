@@ -1,18 +1,16 @@
 import { WarehouseRepository } from '@infra/postgresql/repositories';
 import { Module } from '@nestjs/common';
-import { WarehouseService } from '../services';
+import { WarehouseApplicationModule } from '@application/warehouse/warehouse-application.module';
 import { WarehouseController } from './warehouse.controller';
 
 @Module({
-  imports: [],
+  imports: [WarehouseApplicationModule],
   controllers: [WarehouseController],
   providers: [
-    WarehouseService,
     {
       provide: 'IWarehouseRepository',
       useClass: WarehouseRepository,
     },
   ],
-  exports: ['IWarehouseRepository'],
 })
 export class WarehouseControllerModule {}

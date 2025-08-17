@@ -22,67 +22,175 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# Warehouse Service
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+A modern warehouse management system built with **NestJS** and **Hexagonal Architecture**.
 
-## Project setup
+## 🏗️ Architecture
 
-```bash
-$ pnpm install
-```
+This project follows **Hexagonal Architecture** (Clean Architecture) principles:
 
-## Compile and run the project
+- **Domain Layer**: Core business logic and entities
+- **Application Layer**: Use cases and application services  
+- **Infrastructure Layer**: Database, external APIs, and implementations
+- **Presentation Layer**: HTTP controllers and API endpoints
 
-```bash
-# development
-$ pnpm run start
+For detailed architecture documentation, see [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
-# watch mode
-$ pnpm run start:dev
+## 🚀 Quick Start
 
-# production mode
-$ pnpm run start:prod
-```
+### Prerequisites
 
-## Run tests
+- Node.js (v16 or higher)
+- PostgreSQL
+- pnpm (recommended) or npm
 
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Installation
 
 ```bash
-$ pnpm install -g mau
-$ mau deploy
+# Install dependencies
+pnpm install
+
+# Copy environment file
+cp .env-example.txt .env
+
+# Update environment variables in .env file
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Database Setup
 
-## Resources
+```bash
+# Start PostgreSQL (if using Docker)
+docker-compose up -d
 
-Check out a few resources that may come in handy when working with NestJS:
+# Run migrations
+pnpm run migration:run
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Seed data (optional)
+pnpm run seed
+```
+
+### Development
+
+```bash
+# Start development server
+pnpm run start:dev
+
+# Run tests
+pnpm run test
+
+# Run e2e tests
+pnpm run test:e2e
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── domain/                    # Core business logic
+│   └── warehouse/
+│       ├── entities/          # Domain entities
+│       ├── interface-repositories/ # Repository interfaces
+│       └── services/          # Domain services
+├── application/               # Use cases & application logic
+│   └── warehouse/
+│       ├── services/          # Application services
+│       ├── interfaces/        # Service interfaces
+│       ├── dtos/              # Request/Response DTOs
+│       └── modules/           # Application modules
+├── infrastructure/            # External concerns
+│   └── postgresql/
+│       ├── repositories/      # Repository implementations
+│       ├── mappers/           # Data mappers
+│       └── entities/          # Database entities
+└── presentation/              # Controllers & HTTP concerns
+    └── warehouse/
+        └── controllers/       # HTTP controllers
+```
+
+## 🔧 Key Features
+
+- ✅ **Hexagonal Architecture**: Clean separation of concerns
+- ✅ **TypeScript**: Full type safety
+- ✅ **NestJS**: Modern Node.js framework
+- ✅ **MikroORM**: Type-safe database ORM
+- ✅ **PostgreSQL**: Robust relational database
+- ✅ **Dependency Injection**: IoC container
+- ✅ **Validation**: Request/response validation
+- ✅ **Testing**: Unit, integration, and e2e tests
+
+## 📚 API Documentation
+
+### Warehouse Endpoints
+
+- `GET /warehouse` - Get warehouses with pagination
+- `GET /warehouse/all` - Get all warehouses
+- `GET /warehouse/:id` - Get warehouse by ID
+
+### Example Request
+
+```bash
+# Get warehouses with pagination
+curl "http://localhost:3000/warehouse?limit=10&page=1&name=Main"
+
+# Get warehouse by ID
+curl "http://localhost:3000/warehouse/123e4567-e89b-12d3-a456-426614174000"
+```
+
+## 🧪 Testing
+
+```bash
+# Unit tests
+pnpm run test
+
+# Integration tests
+pnpm run test:integration
+
+# E2E tests
+pnpm run test:e2e
+
+# Test coverage
+pnpm run test:cov
+```
+
+## 📝 Development Guidelines
+
+### Adding New Entity
+
+1. Create domain entity in `src/domain/[entity]/entities/`
+2. Create repository interface in `src/domain/[entity]/interface-repositories/`
+3. Create application service in `src/application/[entity]/services/`
+4. Create infrastructure repository in `src/infrastructure/postgresql/repositories/`
+5. Create mapper in `src/infrastructure/postgresql/mappers/`
+6. Create controller in `src/presentation/[entity]/controllers/`
+7. Update modules and exports
+
+### Code Style
+
+- Follow TypeScript best practices
+- Use dependency injection
+- Implement interfaces for loose coupling
+- Write unit tests for business logic
+- Use DTOs for data validation
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Follow the architecture guidelines
+4. Write tests for new features
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🔗 Links
+
+- [Architecture Documentation](./docs/ARCHITECTURE.md)
+- [NestJS Documentation](https://docs.nestjs.com/)
+- [MikroORM Documentation](https://mikro-orm.io/)
+- [Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
 
 ## Support
 
