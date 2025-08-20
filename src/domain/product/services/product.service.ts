@@ -1,46 +1,28 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ProductRepository } from '../../../infra/postgresql/repositories/product.repository';
 import { DomainProductEntity } from '../entities';
-import { IProductRepository } from '../interface-repositories/product.interface.repository';
 
-@Injectable()
-export class ProductService {
-  constructor(
-    @Inject(ProductRepository)
-    private readonly productRepository: IProductRepository,
-  ) {}
-  async findById(productId: string): Promise<DomainProductEntity> {
-    return await this.productRepository.findByProductId(productId);
-  }
-  async findAll(): Promise<DomainProductEntity[]> {
-    return await this.productRepository.findAllProducts();
-  }
-  async findWithPagination(query: {
-    limit?: number;
-    page?: number;
-    filter?: Record<string, any>;
-  }): Promise<{ data: DomainProductEntity[]; total: number }> {
-    return this.productRepository.findWithPagination(query);
-  }
-  async create(product: DomainProductEntity) {
-    return this.productRepository.saveAndReturnDomain(product);
-  }
-  async update(
-    id: string,
-    product: Partial<DomainProductEntity>,
-  ): Promise<DomainProductEntity> {
-    const isExit = await this.productRepository.findByProductId(id);
-    if (!isExit) {
-      throw new Error(`Product with id ${id} not found`);
+export class ProductDomainService {
+  // Pure domain logic without any infrastructure dependencies
+  validateProduct(product: DomainProductEntity): boolean {
+    if (!product.getName() || product.getName().trim().length === 0) {
+      throw new Error('Product name is required');
     }
-    const warehouse = product.getWarehouse();
-    const rack = product.getRack();
-    if (warehouse || rack) {
-      throw new Error(`Can't update this attribute`);
+
+    if (product.getPrice() <= 0) {
+      throw new Error('Product price must be greater than 0');
     }
-    return this.productRepository.updateAndReturnDomain(id, product);
+
+    return true;
   }
-  async delete(id: string): Promise<void> {
-    return this.productRepository.deleteProduct(id);
+
+  calculateDiscount(product: DomainProductEntity, discountPercentage: number): number {
+    if (discountPercentage < 0 || discountPercentage > 100) {
+      throw new Error('Discount percentage must be between 0 and 100');
+    }
+
+    return product.getPrice() * (1 - discountPercentage / 100);
+  }
+
+  isProductAvailable(product: DomainProductEntity): boolean {
+    return product.getStockQuantity() > 0;
   }
 }
