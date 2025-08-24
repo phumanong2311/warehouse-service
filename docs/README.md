@@ -4,12 +4,16 @@
 
 Thư mục này chứa tất cả documentation liên quan đến Warehouse Service, bao gồm architecture, design patterns, và implementation guides.
 
+**Author**: Phu Ma
+
 ## 📖 Documentation Index
 
 ### 🏗️ Architecture & Design
 - [Product Architecture](./product-architecture.md) - Chi tiết về cấu trúc Product module theo Hexagonal Architecture và Clean Architecture
+- [Warehouse Completion Plan](./warehouse-completion-plan.md) - Kế hoạch hoàn thiện Warehouse Service
 
 ### 🔧 Implementation Guides
+- [Entity Creation Order](./entity-creation-order.md) - Thứ tự tạo entities và dependencies
 - [Setup Guide](./setup-guide.md) - Hướng dẫn setup và chạy project (sẽ tạo sau)
 - [API Documentation](./api-docs.md) - API endpoints documentation (sẽ tạo sau)
 - [Database Schema](./database-schema.md) - Cấu trúc database và relationships (sẽ tạo sau)
