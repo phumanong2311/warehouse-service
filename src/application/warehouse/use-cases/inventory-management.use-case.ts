@@ -44,6 +44,30 @@ export interface InventoryManagementUseCase {
     quantity: number,
     status: InventoryStatus,
   ): Promise<{ fromInventory: DomainInventoryEntity; toInventory: DomainInventoryEntity }>;
+  adjustInventory(
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
+    adjustmentQuantity: number,
+    reason: string,
+    notes?: string,
+  ): Promise<DomainInventoryEntity>;
+  writeOff(
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
+    quantity: number,
+    reason: string,
+    notes?: string,
+  ): Promise<DomainInventoryEntity>;
+  physicalCountAdjustment(
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
+    physicalCount: number,
+    reason?: string,
+    notes?: string,
+  ): Promise<DomainInventoryEntity>;
 }
 
 export class InventoryManagementUseCaseImpl implements InventoryManagementUseCase {
@@ -93,14 +117,14 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
 
   async create(inventory: DomainInventoryEntity): Promise<DomainInventoryEntity> {
     // Validate warehouse exists
-    await this.warehouseRepository.findByIdWarehouse(inventory.getWarehouseId());
+    await this.warehouseRepository.findByIdWarehouse(inventory.getWarehouse());
 
     // Validate required fields
-    if (!inventory.getWarehouseId() || inventory.getWarehouseId().trim().length === 0) {
+    if (!inventory.getWarehouse() || inventory.getWarehouse().trim().length === 0) {
       throw new Error('Warehouse ID is required');
     }
 
-    if (!inventory.getVariantId() || inventory.getVariantId().trim().length === 0) {
+    if (!inventory.getVariant() || inventory.getVariant().trim().length === 0) {
       throw new Error('Variant ID is required');
     }
 
@@ -122,8 +146,8 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     }
 
     // If updating warehouse, validate it exists
-    if (inventory.getWarehouseId && inventory.getWarehouseId() !== existingInventory.getWarehouseId()) {
-      await this.warehouseRepository.findByIdWarehouse(inventory.getWarehouseId());
+    if (inventory.getWarehouse && inventory.getWarehouse() !== existingInventory.getWarehouse()) {
+      await this.warehouseRepository.findByIdWarehouse(inventory.getWarehouse());
     }
 
     // Validate quantity if provided
@@ -263,13 +287,188 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
       toWarehouse,
       { id: variantId } as any, // TODO: Get actual variant entity
       { id: unitId } as any, // TODO: Get actual unit entity
-      quantity,
       status,
+      quantity,
     );
 
+    // The repository returns an array with [fromInventory, toInventory]
     return {
-      fromInventory: result.fromInventory,
-      toInventory: result.toInventory,
+      fromInventory: result[0],
+      toInventory: result[1],
     };
+  }
+
+  async adjustInventory(
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
+    adjustmentQuantity: number,
+    reason: string,
+    notes?: string,
+  ): Promise<DomainInventoryEntity> {
+    // Validate warehouse exists
+    await this.warehouseRepository.findByIdWarehouse(warehouseId);
+
+    // Validate required fields
+    if (!reason || reason.trim().length === 0) {
+      throw new Error('Adjustment reason is required');
+    }
+
+    if (adjustmentQuantity === 0) {
+      throw new Error('Adjustment quantity cannot be zero');
+    }
+
+    // Find existing inventory record
+    const existingInventory = await this.inventoryRepository.findByWarehouseAndVariant(
+      warehouseId,
+      variantId,
+      unitId,
+      InventoryStatus.AVAILABLE, // Default to available status for adjustments
+    );
+
+    let updatedInventory: DomainInventoryEntity;
+
+    if (existingInventory) {
+      // Update existing inventory
+      const newQuantity = existingInventory.getQuantity() + adjustmentQuantity;
+
+      if (newQuantity < 0) {
+        throw new Error('Adjustment would result in negative inventory');
+      }
+
+      updatedInventory = await this.inventoryRepository.updateAndReturnDomain(
+        existingInventory.getId(),
+        { quantity: newQuantity } as any,
+      );
+    } else if (adjustmentQuantity > 0) {
+      // Create new inventory record for positive adjustments
+      const inventory = new DomainInventoryEntity({
+        warehouseId,
+        variantId,
+        unitId,
+        quantity: adjustmentQuantity,
+        status: InventoryStatus.AVAILABLE,
+      });
+
+      updatedInventory = await this.inventoryRepository.saveAndReturnDomain(inventory);
+    } else {
+      throw new Error('Cannot adjust non-existent inventory with negative quantity');
+    }
+
+    // TODO: Log the adjustment for audit trail with reason and notes
+
+    return updatedInventory;
+  }
+
+  async writeOff(
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
+    quantity: number,
+    reason: string,
+    notes?: string,
+  ): Promise<DomainInventoryEntity> {
+    // Validate warehouse exists
+    await this.warehouseRepository.findByIdWarehouse(warehouseId);
+
+    // Validate required fields
+    if (!reason || reason.trim().length === 0) {
+      throw new Error('Write-off reason is required');
+    }
+
+    if (quantity <= 0) {
+      throw new Error('Write-off quantity must be greater than 0');
+    }
+
+    // Find existing inventory record
+    const existingInventory = await this.inventoryRepository.findByWarehouseAndVariant(
+      warehouseId,
+      variantId,
+      unitId,
+      InventoryStatus.AVAILABLE,
+    );
+
+    if (!existingInventory) {
+      throw new Error('No inventory found to write off');
+    }
+
+    if (existingInventory.getQuantity() < quantity) {
+      throw new Error('Insufficient inventory quantity for write-off');
+    }
+
+    // Update inventory by reducing quantity
+    const newQuantity = existingInventory.getQuantity() - quantity;
+    const updatedInventory = await this.inventoryRepository.updateAndReturnDomain(
+      existingInventory.getId(),
+      { quantity: newQuantity } as any,
+    );
+
+    // TODO: Log the write-off for audit trail with reason and notes
+    // TODO: Consider moving written-off inventory to a separate status/location
+
+    return updatedInventory;
+  }
+
+  async physicalCountAdjustment(
+    warehouseId: string,
+    variantId: string,
+    unitId: string,
+    physicalCount: number,
+    reason?: string,
+    notes?: string,
+  ): Promise<DomainInventoryEntity> {
+    // Validate warehouse exists
+    await this.warehouseRepository.findByIdWarehouse(warehouseId);
+
+    if (physicalCount < 0) {
+      throw new Error('Physical count cannot be negative');
+    }
+
+    // Find existing inventory record
+    const existingInventory = await this.inventoryRepository.findByWarehouseAndVariant(
+      warehouseId,
+      variantId,
+      unitId,
+      InventoryStatus.AVAILABLE,
+    );
+
+    let updatedInventory: DomainInventoryEntity;
+
+    if (existingInventory) {
+      const systemCount = existingInventory.getQuantity();
+      const adjustment = physicalCount - systemCount;
+
+      if (adjustment === 0) {
+        // No adjustment needed
+        return existingInventory;
+      }
+
+      // Update to physical count
+      updatedInventory = await this.inventoryRepository.updateAndReturnDomain(
+        existingInventory.getId(),
+        { quantity: physicalCount } as any,
+      );
+
+      // TODO: Log the physical count adjustment for audit trail
+      // Include: systemCount, physicalCount, adjustment amount, reason, notes
+    } else if (physicalCount > 0) {
+      // Create new inventory record based on physical count
+      const inventory = new DomainInventoryEntity({
+        warehouseId,
+        variantId,
+        unitId,
+        quantity: physicalCount,
+        status: InventoryStatus.AVAILABLE,
+      });
+
+      updatedInventory = await this.inventoryRepository.saveAndReturnDomain(inventory);
+
+      // TODO: Log the new inventory creation from physical count
+    } else {
+      // Physical count is 0 and no system record exists - nothing to do
+      throw new Error('No inventory adjustment needed - both physical and system counts are zero');
+    }
+
+    return updatedInventory;
   }
 }

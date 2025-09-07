@@ -1,12 +1,12 @@
-import { WarehouseControllerModule } from '@domain/warehouse/controller';
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 import { ProductModule } from '../infra/http/modules/product.module';
+import { WarehouseModule } from '../infra/http/modules/warehouse.module';
 
 @Module({
   imports: [
     ProductModule,
-    WarehouseControllerModule,
+    WarehouseModule,
     RouterModule.register([
       {
         path: '/product',
@@ -14,7 +14,7 @@ import { ProductModule } from '../infra/http/modules/product.module';
       },
       {
         path: '/warehouse',
-        module: WarehouseControllerModule,
+        module: WarehouseModule,
       },
     ]),
   ],
