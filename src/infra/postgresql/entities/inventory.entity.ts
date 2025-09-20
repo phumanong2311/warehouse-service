@@ -2,17 +2,15 @@ import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { InfraBaseEntity } from '@share/infra/entities';
 import { InventoryStatus } from '@share/types';
 import { Unit } from './unit.entity';
-import { Variant } from './variant.entity';
 import { Warehouse } from './warehouse.entity';
-import { Rack } from './rack.entity';
 
 @Entity({ tableName: 'inventory' })
 export class Inventory extends InfraBaseEntity {
   @ManyToOne(() => Warehouse, { fieldName: 'warehouse_id' })
   warehouse!: Warehouse;
 
-  @ManyToOne(() => Variant)
-  variant!: Variant;
+  @Property()
+  variantId!: string; // Store variant ID as string
 
   @ManyToOne(() => Unit)
   unit?: Unit;

@@ -1,99 +1,271 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Warehouse Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A comprehensive warehouse and inventory management service built with Clean Architecture principles using NestJS, TypeScript, and PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🏗️ Architecture
 
-## Description
+This service follows **Clean Architecture** principles with clear separation of concerns:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Domain Layer**: Pure business logic, no framework dependencies
+- **Application Layer**: Use cases and application services
+- **Infrastructure Layer**: HTTP controllers, database, and external concerns
 
-## Project setup
+## 🚀 Features
 
+### Warehouse Management
+- Create, read, update, delete warehouses
+- Warehouse pagination and filtering
+- Warehouse validation and business rules
+
+### Inventory Management
+- Track inventory across warehouses
+- Check-in and check-out operations
+- Inventory transfers between warehouses
+- Stock adjustments and write-offs
+- Physical count adjustments
+
+### Clean Architecture Benefits
+- **Testable**: Domain logic can be unit tested without framework setup
+- **Maintainable**: Clear separation of concerns
+- **Flexible**: Easy to change frameworks or add new features
+- **Independent**: Domain layer is framework-agnostic
+
+## 📋 Prerequisites
+
+- Node.js 18+
+- PostgreSQL 13+
+- npm or yarn
+
+## 🛠️ Installation
+
+1. **Clone the repository**
 ```bash
-$ pnpm install
+git clone <repository-url>
+cd warehouse-service
 ```
 
-## Compile and run the project
-
+2. **Install dependencies**
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+npm install
 ```
 
-## Run tests
-
+3. **Set up environment variables**
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+cp .env.example .env
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g mau
-$ mau deploy
+4. **Configure database connection in `.env`**
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=warehouse_service
+DB_USER=your_username
+DB_PASSWORD=your_password
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+5. **Run database migrations**
+```bash
+npm run migration:run
+```
 
-## Resources
+6. **Start the development server**
+```bash
+npm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## 📚 Documentation
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- [Clean Architecture Guide](docs/clean-architecture-guide.md) - Detailed architecture explanation
+- [API Documentation](docs/api-documentation.md) - Complete API reference
+- [Development Guide](docs/development-guide.md) - How to add new features
 
-## Support
+## 🏛️ Project Structure
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+src/
+├── domain/                      # Domain layer (business logic)
+│   └── warehouse/
+│       ├── entities/            # Domain entities
+│       ├── interfaces/          # Domain interfaces
+│       ├── services/            # Domain services
+│       ├── interface-repositories/ # Repository contracts
+│       └── mappers/             # Domain mappers
+├── application/                 # Application layer (use cases)
+│   └── warehouse/
+│       ├── use-cases/           # Application use cases
+│       ├── services/            # Application services
+│       └── interface-repositories/ # Application interfaces
+├── infra/                       # Infrastructure layer
+│   ├── http/                    # HTTP infrastructure
+│   │   ├── controllers/         # HTTP controllers
+│   │   ├── dtos/                # Data Transfer Objects
+│   │   ├── mappers/             # DTO mappers
+│   │   └── modules/             # NestJS modules
+│   ├── postgresql/              # Database infrastructure
+│   │   ├── entities/            # Database entities
+│   │   ├── repositories/        # Repository implementations
+│   │   └── mikro/               # MikroORM configuration
+│   └── config/                  # Configuration
+├── share/                       # Shared utilities
+└── main.ts                      # Application entry point
+```
 
-## Stay in touch
+## 🔄 Data Flow
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+HTTP Request (DTO)
+    ↓
+Controller (maps DTO → Domain Entity)
+    ↓
+Use Case (Domain Entity)
+    ↓
+Domain Service (Domain Entity)
+    ↓
+Repository Interface (Domain Entity)
+    ↓
+Repository Implementation (Domain Entity → Infrastructure Entity)
+```
 
-## License
+## 🧪 Testing
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Unit Tests (Domain Layer)
+```bash
+npm run test
+```
+
+### Integration Tests (Application Layer)
+```bash
+npm run test:e2e
+```
+
+### Test Coverage
+```bash
+npm run test:cov
+```
+
+## 🗄️ Database
+
+The service uses PostgreSQL with MikroORM for database operations. Key entities:
+
+- **Warehouse**: Storage locations
+- **Inventory**: Stock tracking
+- **Rack**: Storage organization within warehouses
+- **Unit**: Measurement units for inventory
+
+## 📡 API Endpoints
+
+### Warehouse Management
+- `GET /warehouse` - List warehouses with pagination
+- `GET /warehouse/all` - List all warehouses
+- `GET /warehouse/:id` - Get warehouse by ID
+- `POST /warehouse` - Create warehouse
+- `PUT /warehouse/:id` - Update warehouse
+- `DELETE /warehouse/:id` - Delete warehouse
+
+### Inventory Management
+- `GET /warehouse/inventory` - List inventory with pagination
+- `GET /warehouse/inventory/:id` - Get inventory by ID
+- `POST /warehouse/inventory` - Create inventory
+- `PUT /warehouse/inventory/:id` - Update inventory
+- `DELETE /warehouse/inventory/:id` - Delete inventory
+
+### Inventory Operations
+- `POST /warehouse/inventory/check-in` - Check in inventory
+- `POST /warehouse/inventory/check-out` - Check out inventory
+- `POST /warehouse/inventory/transfer` - Transfer inventory
+- `POST /warehouse/inventory/adjust` - Adjust inventory
+- `POST /warehouse/inventory/write-off` - Write off inventory
+- `POST /warehouse/inventory/physical-count` - Physical count adjustment
+
+## 🔧 Development
+
+### Adding New Features
+
+1. **Start with Domain Layer**: Define entities, services, and repository interfaces
+2. **Implement Application Layer**: Create use cases and application services
+3. **Build Infrastructure Layer**: Create DTOs, controllers, and repository implementations
+
+See the [Development Guide](docs/development-guide.md) for detailed instructions.
+
+### Code Quality
+
+The project uses:
+- **ESLint** for code linting
+- **Prettier** for code formatting
+- **Husky** for git hooks
+- **lint-staged** for pre-commit checks
+
+### Database Migrations
+
+```bash
+# Generate migration
+npm run migration:create -- --name=AddNewTable
+
+# Run migrations
+npm run migration:run
+
+# Revert migration
+npm run migration:down
+```
+
+## 🚀 Deployment
+
+### Docker
+
+```bash
+# Build image
+docker build -t warehouse-service .
+
+# Run container
+docker run -p 3000:3000 warehouse-service
+```
+
+### Environment Variables
+
+```env
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=warehouse_service
+DB_USER=postgres
+DB_PASSWORD=password
+
+# Application
+PORT=3000
+NODE_ENV=development
+
+# JWT
+JWT_SECRET=your-secret-key
+JWT_EXPIRES_IN=1d
+```
+
+## 📊 Monitoring
+
+The service includes:
+- Request/response logging
+- Error tracking
+- Performance monitoring
+- Health checks
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Follow Clean Architecture principles
+4. Write tests for new features
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For questions or issues:
+- Check the [documentation](docs/)
+- Review the [API documentation](docs/api-documentation.md)
+- Open an issue on GitHub
+
+---
+
+**Built with ❤️ using Clean Architecture principles**

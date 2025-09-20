@@ -9,6 +9,7 @@ export class DomainWarehouseEntity extends DomainBaseEntity {
   private email!: string;
   private logo!: string;
   private address!: string;
+  private description?: string;
   private racks: DomainRackEntity[];
   private registrationExpirationDate: Date;
   constructor(params: {
@@ -21,6 +22,7 @@ export class DomainWarehouseEntity extends DomainBaseEntity {
     email?: string;
     logo?: string;
     address?: string;
+    description?: string;
     racks: DomainRackEntity[];
     createdAt?: Date;
     updatedAt?: Date;
@@ -39,6 +41,7 @@ export class DomainWarehouseEntity extends DomainBaseEntity {
     this.email = params.email;
     this.logo = params.logo;
     this.address = params.address;
+    this.description = params.description;
     this.racks = params.racks;
     this.registrationExpirationDate = params.registrationExpirationDate;
   }
@@ -64,6 +67,10 @@ export class DomainWarehouseEntity extends DomainBaseEntity {
 
   setAddress(address: string): void {
     this.address = address;
+  }
+
+  setDescription(description: string): void {
+    this.description = description;
   }
 
   setRacks(racks: DomainRackEntity[]): void {
@@ -96,6 +103,10 @@ export class DomainWarehouseEntity extends DomainBaseEntity {
 
   getAddress(): string {
     return this.address;
+  }
+
+  getDescription(): string | undefined {
+    return this.description;
   }
 
   getRacks(): DomainRackEntity[] {

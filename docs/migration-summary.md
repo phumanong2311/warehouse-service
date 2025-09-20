@@ -1,19 +1,19 @@
-# Product Module Migration Summary
+# Architecture Migration Summary
 
 ## 🎯 Migration Overview
 
-Tài liệu này tóm tắt quá trình migration Product module từ cấu trúc monolithic sang Clean Architecture và Hexagonal Architecture.
+Tài liệu này tóm tắt quá trình migration từ cấu trúc monolithic sang Clean Architecture và Hexagonal Architecture.
 
 ## 📊 Before vs After
 
 ### ❌ Before (Monolithic Structure)
 ```
-src/domain/product/
+src/domain/[module]/
 ├── controller/                    # ❌ Framework code in domain
-│   ├── product.controller.ts     # ❌ NestJS decorators in domain
-│   └── product-controller.module.ts
+│   ├── [module].controller.ts     # ❌ NestJS decorators in domain
+│   └── [module]-controller.module.ts
 ├── services/
-│   └── product.service.ts        # ❌ Mixed concerns (business + infrastructure)
+│   └── [module].service.ts        # ❌ Mixed concerns (business + infrastructure)
 ├── entities/
 ├── interface-repositories/
 └── mapper/
@@ -28,15 +28,15 @@ src/domain/product/
 ### ✅ After (Clean Architecture)
 ```
 src/
-├── domain/product/               # ✅ Pure domain logic
+├── domain/[module]/               # ✅ Pure domain logic
 │   ├── entities/
 │   ├── interface-repositories/
 │   ├── mapper/
 │   └── services/                # ✅ Pure business logic only
-├── application/product/          # ✅ Use cases layer
+├── application/[module]/          # ✅ Use cases layer
 │   └── use-cases/
-│       ├── find-product.use-case.ts
-│       ├── manage-product.use-case.ts
+│       ├── find-[module].use-case.ts
+│       ├── manage-[module].use-case.ts
 │       └── index.ts
 └── infra/                       # ✅ Framework-specific code
     ├── http/
@@ -57,23 +57,23 @@ src/
 ### Step 1: Create Application Layer
 ```bash
 # Created use cases
-src/application/product/use-cases/find-product.use-case.ts
-src/application/product/use-cases/manage-product.use-case.ts
-src/application/product/use-cases/index.ts
+src/application/[module]/use-cases/find-[module].use-case.ts
+src/application/[module]/use-cases/manage-[module].use-case.ts
+src/application/[module]/use-cases/index.ts
 ```
 
 ### Step 2: Create Infrastructure Layer
 ```bash
 # Created HTTP infrastructure
-src/infra/http/controllers/product.controller.ts
-src/infra/http/dtos/product.dto.ts
-src/infra/http/modules/product.module.ts
+src/infra/http/controllers/[module].controller.ts
+src/infra/http/dtos/[module].dto.ts
+src/infra/http/modules/[module].module.ts
 ```
 
 ### Step 3: Refactor Domain Layer
 ```bash
 # Refactored domain service to pure business logic
-src/domain/product/services/product.service.ts
+src/domain/[module]/services/[module].service.ts
 ```
 
 ### Step 4: Update Routing
@@ -85,32 +85,32 @@ src/router/public-routers.ts
 ### Step 5: Clean Up
 ```bash
 # Removed old controller files
-rm src/domain/product/controller/product.controller.ts
-rm src/domain/product/controller/product-controller.module.ts
-rmdir src/domain/product/controller
+rm src/domain/[module]/controller/[module].controller.ts
+rm src/domain/[module]/controller/[module]-controller.module.ts
+rmdir src/domain/[module]/controller
 ```
 
 ## 📋 Files Changed
 
 ### ✅ New Files Created
-- `src/application/product/use-cases/find-product.use-case.ts`
-- `src/application/product/use-cases/manage-product.use-case.ts`
-- `src/application/product/use-cases/index.ts`
-- `src/infra/http/controllers/product.controller.ts`
-- `src/infra/http/dtos/product.dto.ts`
-- `src/infra/http/modules/product.module.ts`
-- `docs/product-architecture.md`
+- `src/application/[module]/use-cases/find-[module].use-case.ts`
+- `src/application/[module]/use-cases/manage-[module].use-case.ts`
+- `src/application/[module]/use-cases/index.ts`
+- `src/infra/http/controllers/[module].controller.ts`
+- `src/infra/http/dtos/[module].dto.ts`
+- `src/infra/http/modules/[module].module.ts`
+- `docs/architecture.md`
 - `docs/README.md`
 - `docs/migration-summary.md`
 
 ### 🔄 Files Modified
-- `src/domain/product/services/product.service.ts` - Refactored to pure domain logic
-- `src/router/public-routers.ts` - Updated to use new ProductModule
+- `src/domain/[module]/services/[module].service.ts` - Refactored to pure domain logic
+- `src/router/public-routers.ts` - Updated to use new Module
 
 ### ❌ Files Deleted
-- `src/domain/product/controller/product.controller.ts`
-- `src/domain/product/controller/product-controller.module.ts`
-- `src/domain/product/controller/` (directory)
+- `src/domain/[module]/controller/[module].controller.ts`
+- `src/domain/[module]/controller/[module]-controller.module.ts`
+- `src/domain/[module]/controller/` (directory)
 
 ## 🎯 Key Changes
 
@@ -118,39 +118,39 @@ rmdir src/domain/product/controller
 **Before:**
 ```typescript
 @Injectable()
-export class ProductService {
+export class ModuleService {
   constructor(
-    @Inject(ProductRepository)
-    private readonly productRepository: IProductRepository,
+    @Inject(ModuleRepository)
+    private readonly moduleRepository: IModuleRepository,
   ) {}
 }
 ```
 
 **After:**
 ```typescript
-export class FindProductUseCaseImpl implements FindProductUseCase {
-  constructor(private readonly productRepository: IProductRepository) {}
+export class FindModuleUseCaseImpl implements FindModuleUseCase {
+  constructor(private readonly moduleRepository: IModuleRepository) {}
 }
 ```
 
 ### 2. **Controller Location**
 **Before:**
 ```typescript
-// src/domain/product/controller/product.controller.ts
+// src/domain/[module]/controller/[module].controller.ts
 @Controller()
-export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+export class ModuleController {
+  constructor(private readonly moduleService: ModuleService) {}
 }
 ```
 
 **After:**
 ```typescript
-// src/infra/http/controllers/product.controller.ts
-@Controller('products')
-export class ProductController {
+// src/infra/http/controllers/[module].controller.ts
+@Controller('[modules]')
+export class ModuleController {
   constructor(
-    private readonly findProductUseCase: FindProductUseCase,
-    private readonly manageProductUseCase: ManageProductUseCase,
+    private readonly findModuleUseCase: FindModuleUseCase,
+    private readonly manageModuleUseCase: ManageModuleUseCase,
   ) {}
 }
 ```
@@ -159,17 +159,17 @@ export class ProductController {
 **Before:**
 ```typescript
 // Mixed concerns in domain service
-async findById(productId: string): Promise<DomainProductEntity> {
-  return await this.productRepository.findByProductId(productId);
+async findById(moduleId: string): Promise<DomainModuleEntity> {
+  return await this.moduleRepository.findByModuleId(moduleId);
 }
 ```
 
 **After:**
 ```typescript
 // Pure domain logic
-validateProduct(product: DomainProductEntity): boolean {
-  if (!product.getName() || product.getName().trim().length === 0) {
-    throw new Error('Product name is required');
+validateModule(module: DomainModuleEntity): boolean {
+  if (!module.getName() || module.getName().trim().length === 0) {
+    throw new Error('Module name is required');
   }
   return true;
 }
@@ -215,6 +215,7 @@ validateProduct(product: DomainProductEntity): boolean {
 - Warehouse module
 - Category module
 - User module
+- [Other modules as needed]
 
 ### 2. **Add Comprehensive Tests**
 - Unit tests cho domain logic
@@ -241,7 +242,7 @@ validateProduct(product: DomainProductEntity): boolean {
 
 ## 🎉 Conclusion
 
-Migration Product module sang Clean Architecture thành công mang lại:
+Migration sang Clean Architecture thành công mang lại:
 
 - **Better Code Organization**: Clear separation of concerns
 - **Improved Maintainability**: Easier to understand and modify

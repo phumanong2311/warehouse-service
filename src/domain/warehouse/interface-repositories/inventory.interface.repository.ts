@@ -1,4 +1,3 @@
-import { DomainVariantEntity } from '@domain/product/entities';
 import { InventoryStatus } from '@share/types';
 import {
   DomainInventoryEntity,
@@ -40,7 +39,7 @@ export interface IInventoryRepository {
   deleteInventory(id: string): Promise<void>;
   checkInInventory(
     warehouse: DomainWarehouseEntity,
-    variant: DomainVariantEntity,
+    variantId: string,
     unit: DomainUnitEntity,
     quantity: number,
     status: InventoryStatus,
@@ -49,14 +48,14 @@ export interface IInventoryRepository {
   ): Promise<DomainInventoryEntity>;
   checkOutInventory(
     warehouse: DomainWarehouseEntity,
-    variant: DomainVariantEntity,
+    variantId: string,
     unit: DomainUnitEntity,
     quantity: number,
     status: InventoryStatus,
   ): Promise<DomainInventoryEntity>;
   adjustQuantity(
     warehouse: DomainWarehouseEntity,
-    variant: DomainVariantEntity,
+    variantId: string,
     unit: DomainUnitEntity,
     quantity: number,
     status: InventoryStatus,
@@ -66,7 +65,7 @@ export interface IInventoryRepository {
   transferInventory(
     sourceWarehouse: DomainWarehouseEntity,
     targetWarehouse: DomainWarehouseEntity,
-    variant: DomainVariantEntity,
+    variantId: string,
     unit: DomainUnitEntity,
     status: InventoryStatus,
     quantity: number,

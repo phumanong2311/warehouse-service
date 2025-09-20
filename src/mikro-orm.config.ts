@@ -3,13 +3,8 @@ import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { resolve } from 'path';
 import configuration from './infra/config';
 import {
-  Category,
   Inventory,
-  Product,
   Rack,
-  Variant,
-  VariantType,
-  VariantValue,
   Warehouse,
 } from './infra/postgresql/entities';
 
@@ -25,13 +20,8 @@ export default defineConfig({
   pool: { min: 5, max: 10 },
   entities: [
     Warehouse,
-    Category,
     Inventory,
-    Product,
     Rack,
-    VariantType,
-    VariantValue,
-    Variant,
   ],
   logger: async function (message: string) {
     console.log(message);

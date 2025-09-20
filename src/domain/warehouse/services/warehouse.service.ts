@@ -1,12 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { PaginationWarehouseDto } from '../dtos';
 import { DomainWarehouseEntity } from '../entities';
+import { PaginationQuery, PaginationResult } from '../interfaces/pagination.interface';
 import { IWarehouseRepository } from '../interface-repositories/warehouse.interface.repository';
 
-@Injectable()
 export class WarehouseService {
   constructor(
-    @Inject('IWarehouseRepository')
     private warehouseRepository: IWarehouseRepository,
   ) {}
   //dung find khi du lieu co the tra ve null hoac undefined
@@ -18,8 +15,8 @@ export class WarehouseService {
     return await this.warehouseRepository.findAllWarehouses();
   }
   async findWithPagination(
-    query: PaginationWarehouseDto,
-  ): Promise<{ data: DomainWarehouseEntity[]; total: number }> {
+    query: PaginationQuery,
+  ): Promise<PaginationResult<DomainWarehouseEntity>> {
     return await this.warehouseRepository.findWithPagination(query);
   }
   async create(

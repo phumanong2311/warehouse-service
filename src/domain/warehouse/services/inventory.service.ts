@@ -1,19 +1,13 @@
-import { VariantService } from '@domain/product/services/variant.service';
-import { InventoryRepository } from '@infra/postgresql/repositories';
-import { Inject, Injectable } from '@nestjs/common';
 import { InventoryStatus } from '@share/types';
 import { DomainInventoryEntity, DomainWarehouseEntity } from '../entities';
 import { IInventoryRepository } from '../interface-repositories';
 import { UnitService } from './unit.service';
 import { WarehouseService } from './warehouse.service';
 
-@Injectable()
 export class InventoryService {
   constructor(
-    @Inject(InventoryRepository)
     private inventoryRepository: IInventoryRepository,
     private warehouseService: WarehouseService,
-    private variantService: VariantService,
     private unitService: UnitService,
   ) {}
   async findInventoryWithQuery(

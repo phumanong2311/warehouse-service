@@ -1,7 +1,7 @@
 import { InventoryStatus } from '@share/types';
 
 export interface WarehouseApplication {
-  checkInProduct(
+  checkIn(
     warehouseId: string,
     variantId: string,
     unitId: string,
@@ -9,7 +9,7 @@ export interface WarehouseApplication {
     status: InventoryStatus,
     expirationDate?: Date,
   ): void;
-  checkOutProduct(
+  checkOut(
     warehouseId: string,
     variantId: string,
     unitId: string,
@@ -25,7 +25,7 @@ export interface WarehouseApplication {
     status: InventoryStatus,
     expirationDate?: Date,
   ): void;
-  transferProduct(
+  transfer(
     fromWarehouseId: number,
     toWarehouseId: number,
     variantId: string,

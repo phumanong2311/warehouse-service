@@ -1,7 +1,7 @@
 import { Warehouse as InfraWarehouse, Rack } from '@infra/postgresql/entities';
-import { Collection } from '@mikro-orm/core';
 import { DomainWarehouseEntity } from '../entities';
 import { RackMapper } from './rack.mapper';
+import { Collection } from '@mikro-orm/core';
 
 export class WarehouseMapper {
   static entityInfraToDomain(infra: InfraWarehouse): DomainWarehouseEntity {
@@ -13,12 +13,8 @@ export class WarehouseMapper {
       email: infra.email,
       logo: infra.logo,
       address: infra.address,
-      racks:
-        infra.racks instanceof Collection
-          ? infra.racks.isInitialized()
-            ? infra.racks.getItems().map(RackMapper.entityInfraToDomain)
-            : []
-          : [],
+      description: infra.description,
+      racks: infra.racks ? infra.racks.map(RackMapper.entityInfraToDomain) : [],
       registrationExpirationDate: infra.registrationExpirationDate,
       createdBy: infra.createdBy,
       updatedBy: infra.updatedBy,
@@ -37,11 +33,12 @@ export class WarehouseMapper {
     if (domain.getEmail) infra.email = domain.getEmail();
     if (domain.getLogo) infra.logo = domain.getLogo();
     if (domain.getAddress) infra.address = domain.getAddress();
+    if (domain.getDescription) infra.description = domain.getDescription();
     if (domain.getRacks) {
       const rackEntities = domain
         .getRacks()
         .map((item) => RackMapper.entityDomainToInfra(item));
-      infra.racks = new Collection<Rack>(infra, rackEntities, true);
+      infra.racks = new Collection<Rack>(infra, rackEntities);
     }
     if (domain.getCreatedAt) infra.createdAt = domain.getCreatedAt();
     if (domain.getUpdatedAt) infra.updatedAt = domain.getUpdatedAt();

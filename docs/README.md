@@ -9,7 +9,6 @@ Thư mục này chứa tất cả documentation liên quan đến Warehouse Serv
 ## 📖 Documentation Index
 
 ### 🏗️ Architecture & Design
-- [Product Architecture](./product-architecture.md) - Chi tiết về cấu trúc Product module theo Hexagonal Architecture và Clean Architecture
 - [Warehouse Completion Plan](./warehouse-completion-plan.md) - Kế hoạch hoàn thiện Warehouse Service
 
 ### 🔧 Implementation Guides
@@ -85,11 +84,9 @@ Warehouse Service được xây dựng theo nguyên tắc **Hexagonal Architectu
 ```
 src/
 ├── domain/                    # 🎯 Domain Layer
-│   ├── product/              # Product domain
 │   ├── warehouse/            # Warehouse domain
 │   └── share/                # Shared domain utilities
 ├── application/              # 🎯 Application Layer
-│   ├── product/              # Product use cases
 │   ├── warehouse/            # Warehouse use cases
 │   └── share/                # Shared application utilities
 ├── infra/                    # 🔧 Infrastructure Layer
@@ -115,7 +112,7 @@ src/
 
 3. **Run Database Migrations**
    ```bash
-   pnpm migration:run
+   pnpm migration:up
    ```
 
 4. **Start Development Server**

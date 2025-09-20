@@ -1,6 +1,6 @@
-import { PaginationWarehouseDto } from '@domain/warehouse/dtos';
 import { DomainWarehouseEntity } from '@domain/warehouse/entities';
 import { IWarehouseRepository } from '@domain/warehouse/interface-repositories';
+import { PaginationQuery, PaginationResult } from '@domain/warehouse/interfaces/pagination.interface';
 import { WarehouseMapper } from '@domain/warehouse/mapper';
 import { OrderDefinition, SqlEntityManager } from '@mikro-orm/postgresql';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -19,7 +19,7 @@ export class WarehouseRepository
     try {
       const data = await this.findOne(
         { id },
-        { populate: ['racks', 'racks.variants'] },
+        { populate: ['racks', 'racks.warehouse'] },
       );
 
       if (!data) {
@@ -42,11 +42,7 @@ export class WarehouseRepository
 
   // Hàm pagination với filter & sort
   // example: http://localhost:3000/warehouse?limit=10&page=1&name=Apple&sort[field]=create_at&sort[order]=DESC
-  async findWithPagination(query: PaginationWarehouseDto): Promise<{
-    data: DomainWarehouseEntity[];
-    total: number;
-    totalPages: number;
-  }> {
+  async findWithPagination(query: PaginationQuery): Promise<PaginationResult<DomainWarehouseEntity>> {
     const {
       limit = 10,
       page = 1,
@@ -55,10 +51,10 @@ export class WarehouseRepository
       address,
       email,
       phone,
-      created_at,
-      updated_at,
-      created_by,
-      updated_by,
+      createdAt,
+      updatedAt,
+      createdBy,
+      updatedBy,
       sort,
     } = query;
     const offset = (page - 1) * limit;
@@ -80,17 +76,17 @@ export class WarehouseRepository
     if (phone) {
       filters.phone = { $ilike: `%${phone}%` };
     }
-    if (created_at) {
-      filters.created_at = { $ilike: `%${created_at}%` };
+    if (createdAt) {
+      filters.createdAt = { $ilike: `%${createdAt}%` };
     }
-    if (updated_at) {
-      filters.updated_at = { $ilike: `%${updated_at}%` };
+    if (updatedAt) {
+      filters.updatedAt = { $ilike: `%${updatedAt}%` };
     }
-    if (created_by) {
-      filters.created_by = { $ilike: `%${created_by}%` };
+    if (createdBy) {
+      filters.createdBy = { $ilike: `%${createdBy}%` };
     }
-    if (updated_by) {
-      filters.updated_by = { $ilike: `%${updated_by}%` };
+    if (updatedBy) {
+      filters.updatedBy = { $ilike: `%${updatedBy}%` };
     }
 
     const orderBy: OrderDefinition<Warehouse> =
@@ -123,6 +119,8 @@ export class WarehouseRepository
     return {
       data: mappedData,
       total,
+      page,
+      limit,
       totalPages,
     };
   }

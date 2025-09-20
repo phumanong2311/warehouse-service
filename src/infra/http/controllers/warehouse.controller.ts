@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,7 +9,6 @@ import {
   Post,
   Put,
   Query,
-  BadRequestException,
 } from '@nestjs/common';
 import {
   FindWarehouseUseCase,
@@ -29,6 +29,8 @@ import {
   UpdateWarehouseDto,
   WriteOffInventoryDto,
 } from '../dtos/warehouse.dto';
+import { InventoryDtoMapper } from '../mappers/inventory-dto.mapper';
+import { WarehouseDtoMapper } from '../mappers/warehouse-dto.mapper';
 
 @Controller('warehouse')
 export class WarehouseController {
@@ -42,7 +44,8 @@ export class WarehouseController {
   @Get()
   async findWarehousesWithPagination(@Query() query: PaginationWarehouseDto) {
     try {
-      return await this.findWarehouseUseCase.findWithPagination(query);
+      const paginationQuery = WarehouseDtoMapper.paginationDtoToQuery(query);
+      return await this.findWarehouseUseCase.findWithPagination(paginationQuery);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -76,7 +79,8 @@ export class WarehouseController {
   @Post()
   async createWarehouse(@Body() createWarehouseDto: CreateWarehouseDto) {
     try {
-      return await this.manageWarehouseUseCase.create(createWarehouseDto);
+      const warehouseEntity = WarehouseDtoMapper.createDtoToDomainEntity(createWarehouseDto);
+      return await this.manageWarehouseUseCase.create(warehouseEntity);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -88,7 +92,8 @@ export class WarehouseController {
     @Body() updateWarehouseDto: UpdateWarehouseDto,
   ) {
     try {
-      return await this.manageWarehouseUseCase.update(id, updateWarehouseDto);
+      const partialWarehouseEntity = WarehouseDtoMapper.updateDtoToPartialDomainEntity(updateWarehouseDto);
+      return await this.manageWarehouseUseCase.update(id, partialWarehouseEntity);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -159,7 +164,8 @@ export class InventoryController {
   @Post()
   async createInventory(@Body() createInventoryDto: CreateInventoryDto) {
     try {
-      return await this.inventoryManagementUseCase.create(createInventoryDto);
+      const inventoryEntity = InventoryDtoMapper.createDtoToDomainEntity(createInventoryDto);
+      return await this.inventoryManagementUseCase.create(inventoryEntity);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -171,7 +177,8 @@ export class InventoryController {
     @Body() updateInventoryDto: UpdateInventoryDto,
   ) {
     try {
-      return await this.inventoryManagementUseCase.update(id, updateInventoryDto);
+      const partialInventoryEntity = InventoryDtoMapper.updateDtoToPartialDomainEntity(updateInventoryDto);
+      return await this.inventoryManagementUseCase.update(id, partialInventoryEntity);
     } catch (error) {
       throw new BadRequestException(error.message);
     }

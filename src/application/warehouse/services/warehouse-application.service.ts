@@ -1,4 +1,3 @@
-import { VariantService } from '@domain/product/services/variant.service';
 import { DomainInventoryEntity } from '@domain/warehouse/entities';
 import { InventoryService, UnitService } from '@domain/warehouse/services';
 import { Injectable } from '@nestjs/common';
@@ -9,7 +8,6 @@ import { WarehouseService } from 'src/domain/warehouse/services/warehouse.servic
 export class WarehouseApplicationService {
   constructor(
     private readonly warehouseService: WarehouseService,
-    private readonly variantService: VariantService,
     private readonly inventoryService: InventoryService,
     private readonly unitService: UnitService,
   ) {}
@@ -28,15 +26,14 @@ export class WarehouseApplicationService {
   > {
     try {
       // 1.Check if entities exist
-      const [existingWarehouse, existingVariant, existingUnit] =
+      const [existingWarehouse, existingUnit] =
         await Promise.all([
           this.warehouseService.findByIdWarehouse(warehouseId),
-          this.variantService.findById(variantId),
           this.unitService.findById(unitId),
         ]);
 
-      if (!existingWarehouse || !existingVariant || !existingUnit) {
-        throw new Error('Warehouse, Variant, or Unit not found');
+      if (!existingWarehouse || !existingUnit) {
+        throw new Error('Warehouse or Unit not found');
       }
 
       // 2.Perform check-in
@@ -72,15 +69,14 @@ export class WarehouseApplicationService {
   > {
     try {
       // 1.Check if entities exist
-      const [existingWarehouse, existingVariant, existingUnit] =
+      const [existingWarehouse, existingUnit] =
         await Promise.all([
           this.warehouseService.findByIdWarehouse(warehouseId),
-          this.variantService.findById(variantId),
           this.unitService.findById(unitId),
         ]);
 
-      if (!existingWarehouse || !existingVariant || !existingUnit) {
-        throw new Error('Warehouse, Variant, or Unit not found');
+      if (!existingWarehouse || !existingUnit) {
+        throw new Error('Warehouse or Unit not found');
       }
 
       // 2.Perform check-in
@@ -116,15 +112,14 @@ export class WarehouseApplicationService {
   > {
     try {
       // 1.Check if entities exist
-      const [existingWarehouse, existingVariant, existingUnit] =
+      const [existingWarehouse, existingUnit] =
         await Promise.all([
           this.warehouseService.findByIdWarehouse(warehouseId),
-          this.variantService.findById(variantId),
           this.unitService.findById(unitId),
         ]);
 
-      if (!existingWarehouse || !existingVariant || !existingUnit) {
-        throw new Error('Warehouse, Variant, or Unit not found');
+      if (!existingWarehouse || !existingUnit) {
+        throw new Error('Warehouse or Unit not found');
       }
 
       // 2.Perform check-in
@@ -162,22 +157,19 @@ export class WarehouseApplicationService {
       const [
         existingSourceWarehouse,
         existingTargetWarehouse,
-        existingVariant,
         existingUnit,
       ] = await Promise.all([
         this.warehouseService.findByIdWarehouse(sourceWarehouseId),
         this.warehouseService.findByIdWarehouse(targetWarehouseId),
-        this.variantService.findById(variantId),
         this.unitService.findById(unitId),
       ]);
 
       if (
         !existingSourceWarehouse ||
         !existingTargetWarehouse ||
-        !existingVariant ||
         !existingUnit
       ) {
-        throw new Error('Warehouse, Variant, or Unit not found');
+        throw new Error('Warehouse or Unit not found');
       }
 
       // 2.Perform check-in

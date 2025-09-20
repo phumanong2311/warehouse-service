@@ -1,8 +1,6 @@
-import { Entity } from '@mikro-orm/core';
 import { DomainBaseEntity } from '@share/domain/entities';
 import { v4 as uuidv4 } from 'uuid';
 
-@Entity({ tableName: 'unit' })
 export class DomainUnitEntity extends DomainBaseEntity {
   private name!: string;
   private description?: string;

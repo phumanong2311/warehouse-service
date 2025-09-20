@@ -1,12 +1,8 @@
-import { UnitRepository } from '@infra/postgresql/repositories';
-import { Inject, Injectable } from '@nestjs/common';
 import { DomainUnitEntity } from '../entities';
 import { IUnitRepository } from '../interface-repositories';
 
-@Injectable()
 export class UnitService {
   constructor(
-    @Inject(UnitRepository)
     private readonly unitRepository: IUnitRepository,
   ) {}
   async findById(id: string): Promise<DomainUnitEntity> {

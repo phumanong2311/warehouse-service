@@ -1,12 +1,10 @@
 import { DomainBaseEntity } from '@share/domain/entities';
-import { DomainVariantEntity } from 'src/domain/product/entities';
 import { v4 as uuidv4 } from 'uuid';
-import { DomainWarehouseEntity } from './warehouse.entity';
 
 export class DomainRackEntity extends DomainBaseEntity {
   private name!: string; // Tên của Rack
   private warehouseId!: string; // Gắn với Warehouse
-  private variants: DomainVariantEntity[]; // Danh sách sản phẩm trong Rack
+  private variantIds: string[]; // Danh sách ID sản phẩm trong Rack
 
   constructor(params: {
     id?: string;
@@ -14,7 +12,7 @@ export class DomainRackEntity extends DomainBaseEntity {
     updatedBy?: string;
     name: string;
     warehouseId: string;
-    variants?: DomainVariantEntity[];
+    variantIds?: string[];
     createdAt?: Date;
     updatedAt?: Date;
   }) {
@@ -28,14 +26,14 @@ export class DomainRackEntity extends DomainBaseEntity {
 
     this.name = params.name;
     this.warehouseId = params.warehouseId;
-    this.variants = params.variants ?? [];
+    this.variantIds = params.variantIds ?? [];
   }
   setName(name: string): void {
     this.name = name;
   }
 
-  setVariants(variants: DomainVariantEntity[]): void {
-    this.variants = variants;
+  setVariantIds(variantIds: string[]): void {
+    this.variantIds = variantIds;
   }
 
   getName(): string {
@@ -46,7 +44,7 @@ export class DomainRackEntity extends DomainBaseEntity {
     return this.warehouseId;
   }
 
-  getVariants(): DomainVariantEntity[] {
-    return this.variants;
+  getVariantIds(): string[] {
+    return this.variantIds;
   }
 }

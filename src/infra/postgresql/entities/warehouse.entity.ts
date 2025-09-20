@@ -23,6 +23,9 @@ export class Warehouse extends InfraBaseEntity {
   @Property({ type: 'string' })
   address!: string;
 
+  @Property({ type: 'string', nullable: true })
+  description?: string;
+
   @OneToMany(() => Rack, (rack) => rack.warehouse, {
     nullable: true,
     eager: false,

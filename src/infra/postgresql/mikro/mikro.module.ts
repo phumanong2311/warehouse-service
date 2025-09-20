@@ -1,17 +1,12 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import mikroConfig from '../../../mikro-orm.config';
 import {
-  Category,
   Inventory,
-  Product,
   Rack,
-  Variant,
-  VariantType,
-  VariantValue,
   Warehouse,
 } from '../entities';
-import mikroConfig from '../../../mikro-orm.config';
 
 @Module({
   imports: [
@@ -27,13 +22,8 @@ import mikroConfig from '../../../mikro-orm.config';
           dbName: mikroConfig.dbName,
           entities: [
             Warehouse,
-            Category,
             Inventory,
-            Product,
             Rack,
-            VariantType,
-            VariantValue,
-            Variant,
           ],
         };
       },

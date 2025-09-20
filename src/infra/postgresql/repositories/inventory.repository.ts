@@ -24,7 +24,7 @@ export class InventoryRepository extends BaseRepository<Inventory> {
   ): Promise<DomainInventoryEntity> {
     const data = await this.findOne({
       warehouse: warehouseId,
-      variant: variantId,
+      variantId: variantId,
       unit: unitId,
       status,
       expirationDate,
@@ -49,7 +49,7 @@ export class InventoryRepository extends BaseRepository<Inventory> {
       where.warehouse = filters.warehouseId;
     }
     if (filters.variantId) {
-      where.variant = filters.variantId;
+      where.variantId = filters.variantId;
     }
     if (filters.unitId) {
       where.unit = filters.unitId;

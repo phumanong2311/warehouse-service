@@ -1,6 +1,5 @@
 import {
   Inventory as InfraInventory,
-  Variant,
   Warehouse,
 } from '@infra/postgresql/entities';
 import { DomainInventoryEntity } from '../entities';
@@ -10,7 +9,7 @@ export class InventoryMapper {
     return new DomainInventoryEntity({
       id: infra.id,
       warehouseId: infra.warehouse.id,
-      variantId: infra.variant.id,
+      variantId: infra.variantId,
       quantity: infra.quantity,
       batch: infra.batch,
       expirationDate: infra.expirationDate,
@@ -23,12 +22,11 @@ export class InventoryMapper {
   static entityDomainToInfra(
     domain: Partial<DomainInventoryEntity>,
     warehouse?: Warehouse,
-    variant?: Variant,
   ): InfraInventory {
     const infra = new InfraInventory();
     infra.id = domain.getId();
     if (warehouse) infra.warehouse = warehouse;
-    if (variant) infra.variant = variant;
+    infra.variantId = domain.getVariant();
     infra.quantity = domain.getQuantity();
     infra.batch = domain.getBatch();
     infra.expirationDate = domain.getExpirationDate();

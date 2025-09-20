@@ -1,7 +1,6 @@
 import { DomainInventoryEntity, DomainUnitEntity, DomainWarehouseEntity } from '../../../domain/warehouse/entities';
 import { IInventoryRepository } from '../../../domain/warehouse/interface-repositories/inventory.interface.repository';
 import { IWarehouseRepository } from '../../../domain/warehouse/interface-repositories/warehouse.interface.repository';
-import { IProductRepository } from '../../../domain/product/interface-repositories/product.interface.repository';
 import { InventoryStatus } from '@share/types';
 
 export interface InventoryManagementUseCase {
@@ -74,7 +73,6 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
   constructor(
     private readonly inventoryRepository: IInventoryRepository,
     private readonly warehouseRepository: IWarehouseRepository,
-    private readonly productRepository: IProductRepository,
   ) {}
 
   async findById(id: string): Promise<DomainInventoryEntity> {
@@ -185,9 +183,8 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     // Validate warehouse exists
     const warehouse = await this.warehouseRepository.findByIdWarehouse(warehouseId);
 
-    // Validate variant exists (through product)
-    // TODO: Add variant repository to validate variant directly
-    // For now, we'll assume variant exists
+    // Note: Variant validation is now handled by the product service
+    // We assume variant exists when called from the product service
 
     // Validate quantity
     if (quantity <= 0) {

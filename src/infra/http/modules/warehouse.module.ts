@@ -4,8 +4,15 @@ import {
   InventoryManagementUseCaseImpl,
   ManageWarehouseUseCaseImpl,
 } from '../../../application/warehouse/use-cases';
+import { WarehouseApplicationService } from '../../../application/warehouse/services/warehouse-application.service';
+import {
+  InventoryService,
+  UnitService,
+  WarehouseService,
+} from '../../../domain/warehouse/services';
 import {
   InventoryRepository,
+  UnitRepository,
   WarehouseRepository,
 } from '../../postgresql/repositories';
 import { InventoryController, WarehouseController } from '../controllers/warehouse.controller';
@@ -23,10 +30,41 @@ import { InventoryController, WarehouseController } from '../controllers/warehou
       provide: 'IInventoryRepository',
       useClass: InventoryRepository,
     },
-    // TODO: Add product repository when available
     {
-      provide: 'IProductRepository',
-      useValue: null, // Temporary placeholder
+      provide: 'IUnitRepository',
+      useClass: UnitRepository,
+    },
+
+    // Domain Services
+    {
+      provide: WarehouseService,
+      useFactory: (warehouseRepository) => {
+        return new WarehouseService(warehouseRepository);
+      },
+      inject: ['IWarehouseRepository'],
+    },
+    {
+      provide: UnitService,
+      useFactory: (unitRepository) => {
+        return new UnitService(unitRepository);
+      },
+      inject: ['IUnitRepository'],
+    },
+    {
+      provide: InventoryService,
+      useFactory: (inventoryRepository, warehouseService, unitService) => {
+        return new InventoryService(inventoryRepository, warehouseService, unitService);
+      },
+      inject: ['IInventoryRepository', WarehouseService, UnitService],
+    },
+
+    // Application Services
+    {
+      provide: WarehouseApplicationService,
+      useFactory: (warehouseService, inventoryService, unitService) => {
+        return new WarehouseApplicationService(warehouseService, inventoryService, unitService);
+      },
+      inject: [WarehouseService, InventoryService, UnitService],
     },
 
     // Use Case Implementations
@@ -46,14 +84,13 @@ import { InventoryController, WarehouseController } from '../controllers/warehou
     },
     {
       provide: 'InventoryManagementUseCase',
-      useFactory: (inventoryRepository, warehouseRepository, productRepository) => {
+      useFactory: (inventoryRepository, warehouseRepository) => {
         return new InventoryManagementUseCaseImpl(
           inventoryRepository,
           warehouseRepository,
-          productRepository,
         );
       },
-      inject: ['IInventoryRepository', 'IWarehouseRepository', 'IProductRepository'],
+      inject: ['IInventoryRepository', 'IWarehouseRepository'],
     },
 
     // Use Case Aliases for Controller Injection
@@ -73,6 +110,11 @@ import { InventoryController, WarehouseController } from '../controllers/warehou
   exports: [
     'IWarehouseRepository',
     'IInventoryRepository',
+    'IUnitRepository',
+    WarehouseService,
+    UnitService,
+    InventoryService,
+    WarehouseApplicationService,
     'FindWarehouseUseCase',
     'ManageWarehouseUseCase',
     'InventoryManagementUseCase',
