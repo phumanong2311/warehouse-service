@@ -18,7 +18,7 @@ export class InventoryDtoMapper {
     return new DomainInventoryEntity({
       id: uuidv4(),
       warehouseId: dto.warehouseId,
-      variantId: dto.variantId,
+      productId: dto.productId,
       unitId: dto.unitId,
       quantity: dto.quantity,
       status: dto.status || InventoryStatus.AVAILABLE,
@@ -31,7 +31,7 @@ export class InventoryDtoMapper {
     const partial = new DomainInventoryEntity({});
     
     if (dto.warehouseId !== undefined) partial.setWarehouse(dto.warehouseId);
-    if (dto.variantId !== undefined) partial.setVariant(dto.variantId);
+    if (dto.productId !== undefined) partial.setProduct(dto.productId);
     if (dto.unitId !== undefined) partial.setUnit(dto.unitId);
     if (dto.quantity !== undefined) partial.setQuantity(dto.quantity);
     if (dto.status !== undefined) partial.setStatus(dto.status);
@@ -44,7 +44,7 @@ export class InventoryDtoMapper {
   static checkInDtoToParams(dto: CheckInInventoryDto) {
     return {
       warehouseId: dto.warehouseId,
-      variantId: dto.variantId,
+      productId: dto.productId,
       unitId: dto.unitId,
       quantity: dto.quantity,
       status: dto.status,
@@ -56,7 +56,7 @@ export class InventoryDtoMapper {
   static checkOutDtoToParams(dto: CheckOutInventoryDto) {
     return {
       warehouseId: dto.warehouseId,
-      variantId: dto.variantId,
+      productId: dto.productId,
       unitId: dto.unitId,
       quantity: dto.quantity,
       status: dto.status,
@@ -67,7 +67,7 @@ export class InventoryDtoMapper {
     return {
       sourceWarehouseId: dto.fromWarehouseId,
       targetWarehouseId: dto.toWarehouseId,
-      variantId: dto.variantId,
+      productId: dto.productId,
       unitId: dto.unitId,
       quantity: dto.quantity,
       status: dto.status,
@@ -77,7 +77,7 @@ export class InventoryDtoMapper {
   static adjustDtoToParams(dto: AdjustInventoryDto) {
     return {
       warehouseId: dto.warehouseId,
-      variantId: dto.variantId,
+      productId: dto.productId,
       unitId: dto.unitId,
       quantity: dto.adjustmentQuantity,
       reason: dto.reason,
@@ -88,7 +88,7 @@ export class InventoryDtoMapper {
   static writeOffDtoToParams(dto: WriteOffInventoryDto) {
     return {
       warehouseId: dto.warehouseId,
-      variantId: dto.variantId,
+      productId: dto.productId,
       unitId: dto.unitId,
       quantity: dto.quantity,
       reason: dto.reason,
@@ -99,7 +99,7 @@ export class InventoryDtoMapper {
   static physicalCountDtoToParams(dto: PhysicalCountAdjustmentDto) {
     return {
       warehouseId: dto.warehouseId,
-      variantId: dto.variantId,
+      productId: dto.productId,
       unitId: dto.unitId,
       physicalCount: dto.physicalCount,
       reason: dto.reason,
@@ -112,7 +112,7 @@ export class InventoryDtoMapper {
       limit: dto.limit,
       page: dto.page,
       warehouseId: dto.warehouseId,
-      variantId: dto.variantId,
+      productId: dto.productId,
       unitId: dto.unitId,
       status: dto.status,
     };

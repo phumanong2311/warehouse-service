@@ -200,7 +200,7 @@ export class InventoryController {
     try {
       return await this.inventoryManagementUseCase.checkIn(
         checkInDto.warehouseId,
-        checkInDto.variantId,
+        checkInDto.productId,
         checkInDto.unitId,
         checkInDto.quantity,
         checkInDto.status,
@@ -217,7 +217,7 @@ export class InventoryController {
     try {
       return await this.inventoryManagementUseCase.checkOut(
         checkOutDto.warehouseId,
-        checkOutDto.variantId,
+        checkOutDto.productId,
         checkOutDto.unitId,
         checkOutDto.quantity,
         checkOutDto.status,
@@ -233,7 +233,7 @@ export class InventoryController {
       return await this.inventoryManagementUseCase.transfer(
         transferDto.fromWarehouseId,
         transferDto.toWarehouseId,
-        transferDto.variantId,
+        transferDto.productId,
         transferDto.unitId,
         transferDto.quantity,
         transferDto.status,
@@ -249,7 +249,7 @@ export class InventoryController {
     try {
       return await this.inventoryManagementUseCase.adjustInventory(
         adjustDto.warehouseId,
-        adjustDto.variantId,
+        adjustDto.productId,
         adjustDto.unitId,
         adjustDto.adjustmentQuantity,
         adjustDto.reason,
@@ -265,7 +265,7 @@ export class InventoryController {
     try {
       return await this.inventoryManagementUseCase.writeOff(
         writeOffDto.warehouseId,
-        writeOffDto.variantId,
+        writeOffDto.productId,
         writeOffDto.unitId,
         writeOffDto.quantity,
         writeOffDto.reason,
@@ -281,7 +281,7 @@ export class InventoryController {
     try {
       return await this.inventoryManagementUseCase.physicalCountAdjustment(
         physicalCountDto.warehouseId,
-        physicalCountDto.variantId,
+        physicalCountDto.productId,
         physicalCountDto.unitId,
         physicalCountDto.physicalCount,
         physicalCountDto.reason,
@@ -292,11 +292,11 @@ export class InventoryController {
     }
   }
 
-  // Query by variant
-  @Get('variant/:variantId')
-  async findInventoryByVariant(@Param('variantId') variantId: string) {
+  // Query by product
+  @Get('product/:productId')
+  async findInventoryByProduct(@Param('productId') productId: string) {
     try {
-      return await this.inventoryManagementUseCase.findByVariant(variantId);
+      return await this.inventoryManagementUseCase.findByProduct(productId);
     } catch (error) {
       throw new BadRequestException(error.message);
     }

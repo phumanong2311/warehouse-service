@@ -9,7 +9,9 @@ export class InventoryMapper {
     return new DomainInventoryEntity({
       id: infra.id,
       warehouseId: infra.warehouse.id,
-      variantId: infra.variantId,
+      rackId: infra.rackId,
+      productId: infra.productId,
+      unitId: infra.unit?.id,
       quantity: infra.quantity,
       batch: infra.batch,
       expirationDate: infra.expirationDate,
@@ -26,7 +28,9 @@ export class InventoryMapper {
     const infra = new InfraInventory();
     infra.id = domain.getId();
     if (warehouse) infra.warehouse = warehouse;
-    infra.variantId = domain.getVariant();
+    infra.rackId = domain.getRack();
+    infra.productId = domain.getProduct();
+    // Note: unit will be set separately in repository
     infra.quantity = domain.getQuantity();
     infra.batch = domain.getBatch();
     infra.expirationDate = domain.getExpirationDate();

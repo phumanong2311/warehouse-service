@@ -13,7 +13,7 @@ export class CheckInResponseFail {
 
 export class CheckOutResponse {
   warehouseId: string;
-  variantId: string;
+  productId: string;
   unitId: string;
   quantity: number;
   status: InventoryStatus;
@@ -21,7 +21,7 @@ export class CheckOutResponse {
 
 export class AdjustmentResponse {
   warehouseId: string;
-  variantId: string;
+  productId: string;
   unitId: string;
   quantity: number;
   status: InventoryStatus;
@@ -32,7 +32,7 @@ export class AdjustmentResponse {
 export class TransferResponse {
   sourceWarehouseId: string;
   targetWarehouseId: string;
-  variantId: string;
+  productId: string;
   unitId: string;
   status: InventoryStatus;
   quantity: number;

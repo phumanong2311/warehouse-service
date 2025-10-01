@@ -15,7 +15,6 @@ export class HealthController {
     return this.health.check([
       () => this.configHealthIndicator.isHealthy('config'),
       () => this.configHealthIndicator.checkDatabaseConfig('database-config'),
-      () => this.configHealthIndicator.checkSecurityConfig('security-config'),
     ]);
   }
 
@@ -35,11 +34,4 @@ export class HealthController {
     ]);
   }
 
-  @Get('security')
-  @HealthCheck()
-  async checkSecurity(): Promise<HealthCheckResult> {
-    return this.health.check([
-      () => this.configHealthIndicator.checkSecurityConfig('security-config'),
-    ]);
-  }
 }

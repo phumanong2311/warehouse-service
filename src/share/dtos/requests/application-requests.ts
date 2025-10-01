@@ -2,7 +2,7 @@ import { InventoryStatus } from '@share/types';
 
 export class CheckInRequest {
   warehouseId: string;
-  variantId: string;
+  productId: string;
   unitId: string;
   quantity: number;
   status: InventoryStatus;
@@ -12,7 +12,7 @@ export class CheckInRequest {
 
 export class CheckOutRequest {
   warehouseId: string;
-  variantId: string;
+  productId: string;
   unitId: string;
   quantity: number;
   status: InventoryStatus;
@@ -20,7 +20,7 @@ export class CheckOutRequest {
 
 export class AdjustmentRequest {
   warehouseId: string;
-  variantId: string;
+  productId: string;
   unitId: string;
   quantity: number;
   status: InventoryStatus;
@@ -31,7 +31,7 @@ export class AdjustmentRequest {
 export class TransferRequest {
   sourceWarehouseId: string;
   targetWarehouseId: string;
-  variantId: string;
+  productId: string;
   unitId: string;
   status: InventoryStatus;
   quantity: number;

@@ -9,14 +9,14 @@ export interface IInventoryRepository {
   findByIdInventory(id: string): Promise<DomainInventoryEntity>;
   findByWarehouseAndVariant(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     status: string,
     expirationDate?: Date,
   ): DomainInventoryEntity;
   findWithPagination(query: {
     warehouseId?: string;
-    variantId?: string;
+    productId?: string;
     unitId?: string;
     quantity?: number;
     status?: InventoryStatus;
@@ -39,7 +39,7 @@ export interface IInventoryRepository {
   deleteInventory(id: string): Promise<void>;
   checkInInventory(
     warehouse: DomainWarehouseEntity,
-    variantId: string,
+    productId: string,
     unit: DomainUnitEntity,
     quantity: number,
     status: InventoryStatus,
@@ -48,14 +48,14 @@ export interface IInventoryRepository {
   ): Promise<DomainInventoryEntity>;
   checkOutInventory(
     warehouse: DomainWarehouseEntity,
-    variantId: string,
+    productId: string,
     unit: DomainUnitEntity,
     quantity: number,
     status: InventoryStatus,
   ): Promise<DomainInventoryEntity>;
   adjustQuantity(
     warehouse: DomainWarehouseEntity,
-    variantId: string,
+    productId: string,
     unit: DomainUnitEntity,
     quantity: number,
     status: InventoryStatus,
@@ -65,7 +65,7 @@ export interface IInventoryRepository {
   transferInventory(
     sourceWarehouse: DomainWarehouseEntity,
     targetWarehouse: DomainWarehouseEntity,
-    variantId: string,
+    productId: string,
     unit: DomainUnitEntity,
     status: InventoryStatus,
     quantity: number,

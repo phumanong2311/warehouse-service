@@ -1,4 +1,4 @@
-# Entity Creation Order & Dependencies
+# Entity Creation
 
 ## 🎯 Overview
 
@@ -14,19 +14,13 @@ Rack (depends on Warehouse)
     ↓
 Category (Independent)
     ↓
-Product (depends on Warehouse, Category, Rack)
-    ↓
-Variant (depends on Product, Rack)
+Variant (depends on Rack)
     ↓
 Inventory (depends on Warehouse, Variant, Unit)
 ```
 
 ### Foreign Key Relationships
-- `Product.warehouse_id` → `Warehouse.id`
-- `Product.category_id` → `Category.id`
-- `Product.rack_id` → `Rack.id`
 - `Rack.warehouse_id` → `Warehouse.id`
-- `Variant.product_id` → `Product.id`
 - `Variant.rack_id` → `Rack.id`
 - `Inventory.warehouse_id` → `Warehouse.id`
 - `Inventory.variant_id` → `Variant.id`
@@ -108,43 +102,12 @@ Content-Type: application/json
 }
 ```
 
-### 4. **Product** (Fourth Priority)
-**Why Fourth?** Products need warehouse, category, and rack to be properly stored.
-
-```typescript
-// Domain Entity
-export class DomainProductEntity extends DomainBaseEntity {
-  private name!: string;           // Product name
-  private sku!: string;            // Stock Keeping Unit
-  private categoryId!: string;     // Product category
-  private warehouseId!: string;    // Storage warehouse
-  private rackId?: string;         // Specific rack location
-  private variants!: DomainVariantEntity[]; // Product variants
-}
-```
-
-**API Endpoint:**
-```http
-POST /product
-Content-Type: application/json
-
-{
-  "name": "iPhone 14 Pro",
-  "sku": "IP14P-256-BLACK",
-  "description": "Latest iPhone model",
-  "categoryId": "category-uuid-here",
-  "warehouseId": "warehouse-uuid-here",
-  "rackId": "rack-uuid-here"
-}
-```
-
-### 5. **Variant** (Fifth Priority)
-**Why Fifth?** Variants are specific versions of products (color, size, etc.).
+### 4. **Variant** (Fourth Priority)
+**Why Fourth?** Variants are specific versions of items (color, size, etc.).
 
 ```typescript
 // Domain Entity
 export class DomainVariantEntity extends DomainBaseEntity {
-  private productId!: string;      // Parent product
   private variantValueId!: string; // Specific variant (e.g., "Black", "256GB")
   private rackId?: string;         // Storage location
 }
@@ -156,14 +119,13 @@ POST /variant
 Content-Type: application/json
 
 {
-  "productId": "product-uuid-here",
   "variantValueId": "variant-value-uuid-here",
   "rackId": "rack-uuid-here"
 }
 ```
 
-### 6. **Inventory** (Sixth Priority)
-**Why Sixth?** Inventory tracks actual stock levels for specific variants in warehouses.
+### 5. **Inventory** (Fifth Priority)
+**Why Fifth?** Inventory tracks actual stock levels for specific variants in warehouses.
 
 ```typescript
 // Domain Entity
@@ -206,14 +168,11 @@ export class MainSeeder extends Seeder<Dictionary> {
     // 3. Categories (independent)
     await new CategorySeeder().run(em);
 
-    // 4. Variant types and values (for product variants)
+    // 4. Variant types and values (for variants)
     await new VariantTypeSeeder().run(em);
     await new VariantValueSeeder().run(em);
 
-    // 5. Products (need warehouse, category, rack)
-    await new ProductSeeder().run(em);
-
-    // 6. Variants (need products)
+    // 5. Variants (need racks)
     await new VariantSeeder().run(em);
   }
 }
@@ -232,17 +191,15 @@ export class MainSeeder extends Seeder<Dictionary> {
 4. Configure Warehouse Settings
 ```
 
-### Product Management Flow
+### Variant Management Flow
 ```
-1. Create Category for Product Type
+1. Create Category for Item Type
    ↓
-2. Create Product (assign to Warehouse/Category)
+2. Create Variants (assign to Rack)
    ↓
-3. Create Product Variants
+3. Set Initial Inventory Levels
    ↓
-4. Set Initial Inventory Levels
-   ↓
-5. Configure Product Rules
+4. Configure Variant Rules
 ```
 
 ### Inventory Management Flow
@@ -262,10 +219,10 @@ export class MainSeeder extends Seeder<Dictionary> {
 
 ### ❌ Wrong Order Examples
 ```typescript
-// ❌ DON'T: Create product before warehouse
-const product = await createProduct({
-  name: "iPhone",
-  warehouseId: "non-existent-warehouse" // Will fail!
+// ❌ DON'T: Create variant before warehouse
+const variant = await createVariant({
+  variantValueId: "black",
+  rackId: "non-existent-rack" // Will fail!
 });
 
 // ❌ DON'T: Create rack without warehouse
@@ -289,11 +246,9 @@ const rack = await createRack({
   warehouseId: warehouse.id
 });
 
-// ✅ DO: Create product with all dependencies
-const product = await createProduct({
-  name: "iPhone",
-  warehouseId: warehouse.id,
-  categoryId: category.id,
+// ✅ DO: Create variant with all dependencies
+const variant = await createVariant({
+  variantValueId: "black",
   rackId: rack.id
 });
 ```
@@ -303,17 +258,23 @@ const product = await createProduct({
 ### Unit Tests
 ```typescript
 describe('Entity Creation Order', () => {
-  it('should create warehouse before product', async () => {
+  it('should create warehouse before variant', async () => {
     // Create warehouse first
     const warehouse = await createWarehouse(mockWarehouseData);
 
-    // Then create product
-    const product = await createProduct({
-      ...mockProductData,
+    // Create rack
+    const rack = await createRack({
+      ...mockRackData,
       warehouseId: warehouse.id
     });
 
-    expect(product.warehouseId).toBe(warehouse.id);
+    // Then create variant
+    const variant = await createVariant({
+      ...mockVariantData,
+      rackId: rack.id
+    });
+
+    expect(variant.rackId).toBe(rack.id);
   });
 });
 ```
@@ -321,7 +282,7 @@ describe('Entity Creation Order', () => {
 ### Integration Tests
 ```typescript
 describe('Full Entity Creation Flow', () => {
-  it('should create complete product hierarchy', async () => {
+  it('should create complete variant hierarchy', async () => {
     // 1. Warehouse
     const warehouse = await createWarehouse(mockWarehouseData);
 
@@ -334,30 +295,25 @@ describe('Full Entity Creation Flow', () => {
     // 3. Category
     const category = await createCategory(mockCategoryData);
 
-    // 4. Product
-    const product = await createProduct({
-      ...mockProductData,
-      warehouseId: warehouse.id,
-      categoryId: category.id,
+    // 4. Variant
+    const variant = await createVariant({
+      ...mockVariantData,
       rackId: rack.id
     });
 
     // Verify all relationships
-    expect(product.warehouseId).toBe(warehouse.id);
-    expect(product.categoryId).toBe(category.id);
-    expect(product.rackId).toBe(rack.id);
+    expect(variant.rackId).toBe(rack.id);
   });
 });
 ```
 
 ## 📋 Checklist
 
-### Before Creating Product
+### Before Creating Variant
 - [ ] Warehouse exists and is active
-- [ ] Category exists for product type
 - [ ] Rack exists in target warehouse
 - [ ] Warehouse has available capacity
-- [ ] Product SKU is unique
+- [ ] Variant value is unique
 
 ### Before Creating Inventory
 - [ ] Warehouse exists
@@ -371,37 +327,31 @@ describe('Full Entity Creation Flow', () => {
 ### 1. **Validation First**
 Always validate dependencies before creating entities:
 ```typescript
-async createProduct(productData: CreateProductDto) {
-  // Validate warehouse exists
-  const warehouse = await this.warehouseRepo.findById(productData.warehouseId);
-  if (!warehouse) {
-    throw new Error('Warehouse not found');
+async createVariant(variantData: CreateVariantDto) {
+  // Validate rack exists
+  const rack = await this.rackRepo.findById(variantData.rackId);
+  if (!rack) {
+    throw new Error('Rack not found');
   }
 
-  // Validate category exists
-  const category = await this.categoryRepo.findById(productData.categoryId);
-  if (!category) {
-    throw new Error('Category not found');
-  }
-
-  // Create product
-  return this.productRepo.create(productData);
+  // Create variant
+  return this.variantRepo.create(variantData);
 }
 ```
 
 ### 2. **Transaction Safety**
 Use database transactions for related operations:
 ```typescript
-async createProductWithInventory(productData: CreateProductDto, inventoryData: CreateInventoryDto) {
+async createVariantWithInventory(variantData: CreateVariantDto, inventoryData: CreateInventoryDto) {
   return this.entityManager.transactional(async (em) => {
-    const product = await em.create(Product, productData);
+    const variant = await em.create(Variant, variantData);
     const inventory = await em.create(Inventory, {
       ...inventoryData,
-      productId: product.id
+      variantId: variant.id
     });
 
-    await em.persistAndFlush([product, inventory]);
-    return { product, inventory };
+    await em.persistAndFlush([variant, inventory]);
+    return { variant, inventory };
   });
 }
 ```
@@ -410,10 +360,10 @@ async createProductWithInventory(productData: CreateProductDto, inventoryData: C
 Provide clear error messages for dependency issues:
 ```typescript
 try {
-  await createProduct(productData);
+  await createVariant(variantData);
 } catch (error) {
   if (error.code === 'FOREIGN_KEY_VIOLATION') {
-    throw new Error('Required warehouse, category, or rack not found');
+    throw new Error('Required rack not found');
   }
   throw error;
 }
@@ -457,4 +407,4 @@ Following the correct entity creation order ensures:
 - **Performance**: Efficient database operations without constraint violations
 - **Maintainability**: Clear dependencies make code easier to understand and modify
 
-Remember: **Warehouse First, Then Product** - this is the foundation of proper warehouse management!
+Remember: **Warehouse First, Then Rack, Then Variant** - this is the foundation of proper warehouse management!

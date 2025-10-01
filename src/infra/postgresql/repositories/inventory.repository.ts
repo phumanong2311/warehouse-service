@@ -17,14 +17,14 @@ export class InventoryRepository extends BaseRepository<Inventory> {
 
   async findByWarehouseAndVariant(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     status: InventoryStatus,
     expirationDate?: Date,
   ): Promise<DomainInventoryEntity> {
     const data = await this.findOne({
       warehouse: warehouseId,
-      variantId: variantId,
+      productId: productId,
       unit: unitId,
       status,
       expirationDate,
@@ -34,7 +34,7 @@ export class InventoryRepository extends BaseRepository<Inventory> {
 
   async findWithPagination(query: {
     warehouseId?: string;
-    variantId?: string;
+    productId?: string;
     unitId?: string;
     quantity?: number;
     status?: InventoryStatus;
@@ -48,8 +48,8 @@ export class InventoryRepository extends BaseRepository<Inventory> {
     if (filters.warehouseId) {
       where.warehouse = filters.warehouseId;
     }
-    if (filters.variantId) {
-      where.variantId = filters.variantId;
+    if (filters.productId) {
+      where.productId = filters.productId;
     }
     if (filters.unitId) {
       where.unit = filters.unitId;

@@ -10,7 +10,10 @@ export class Inventory extends InfraBaseEntity {
   warehouse!: Warehouse;
 
   @Property()
-  variantId!: string; // Store variant ID as string
+  rackId!: string; // Store rack ID as string
+
+  @Property()
+  productId!: string; // Store product ID as string
 
   @ManyToOne(() => Unit)
   unit?: Unit;

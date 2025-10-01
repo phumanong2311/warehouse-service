@@ -361,7 +361,6 @@ graph TB
     end
     
     subgraph "Security Components"
-        JWT[JWT Tokens]
         RBAC[Role-Based Access Control]
         DTO[DTO Validation]
         HTTPS[HTTPS/TLS]
@@ -374,12 +373,10 @@ graph TB
         AUDIT[Audit Logging]
     end
     
-    AUTH --> JWT
     AUTHZ --> RBAC
     VALID --> DTO
     ENCRYPT --> HTTPS
     
-    JWT --> RATE
     RBAC --> CORS
     DTO --> HELMET
     HTTPS --> AUDIT

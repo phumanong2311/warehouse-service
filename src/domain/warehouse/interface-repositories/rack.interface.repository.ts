@@ -9,7 +9,7 @@ export interface IRackRepository {
     filter?: Record<string, any>;
   }): Promise<{ data: DomainRackEntity[]; total: number }>;
   findRackByWarehouse(warehouseId: string): Promise<DomainRackEntity>;
-  findRackByVariantId(variantId: string): Promise<DomainRackEntity>;
+  findRackByVariantId(productId: string): Promise<DomainRackEntity>;
   save(rack: DomainRackEntity): Promise<DomainRackEntity>;
   update(id: string, entity: DomainRackEntity): Promise<DomainRackEntity>;
   delete(id: string): Promise<void>;

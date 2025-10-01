@@ -6,11 +6,11 @@ import { InventoryStatus } from '@share/types';
 export interface InventoryManagementUseCase {
   findById(id: string): Promise<DomainInventoryEntity>;
   findByWarehouse(warehouseId: string): Promise<DomainInventoryEntity[]>;
-  findByVariant(variantId: string): Promise<DomainInventoryEntity[]>;
+  findByProduct(productId: string): Promise<DomainInventoryEntity[]>;
   findAll(): Promise<DomainInventoryEntity[]>;
   findWithPagination(query: {
     warehouseId?: string;
-    variantId?: string;
+    productId?: string;
     unitId?: string;
     status?: InventoryStatus;
     limit?: number;
@@ -21,7 +21,7 @@ export interface InventoryManagementUseCase {
   delete(id: string): Promise<void>;
   checkIn(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -30,7 +30,7 @@ export interface InventoryManagementUseCase {
   ): Promise<DomainInventoryEntity>;
   checkOut(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -38,14 +38,14 @@ export interface InventoryManagementUseCase {
   transfer(
     fromWarehouseId: string,
     toWarehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
   ): Promise<{ fromInventory: DomainInventoryEntity; toInventory: DomainInventoryEntity }>;
   adjustInventory(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     adjustmentQuantity: number,
     reason: string,
@@ -53,7 +53,7 @@ export interface InventoryManagementUseCase {
   ): Promise<DomainInventoryEntity>;
   writeOff(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     reason: string,
@@ -61,7 +61,7 @@ export interface InventoryManagementUseCase {
   ): Promise<DomainInventoryEntity>;
   physicalCountAdjustment(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     physicalCount: number,
     reason?: string,
@@ -90,9 +90,9 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     return result.data;
   }
 
-  async findByVariant(variantId: string): Promise<DomainInventoryEntity[]> {
+  async findByProduct(productId: string): Promise<DomainInventoryEntity[]> {
     const result = await this.inventoryRepository.findWithPagination({
-      variantId,
+      productId,
       limit: 1000, // Large limit to get all inventory
     });
     return result.data;
@@ -104,7 +104,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
 
   async findWithPagination(query: {
     warehouseId?: string;
-    variantId?: string;
+    productId?: string;
     unitId?: string;
     status?: InventoryStatus;
     limit?: number;
@@ -122,8 +122,8 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
       throw new Error('Warehouse ID is required');
     }
 
-    if (!inventory.getVariant() || inventory.getVariant().trim().length === 0) {
-      throw new Error('Variant ID is required');
+    if (!inventory.getProduct() || inventory.getProduct().trim().length === 0) {
+      throw new Error('Product ID is required');
     }
 
     if (inventory.getQuantity() <= 0) {
@@ -173,7 +173,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
 
   async checkIn(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -194,7 +194,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     // Create inventory record
     const inventory = new DomainInventoryEntity({
       warehouseId,
-      variantId,
+      productId,
       unitId,
       quantity,
       status,
@@ -204,7 +204,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
 
     return await this.inventoryRepository.checkInInventory(
       warehouse,
-      { id: variantId } as any, // TODO: Get actual variant entity
+      { id: productId } as any, // TODO: Get actual variant entity
       { id: unitId } as any, // TODO: Get actual unit entity
       quantity,
       status,
@@ -215,7 +215,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
 
   async checkOut(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -231,7 +231,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     // Check if sufficient inventory exists
     const existingInventory = await this.inventoryRepository.findByWarehouseAndVariant(
       warehouseId,
-      variantId,
+      productId,
       unitId,
       status,
     );
@@ -242,7 +242,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
 
     return await this.inventoryRepository.checkOutInventory(
       warehouse,
-      { id: variantId } as any, // TODO: Get actual variant entity
+      { id: productId } as any, // TODO: Get actual variant entity
       { id: unitId } as any, // TODO: Get actual unit entity
       quantity,
       status,
@@ -252,7 +252,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
   async transfer(
     fromWarehouseId: string,
     toWarehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -269,7 +269,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     // Check if source warehouse has sufficient inventory
     const sourceInventory = await this.inventoryRepository.findByWarehouseAndVariant(
       fromWarehouseId,
-      variantId,
+      productId,
       unitId,
       status,
     );
@@ -282,7 +282,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     const result = await this.inventoryRepository.transferInventory(
       fromWarehouse,
       toWarehouse,
-      { id: variantId } as any, // TODO: Get actual variant entity
+      { id: productId } as any, // TODO: Get actual variant entity
       { id: unitId } as any, // TODO: Get actual unit entity
       status,
       quantity,
@@ -297,7 +297,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
 
   async adjustInventory(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     adjustmentQuantity: number,
     reason: string,
@@ -318,7 +318,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     // Find existing inventory record
     const existingInventory = await this.inventoryRepository.findByWarehouseAndVariant(
       warehouseId,
-      variantId,
+      productId,
       unitId,
       InventoryStatus.AVAILABLE, // Default to available status for adjustments
     );
@@ -341,7 +341,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
       // Create new inventory record for positive adjustments
       const inventory = new DomainInventoryEntity({
         warehouseId,
-        variantId,
+        productId,
         unitId,
         quantity: adjustmentQuantity,
         status: InventoryStatus.AVAILABLE,
@@ -359,7 +359,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
 
   async writeOff(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     reason: string,
@@ -380,7 +380,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     // Find existing inventory record
     const existingInventory = await this.inventoryRepository.findByWarehouseAndVariant(
       warehouseId,
-      variantId,
+      productId,
       unitId,
       InventoryStatus.AVAILABLE,
     );
@@ -408,7 +408,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
 
   async physicalCountAdjustment(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     physicalCount: number,
     reason?: string,
@@ -424,7 +424,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
     // Find existing inventory record
     const existingInventory = await this.inventoryRepository.findByWarehouseAndVariant(
       warehouseId,
-      variantId,
+      productId,
       unitId,
       InventoryStatus.AVAILABLE,
     );
@@ -452,7 +452,7 @@ export class InventoryManagementUseCaseImpl implements InventoryManagementUseCas
       // Create new inventory record based on physical count
       const inventory = new DomainInventoryEntity({
         warehouseId,
-        variantId,
+        productId,
         unitId,
         quantity: physicalCount,
         status: InventoryStatus.AVAILABLE,

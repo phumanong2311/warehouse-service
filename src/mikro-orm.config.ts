@@ -1,21 +1,19 @@
 import { defineConfig, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { resolve } from 'path';
-import configuration from './infra/config';
 import {
   Inventory,
   Rack,
   Warehouse,
 } from './infra/postgresql/entities';
 
-console.log('🔍 MikroORM Config Loaded:', configuration.postgresql);
 export default defineConfig({
   driver: PostgreSqlDriver,
-  dbName: configuration.postgresql.dbName,
-  user: configuration.postgresql.user,
-  password: configuration.postgresql.password,
-  host: configuration.postgresql.host,
-  port: configuration.postgresql.port,
+  dbName: process.env.DB_NAME || 'warehouse_db',
+  user: process.env.DB_USERNAME || 'warehouse_user',
+  password: process.env.DB_PASSWORD || 'password',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432'),
   debug: true,
   pool: { min: 5, max: 10 },
   entities: [

@@ -6,6 +6,9 @@ export class Unit extends InfraBaseEntity {
   @Property({ type: 'string' })
   name!: string;
 
+  @Property({ type: 'string' })
+  symbol!: string;
+
   @Property({ type: 'string', nullable: true })
   description?: string;
 

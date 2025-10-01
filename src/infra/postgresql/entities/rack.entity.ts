@@ -15,5 +15,5 @@ export class Rack extends InfraBaseEntity {
   warehouse!: Warehouse;
 
   @Property({ type: 'json', nullable: true })
-  variantIds?: string[]; // Store variant IDs as JSON array
+  productIds?: string[]; // Store variant IDs as JSON array
 }

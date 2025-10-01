@@ -6,6 +6,7 @@ export class UnitMapper {
     return new DomainUnitEntity({
       id: infra.id,
       name: infra.name,
+      symbol: infra.symbol || 'N/A', // Add default symbol
       description: infra.description,
       conversionRate: infra.conversionRate,
       createdBy: infra.createdBy,

@@ -140,7 +140,7 @@ export class CreateInventoryDto {
 
   @IsNotEmpty()
   @IsString()
-  variantId: string;
+  productId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -171,7 +171,7 @@ export class UpdateInventoryDto {
 
   @IsOptional()
   @IsString()
-  variantId?: string;
+  productId?: string;
 
   @IsOptional()
   @IsString()
@@ -202,7 +202,7 @@ export class CheckInInventoryDto {
 
   @IsNotEmpty()
   @IsString()
-  variantId: string;
+  productId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -232,7 +232,7 @@ export class CheckOutInventoryDto {
 
   @IsNotEmpty()
   @IsString()
-  variantId: string;
+  productId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -258,7 +258,7 @@ export class TransferInventoryDto {
 
   @IsNotEmpty()
   @IsString()
-  variantId: string;
+  productId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -280,7 +280,7 @@ export class AdjustInventoryDto {
 
   @IsNotEmpty()
   @IsString()
-  variantId: string;
+  productId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -306,7 +306,7 @@ export class WriteOffInventoryDto {
 
   @IsNotEmpty()
   @IsString()
-  variantId: string;
+  productId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -333,7 +333,7 @@ export class PhysicalCountAdjustmentDto {
 
   @IsNotEmpty()
   @IsString()
-  variantId: string;
+  productId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -372,7 +372,7 @@ export class PaginationInventoryDto {
 
   @IsOptional()
   @IsString()
-  variantId?: string;
+  productId?: string;
 
   @IsOptional()
   @IsString()

@@ -3,7 +3,7 @@ import { InventoryStatus } from '@share/types';
 export interface WarehouseApplication {
   checkIn(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -11,7 +11,7 @@ export interface WarehouseApplication {
   ): void;
   checkOut(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -19,7 +19,7 @@ export interface WarehouseApplication {
   ): void;
   adjustStock(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -28,7 +28,7 @@ export interface WarehouseApplication {
   transfer(
     fromWarehouseId: number,
     toWarehouseId: number,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,

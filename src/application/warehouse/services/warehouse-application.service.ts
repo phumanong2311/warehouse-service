@@ -14,7 +14,7 @@ export class WarehouseApplicationService {
 
   async checkIn(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -39,7 +39,7 @@ export class WarehouseApplicationService {
       // 2.Perform check-in
       const data = await this.inventoryService.checkInInventory(
         warehouseId,
-        variantId,
+        productId,
         unitId,
         quantity,
         status,
@@ -59,7 +59,7 @@ export class WarehouseApplicationService {
 
   async checkOut(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -82,7 +82,7 @@ export class WarehouseApplicationService {
       // 2.Perform check-in
       const data = await this.inventoryService.checkOutInventory(
         warehouseId,
-        variantId,
+        productId,
         unitId,
         quantity,
         status,
@@ -100,7 +100,7 @@ export class WarehouseApplicationService {
 
   async adjustStock(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -125,7 +125,7 @@ export class WarehouseApplicationService {
       // 2.Perform check-in
       const data = await this.inventoryService.adjustQuantity(
         warehouseId,
-        variantId,
+        productId,
         unitId,
         quantity,
         status,
@@ -146,7 +146,7 @@ export class WarehouseApplicationService {
   async transferProduct(
     sourceWarehouseId: string,
     targetWarehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     status: InventoryStatus,
     quantity: number,
@@ -176,7 +176,7 @@ export class WarehouseApplicationService {
       const data = await this.inventoryService.transferInventory(
         sourceWarehouseId,
         targetWarehouseId,
-        variantId,
+        productId,
         unitId,
         status,
         quantity,

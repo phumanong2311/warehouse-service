@@ -1,18 +1,17 @@
 import { InventoryStatus } from '@share/types';
 import { DomainInventoryEntity, DomainWarehouseEntity } from '../entities';
 import { IInventoryRepository } from '../interface-repositories';
-import { UnitService } from './unit.service';
+import { InventoryExpirationSpecification, InventoryLowStockSpecification } from '../specifications/inventory.specifications';
 import { WarehouseService } from './warehouse.service';
 
 export class InventoryService {
   constructor(
     private inventoryRepository: IInventoryRepository,
     private warehouseService: WarehouseService,
-    private unitService: UnitService,
   ) {}
   async findInventoryWithQuery(
     warehouseId?: string,
-    variantId?: string,
+    productId?: string,
     unitId?: string,
     quantity?: number,
     status?: InventoryStatus,
@@ -21,7 +20,7 @@ export class InventoryService {
   ): Promise<{ data: DomainInventoryEntity[]; total: number }> {
     const query = {
       warehouseId,
-      variantId,
+      productId,
       unitId,
       quantity,
       status,
@@ -47,17 +46,72 @@ export class InventoryService {
     return await this.inventoryRepository.findWithPagination(query);
   }
 
-  generateBatchId(warehouseId: string, variantId: string): string {
+  generateBatchId(warehouseId: string, productId: string): string {
     const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, ''); // YYYYMMDD
     const randomSuffix = Math.floor(Math.random() * 1000)
       .toString()
       .padStart(3, '0'); // 001 to 999
-    return `BATCH-${timestamp}-${warehouseId}-${variantId}-${randomSuffix}`;
+    return `BATCH-${timestamp}-${warehouseId}-${productId}-${randomSuffix}`;
+  }
+
+  // Enhanced methods using Value Objects and Specifications
+  async findExpiringInventory(daysBeforeExpiration: number = 30): Promise<DomainInventoryEntity[]> {
+    const expirationSpec = new InventoryExpirationSpecification(daysBeforeExpiration);
+    const allInventory = await this.inventoryRepository.findAllInventories();
+    
+    return allInventory.filter(inventory => expirationSpec.isSatisfiedBy(inventory));
+  }
+
+  async findLowStockInventory(threshold: number = 10): Promise<DomainInventoryEntity[]> {
+    const lowStockSpec = new InventoryLowStockSpecification(threshold);
+    const allInventory = await this.inventoryRepository.findAllInventories();
+    
+    return allInventory.filter(inventory => lowStockSpec.isSatisfiedBy(inventory));
+  }
+
+  async checkInventoryHealth(warehouseId: string): Promise<{
+    totalItems: number;
+    lowStockItems: number;
+    expiringItems: number;
+    expiredItems: number;
+  }> {
+    const warehouseInventory = await this.inventoryRepository.findWithPagination({
+      warehouseId,
+      limit: 1000, // Get all inventory for the warehouse
+    });
+    
+    const lowStockSpec = new InventoryLowStockSpecification(10);
+    const expiringSpec = new InventoryExpirationSpecification(30);
+    
+    let lowStockItems = 0;
+    let expiringItems = 0;
+    let expiredItems = 0;
+
+    for (const inventory of warehouseInventory.data) {
+      if (lowStockSpec.isSatisfiedBy(inventory)) {
+        lowStockItems++;
+      }
+      
+      if (expiringSpec.isSatisfiedBy(inventory)) {
+        expiringItems++;
+      }
+      
+      if (inventory.getExpirationDate() && inventory.getExpirationDate() < new Date()) {
+        expiredItems++;
+      }
+    }
+
+    return {
+      totalItems: warehouseInventory.data.length,
+      lowStockItems,
+      expiringItems,
+      expiredItems,
+    };
   }
 
   async checkInInventory(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus = InventoryStatus.AVAILABLE,
@@ -83,7 +137,7 @@ export class InventoryService {
     const existingInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
         warehouseId,
-        variantId,
+        productId,
         unitId,
         status,
         expirationDate,
@@ -115,10 +169,10 @@ export class InventoryService {
     } else {
       // Create new inventory
       const batchId =
-        batch || this.generateBatchId(warehouse.getId(), variantId);
+        batch || this.generateBatchId(warehouse.getId(), productId);
       const domainEntity: DomainInventoryEntity = new DomainInventoryEntity({
         warehouseId,
-        variantId,
+        productId,
         unitId,
         quantity,
         status,
@@ -132,7 +186,7 @@ export class InventoryService {
 
   async checkOutInventory(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus = InventoryStatus.AVAILABLE,
@@ -141,7 +195,7 @@ export class InventoryService {
     const existingInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
         warehouseId,
-        variantId,
+        productId,
         unitId,
         status,
       );
@@ -180,7 +234,7 @@ export class InventoryService {
 
   async adjustQuantity(
     warehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     quantity: number,
     status: InventoryStatus,
@@ -193,7 +247,7 @@ export class InventoryService {
     const existingInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
         warehouseId,
-        variantId,
+        productId,
         unitId,
         status,
         expirationDate,
@@ -216,7 +270,7 @@ export class InventoryService {
   async transferInventory(
     sourceWarehouseId: string,
     targetWarehouseId: string,
-    variantId: string,
+    productId: string,
     unitId: string,
     status: InventoryStatus,
     quantity: number,
@@ -226,8 +280,8 @@ export class InventoryService {
     const sourceInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
         sourceWarehouseId,
-        variantId,
-        variantId,
+        productId,
+        productId,
         status,
         expirationDate,
       );
@@ -250,7 +304,7 @@ export class InventoryService {
     const targetInventory =
       await this.inventoryRepository.findByWarehouseAndVariant(
         targetWarehouseId,
-        variantId,
+        productId,
         unitId,
         status,
         expirationDate,
@@ -262,7 +316,7 @@ export class InventoryService {
     } else {
       const newInventory = new DomainInventoryEntity({
         warehouseId: targetWarehouseId,
-        variantId,
+        productId,
         unitId,
         quantity,
         status,

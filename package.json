@@ -26,6 +26,7 @@
     "db:seed": "mikro-orm seeder:run --config ./src/mikro-orm.config.ts --class MainSeeder"
   },
   "dependencies": {
+    "@jest/globals": "^30.1.2",
     "@mikro-orm/cli": "^6.4.0",
     "@mikro-orm/core": "^6.4.0",
     "@mikro-orm/migrations": "^6.4.0",

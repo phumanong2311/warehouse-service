@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
-import { WarehouseModule } from '../infra/http/modules/warehouse.module';
+import { WarehouseModule } from '../presentation/http/modules/warehouse.module';
 
 @Module({
   imports: [

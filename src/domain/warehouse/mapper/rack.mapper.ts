@@ -7,7 +7,7 @@ export class RackMapper {
       id: infra.id,
       name: infra.name,
       warehouseId: infra.warehouse.id,
-      variantIds: infra.variants?.map((item) => item.id) || [],
+      productIds: infra.productIds || [],
       createdBy: infra.createdBy,
       updatedBy: infra.updatedBy,
       createdAt: infra.createdAt,
@@ -20,7 +20,7 @@ export class RackMapper {
     if (domain.getName()) infra.name = domain.getName();
     if (domain.getWarehouse())
       infra.warehouse = { id: domain.getWarehouse() } as any;
-    // Note: variantIds are not mapped back to infra entities
+    // Note: productIds are not mapped back to infra entities
     // as they should be managed by the product service
     return infra;
   }

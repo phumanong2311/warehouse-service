@@ -4,7 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 export class DomainInventoryEntity extends DomainBaseEntity {
   private warehouseId: string;
-  private variantId: string;
+  private rackId: string;
+  private productId: string;
   private unitId: string;
   private quantity!: number;
   private batch?: string; // Số lô hàng
@@ -15,7 +16,8 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     createdBy?: string;
     updatedBy?: string;
     warehouseId?: string;
-    variantId?: string;
+    rackId?: string;
+    productId?: string;
     unitId?: string;
     quantity?: number;
     batch?: string;
@@ -32,7 +34,8 @@ export class DomainInventoryEntity extends DomainBaseEntity {
       updatedAt: params.updatedAt,
     });
     if (params.warehouseId) this.warehouseId = params.warehouseId;
-    if (params.variantId) this.variantId = params.variantId;
+    if (params.rackId) this.rackId = params.rackId;
+    if (params.productId) this.productId = params.productId;
     if (params.unitId) this.unitId = params.unitId;
     if (params.quantity) this.quantity = params.quantity;
     if (params.batch) this.batch = params.batch;
@@ -41,10 +44,6 @@ export class DomainInventoryEntity extends DomainBaseEntity {
   }
   setWarehouse(warehouseId: string): void {
     this.warehouseId = warehouseId;
-  }
-
-  setVariant(variantId: string): void {
-    this.variantId = variantId;
   }
 
   setQuantity(newQuantity: number): void {
@@ -63,6 +62,14 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     this.expirationDate = newDate;
   }
 
+  setRack(rackId: string): void {
+    this.rackId = rackId;
+  }
+
+  setProduct(productId: string): void {
+    this.productId = productId;
+  }
+
   setUnit(unitId: string): void {
     this.unitId = unitId;
   }
@@ -71,8 +78,12 @@ export class DomainInventoryEntity extends DomainBaseEntity {
     return this.warehouseId;
   }
 
-  getVariant(): string {
-    return this.variantId;
+  getRack(): string {
+    return this.rackId;
+  }
+
+  getProduct(): string {
+    return this.productId;
   }
 
   getUnit(): string {
